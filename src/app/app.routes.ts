@@ -6,8 +6,32 @@ import { Carte } from './features/carte/carte';
 import { CarteIntervention } from './components/carte-intervention/carte-intervention';
 import { ListeIntervention } from './features/interventions/liste/liste';
 
+
+import { authGuard } from './core/guards/auth-guard';
+
 export const routes: Routes = [
-   // ==========================================
+  {
+    path: '',
+    redirectTo: 'connexion',
+    pathMatch: 'full'
+  },
+
+  {
+    path: 'connexion',
+    loadComponent: () =>
+      import('./features/authentification/connexion/connexion')
+        .then(m => m.Connexion)
+  },
+
+  {
+    path: 'inscription',
+    loadComponent: () =>
+      import('./features/authentification/inscription/inscription')
+        .then(m => m.Inscription)
+  },
+
+
+     // ==========================================
   // PARCOURS DESKTOP — SIDEBAR
   // ==========================================
   {
@@ -94,29 +118,6 @@ export const routes: Routes = [
   {
     path: '**',
     redirectTo: 'dashboard',
-  },
-];
-import { authGuard } from './core/guards/auth-guard';
-
-export const routes: Routes = [
-  {
-    path: '',
-    redirectTo: 'connexion',
-    pathMatch: 'full'
-  },
-
-  {
-    path: 'connexion',
-    loadComponent: () =>
-      import('./features/authentification/connexion/connexion')
-        .then(m => m.Connexion)
-  },
-
-  {
-    path: 'inscription',
-    loadComponent: () =>
-      import('./features/authentification/inscription/inscription')
-        .then(m => m.Inscription)
   },
 
 ];
