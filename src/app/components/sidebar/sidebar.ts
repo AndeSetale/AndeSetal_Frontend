@@ -25,32 +25,32 @@ export class Sidebar {
     },
     {
       label: 'Carte des incidents',
-      route: '/incidents/map',
+      route: '/dashboard/map',
       icon: 'map',
     },
     {
       label: 'Gestion des agents',
-      route: '/agents',
+      route: '/dashboard/agents',
       icon: 'agents',
     },
     {
       label: 'Gestion des incidents',
-      route: '/incidents',
+      route: '/dashboard/incidents',
       icon: 'incident',
     },
     {
       label: 'Set-Setal',
-      route: '/set-setal',
+      route: '/dashboard/set-setal',
       icon: 'set-setal',
     },
     {
       label: 'Financement participatif',
-      route: '/financement',
+      route: '/dashboard/financement',
       icon: 'financement',
     },
     {
       label: 'Paramètres',
-      route: '/settings',
+      route: '/dashboard/settings',
       icon: 'settings',
     },
   ];

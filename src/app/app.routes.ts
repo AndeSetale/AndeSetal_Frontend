@@ -1,26 +1,98 @@
 import { Routes } from '@angular/router';
 import { Dashboard } from './layouts/dashboard/dashboard';
 import { Mobile } from './layouts/mobile/mobile';
-import { Accueil } from './features/accueil/accueil';
+import { Accueil } from './features/tableau-de-bord/accueil';
 import { Carte } from './features/carte/carte';
+import { CarteIntervention } from './components/carte-intervention/carte-intervention';
+import { ListeIntervention } from './features/interventions/liste/liste';
 
 export const routes: Routes = [
+   // ==========================================
+  // PARCOURS DESKTOP — SIDEBAR
+  // ==========================================
+  {
+    path: 'dashboard',
+    component: Dashboard,
+    children: [
+
+      // Tableau de bord
+      {
+        path: '',
+        component: Accueil,
+      },
+
+      {
+        path: 'map',
+        component: Carte,
+      },
+
+      // Gestion des incidents
+      {
+        path: 'incidents',
+        component: ListeIntervention,
+      },
+
+      // Rapports
+      // {
+      //   path: 'rapports',
+      //   component: ,
+      // },
+
+      // TODO : à connecter quand les composants seront prêts
+      // {
+      //   path: 'agents',
+      //   component: ...
+      // },
+
+      // {
+      //   path: 'set-setal',
+      //   component: ...
+      // },
+
+      // {
+      //   path: 'financement',
+      //   component: ...
+      // },
+
+      // {
+      //   path: 'settings',
+      //   component: ...
+      // },
+    ],
+  },
+
+  // ==========================================
+  // PARCOURS MOBILE
+  // ==========================================
+  {
+    path: 'mobile',
+    component: Mobile,
+    children: [
+      {
+        path: '',
+        component: Accueil,
+      },
+      {
+        path: 'carte',
+        component: Carte,
+      },
+    ],
+  },
+
+  // ==========================================
+  // ROUTE PAR DÉFAUT
+  // ==========================================
   {
     path: '',
-    component: Dashboard,
+    redirectTo: 'dashboard',
+    pathMatch: 'full',
   },
- {
-  path: 'mobile',
-  component: Mobile,
-  children: [
-    {
-      path: '',
-      component: Accueil,
-    },
-    {
-      path: 'carte',
-      component: Carte,
-    },
-  ],
-},
+
+  // ==========================================
+  // ROUTE INCONNUE
+  // ==========================================
+  {
+    path: '**',
+    redirectTo: 'dashboard',
+  },
 ];
