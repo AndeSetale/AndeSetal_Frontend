@@ -1,1 +1,220 @@
-<p>barre-navigation works!</p>
+<nav
+  class="fixed bottom-0 left-0 right-0 z-50 "
+  aria-label="Navigation mobile"
+>
+  <div
+    class="relative w-full h-20 bg-white rounded-tl-3xl rounded-tr-3xl
+           shadow-[0px_-4px_20px_-8px_rgba(0,64,48,0.15)]"
+  >
+
+    <!-- Navigation -->
+    <div
+      class="h-full px-9 pt-3 pb-6
+             flex items-center justify-between"
+    >
+
+      <!-- Accueil -->
+      <a
+        routerLink="/mobile"
+        routerLinkActive="text-teal-950"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="relative flex flex-col items-center gap-1
+               text-gray-400"
+      >
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 20 20"
+          fill="none"
+          aria-hidden="true"
+        >
+          <path
+            d="M7.5 18.33V12.5H12.5V18.33"
+            stroke="currentColor"
+            stroke-width="1.67"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M2.5 9.17L10 2.5L17.5 9.17V17.5C17.5 17.96 17.13 18.33 16.67 18.33H3.33C2.87 18.33 2.5 17.96 2.5 17.5V9.17Z"
+            stroke="currentColor"
+            stroke-width="1.67"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+
+        <span class="text-[10px] font-medium leading-6">
+          Accueil
+        </span>
+
+        <!-- Indicateur actif -->
+        <span
+          class="absolute -bottom-1 size-1 rounded-full
+                 bg-current opacity-0
+                 group-[.router-link-active]:opacity-100"
+        ></span>
+      </a>
+
+
+      <!-- Carte -->
+      <a
+        routerLink="mobile/carte"
+        routerLinkActive="text-teal-950"
+        class="flex flex-col items-center gap-1 text-gray-400"
+      >
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 20 20"
+          fill="none"
+          aria-hidden="true"
+        >
+          <path
+            d="M12.5 3.33L7.5 5.83L2.5 3.33V16.67L7.5 19.17L12.5 16.67L17.5 19.17V5.83L12.5 3.33Z"
+            stroke="currentColor"
+            stroke-width="1.67"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M7.5 5.83V19.17"
+            stroke="currentColor"
+            stroke-width="1.67"
+          />
+          <path
+            d="M12.5 3.33V16.67"
+            stroke="currentColor"
+            stroke-width="1.67"
+          />
+        </svg>
+
+        <span class="text-[10px] font-normal leading-6">
+          Carte
+        </span>
+      </a>
+
+
+      <!-- Espace central -->
+      <div
+        class="w-14 shrink-0"
+        aria-hidden="true"
+      ></div>
+
+
+      <!-- Set-Setal -->
+      <a
+        routerLink="/set-setal"
+        routerLinkActive="text-teal-950"
+        class="flex flex-col items-center gap-1 text-gray-400"
+      >
+  <svg
+          width="20"
+          height="20"
+          viewBox="0 0 20 20"
+          fill="none"
+          aria-hidden="true"
+        >
+          <circle
+            cx="10"
+            cy="6.67"
+            r="3.33"
+            stroke="currentColor"
+            stroke-width="1.67"
+          />
+          <path
+            d="M3.33 17.5C3.33 14.74 6.32 12.5 10 12.5C13.68 12.5 16.67 14.74 16.67 17.5"
+            stroke="currentColor"
+            stroke-width="1.67"
+            stroke-linecap="round"
+          />
+        </svg>
+
+
+        <span class="text-[10px] font-normal leading-6">
+          Set-Setal
+        </span>
+      </a>
+
+
+      <!-- Profil -->
+      <a
+        routerLink="/profil"
+        routerLinkActive="text-teal-950"
+        class="flex flex-col items-center gap-1 text-gray-400"
+      >
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 20 20"
+          fill="none"
+          aria-hidden="true"
+        >
+          <circle
+            cx="10"
+            cy="6.67"
+            r="3.33"
+            stroke="currentColor"
+            stroke-width="1.67"
+          />
+          <path
+            d="M3.33 17.5C3.33 14.74 6.32 12.5 10 12.5C13.68 12.5 16.67 14.74 16.67 17.5"
+            stroke="currentColor"
+            stroke-width="1.67"
+            stroke-linecap="round"
+          />
+        </svg>
+
+        <span class="text-[10px] font-normal leading-6">
+          Profil
+        </span>
+      </a>
+
+    </div>
+
+
+    <!-- Bouton Signaler -->
+    <a
+      routerLink="/interventions/creation"
+      aria-label="Signaler un incident"
+      class="absolute left-1/2 -top-6
+             -translate-x-1/2
+             size-14
+             bg-teal-950
+             rounded-full
+             flex items-center justify-center
+             text-stone-100
+         
+             shadow-[0px_8px_20px_-4px_rgba(0,64,48,0.50)]
+             transition-transform
+             hover:scale-105
+             active:scale-95
+             focus-visible:outline-none
+             focus-visible:ring-2
+             focus-visible:ring-teal-950
+             focus-visible:ring-offset-2"
+    >
+      <svg
+        width="28"
+        height="28"
+        viewBox="0 0 28 28"
+        fill="none"
+        aria-hidden="true"
+      >
+        <path
+          d="M14 5.83V22.17"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+        />
+        <path
+          d="M5.83 14H22.17"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+        />
+      </svg>
+    </a>
+
+  </div>
+</nav>
