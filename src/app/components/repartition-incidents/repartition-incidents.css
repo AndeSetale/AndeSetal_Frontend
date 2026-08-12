@@ -1,0 +1,41 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.donut {
+  width: 144px;
+  height: 144px;
+
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  position: relative;
+}
+
+.donut::before {
+  content: '';
+
+  position: absolute;
+
+  width: 82px;
+  height: 82px;
+
+  background: white;
+
+  border-radius: 50%;
+}
+
+.donut-center {
+  position: relative;
+  z-index: 1;
+
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 400;
+
+  color: #042F2E;
+}
