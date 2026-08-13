@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { EnTeteAuthentification } from '../../../components/en-tete-authentification/en-tete-authentification';
 import {
   FormControl,
@@ -7,6 +7,8 @@ import {
   Validators
 } from '@angular/forms';
 import { emailOuTelephoneValide } from '../email-ou-telephone.validator';
+import { Router } from '@angular/router';
+import { Auth } from '../../../core/services/auth';
 
 @Component({
   selector: 'app-connexion',
@@ -15,6 +17,9 @@ import { emailOuTelephoneValide } from '../email-ou-telephone.validator';
   styleUrl: './connexion.css',
 })
 export class Connexion {
+  private auth = inject(Auth);
+  private router = inject(Router);
+
   // État d'affichage du mot de passe
   motDePasseVisible = signal(false);
 
@@ -53,38 +58,42 @@ export class Connexion {
     );
   }
 
-
   // Soumission du formulaire
   seConnecter(): void {
-
     // Réinitialiser l'erreur précédente
     this.erreur.set(null);
 
-    // Vérifier la validité
+    // Vérifier la validité du formulaire
     if (this.formulaireConnexion.invalid) {
-
       this.formulaireConnexion.markAllAsTouched();
-
       return;
     }
 
-
-    // Activer le chargement
     this.chargement.set(true);
 
+    const { email, motDePasse } = this.formulaireConnexion.getRawValue();
 
-    // Pour l'instant, on simule simplement la connexion
-    console.log(
-      'Données de connexion :',
-      this.formulaireConnexion.getRawValue()
-    );
+    this.auth.connecter(email, motDePasse).subscribe({
+      next: (reponse) => {
+        // Enregistrer les tokens et l'utilisateur connecté
+        this.auth.enregistrerSession(reponse);
 
+        this.chargement.set(false);
 
-    // Simulation temporaire
-    setTimeout(() => {
+        // Rediriger vers l'espace citoyen
+        this.router.navigate(['/mobile']);
+      },
 
-      this.chargement.set(false);
+      error: (erreur) => {
+        this.chargement.set(false);
 
-    }, 1000);
+        console.error('Erreur de connexion :', erreur);
+
+        // Message affiché à l'utilisateur
+        this.erreur.set(
+          'Email ou mot de passe incorrect.'
+        );
+      }
+    });
   }
 }

@@ -30,6 +30,13 @@ export const routes: Routes = [
         .then(m => m.Inscription)
   },
 
+  {
+    path: 'verification',
+    loadComponent: () =>
+    import('./features/authentification/verification/verification')
+    .then(m => m.Verification)
+  },
+
 
      // ==========================================
   // PARCOURS DESKTOP — SIDEBAR
@@ -37,6 +44,7 @@ export const routes: Routes = [
   {
     path: 'dashboard',
     component: Dashboard,
+    canActivate: [authGuard],
     children: [
 
       // Tableau de bord
