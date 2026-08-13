@@ -30,8 +30,17 @@ export class HeaderDashboard {
         filter((event) => event instanceof NavigationEnd)
       )
       .subscribe((event) => {
+        const url = event.urlAfterRedirects;
+
+        // Détail d'un agent
+        if (url.startsWith('/dashboard/agents/')) {
+          this.title.set('Gestion des agents');
+          return;
+        }
+
+        // Routes normales
         this.title.set(
-          this.titles[event.urlAfterRedirects] ?? 'Tableau de bord'
+          this.titles[url] ?? 'Tableau de bord'
         );
       });
   }

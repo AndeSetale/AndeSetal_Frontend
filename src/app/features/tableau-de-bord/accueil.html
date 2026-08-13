@@ -37,7 +37,12 @@
 
   <app-graphique-incidents />
 
-  <app-repartition-incidents />
+  <app-repartition-incidents
+  title="Répartition par type"
+  subtitle="Types d'incidents"
+  [totalIncidents]="184"
+  [incidentTypes]="incidentTypes"
+/>
 
 </div>
 <div class="grid grid-cols-1 xl:grid-cols-[65fr_35fr] gap-4 p-6">

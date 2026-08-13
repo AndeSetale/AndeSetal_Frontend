@@ -4,37 +4,24 @@
 >
 
   <!-- Header -->
-  <div class="flex items-center justify-between">
-
-    <p class="text-sm font-normal text-teal-950">
-      Répartition par type
-    </p>
-
-    <button
-      type="button"
-      class="w-8 h-8 flex items-center justify-center
-             rounded-lg text-gray-500 hover:bg-gray-100"
-    >
-      <svg
-        width="16"
-        height="16"
-        viewBox="0 0 16 16"
-        fill="none"
-      >
-        <circle cx="8" cy="3" r="0.8" fill="currentColor" />
-        <circle cx="8" cy="8" r="0.8" fill="currentColor" />
-        <circle cx="8" cy="13" r="0.8" fill="currentColor" />
-      </svg>
-    </button>
-
+  <div class="self-stretch flex flex-col justify-start items-start">
+  <div class="text-gray-900 text-lg font-bold  leading-7">
+    {{ title() }}
   </div>
+</div>
+
+<div class="self-stretch flex flex-col justify-start items-start">
+  <div class="text-gray-600 text-sm font-normal  leading-5">
+    {{ subtitle() }}
+  </div>
+</div>
 
   <!-- Donut -->
   <div class="h-36 flex justify-center items-center">
 
     <div
       class="donut"
-      [style.background]="donutStyle().background"
+      [style.background]="donutBackground"
     >
 
       <!-- Centre -->

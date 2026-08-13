@@ -11,4 +11,28 @@ import { PerformanceAgents } from "../../components/performance-agents/performan
   templateUrl: './accueil.html',
   styleUrl: './accueil.css',
 })
-export class Accueil {}
+export class Accueil {
+
+  readonly incidentTypes = [
+  {
+    label: 'Canal bouché',
+    value: 60,
+    color: '#1F2937',
+  },
+  {
+    label: 'Dépôt sauvage',
+    value: 25,
+    color: '#F97316',
+  },
+  {
+    label: 'Graffiti',
+    value: 10,
+    color: '#9CA3AF',
+  },
+  {
+    label: 'Éclairage',
+    value: 5,
+    color: '#EAB308',
+  },
+];
+}

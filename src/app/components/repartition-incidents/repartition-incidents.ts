@@ -1,6 +1,6 @@
-import { Component, signal } from '@angular/core';
+import { Component, input } from '@angular/core';
 
-interface IncidentType {
+export interface IncidentType {
   label: string;
   value: number;
   color: string;
@@ -15,39 +15,24 @@ interface IncidentType {
 })
 export class RepartitionIncidents {
 
-  readonly totalIncidents = signal(184);
+  title = input('Répartition par type');
 
-  readonly incidentTypes = signal<IncidentType[]>([
-    {
-      label: 'Dépôt sauvage',
-      value: 45,
-      color: '#00A878',
-    },
-    {
-      label: 'Canal bouché',
-      value: 25,
-      color: '#16A34A',
-    },
-    {
-      label: 'Graffiti',
-      value: 20,
-      color: '#64748B',
-    },
-    {
-      label: 'Autre',
-      value: 10,
-      color: '#CBD5E1',
-    },
-  ]);
+  subtitle = input('Types d’incidents traités');
 
-  readonly donutStyle = signal({
-    background: `
-      conic-gradient(
-        #00A878 0% 45%,
-        #16A34A 45% 70%,
-        #64748B 70% 90%,
-        #CBD5E1 90% 100%
-      )
-    `,
-  });
+  totalIncidents = input.required<number>();
+
+  incidentTypes = input.required<IncidentType[]>();
+
+  get donutBackground(): string {
+    let current = 0;
+
+    const segments = this.incidentTypes().map((type) => {
+      const start = current;
+      current += type.value;
+
+      return `${type.color} ${start}% ${current}%`;
+    });
+
+    return `conic-gradient(${segments.join(', ')})`;
+  }
 }

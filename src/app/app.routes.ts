@@ -8,6 +8,9 @@ import { ListeIntervention } from './features/interventions/liste/liste';
 
 
 import { authGuard } from './core/guards/auth-guard';
+import { GestionAgents } from './features/gestion-agents/gestion-agents';
+import { AgentDetail } from './features/agent-detail/agent-detail';
+import { Incidents } from './features/incidents/incidents';
 
 export const routes: Routes = [
   {
@@ -53,7 +56,7 @@ export const routes: Routes = [
       // Gestion des incidents
       {
         path: 'incidents',
-        component: ListeIntervention,
+        component: Incidents,
       },
 
       // Rapports
@@ -62,11 +65,16 @@ export const routes: Routes = [
       //   component: ,
       // },
 
-      // TODO : à connecter quand les composants seront prêts
-      // {
-      //   path: 'agents',
-      //   component: ...
-      // },
+     
+      {
+        path: 'agents',
+        component: GestionAgents
+      },
+
+       {
+    path: 'agents/:id',
+    component:AgentDetail
+  }
 
       // {
       //   path: 'set-setal',

@@ -1,0 +1,351 @@
+<div class="p-6">
+
+  <!-- En-tête -->
+  <div class="flex items-center justify-between mb-6">
+
+    <p class="text-sm text-gray-600">
+      Gérer le contrôle d'accès et surveiller l'activité des agents.
+    </p>
+
+<button
+  type="button"
+  (click)="openAddAgentModal()"
+  class="px-5 py-2.5 bg-gray-800 text-white rounded-[10px]
+         inline-flex items-center gap-2
+         cursor-pointer text-base font-semibold
+         hover:bg-gray-700 transition-colors"
+>
+  <!-- Icône utilisateur + -->
+  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M13.3337 17.5V15.8333C13.3337 13.9924 11.8413 12.5 10.0003 12.5H5.00033C3.15938 12.5 1.66699 13.9924 1.66699 15.8333V17.5" stroke="white" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M4.16699 5.83333C4.16699 7.67305 5.66061 9.16667 7.50033 9.16667C9.34004 9.16667 10.8337 7.67305 10.8337 5.83333C10.8337 3.99362 9.34004 2.5 7.50033 2.5C5.66061 2.5 4.16699 3.99362 4.16699 5.83333V5.83333" stroke="white" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M15.833 6.66602V11.666" stroke="white" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M18.333 9.16602H13.333" stroke="white" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+
+  <span>Ajouter un nouvel agent</span>
+</button>
+
+  </div>
+
+
+  <!-- Statistiques -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+
+    <!-- Total agents -->
+    <div class="bg-white p-6 rounded-2xl border border-gray-200">
+      <p class="text-sm font-semibold text-gray-600">
+        Nombre total d'agents
+      </p>
+
+      <div class="flex items-center justify-between mt-1">
+
+        <span class="text-3xl font-bold text-gray-900">
+          {{ totalAgents() }}
+        </span>
+
+        <div class="size-12 bg-gray-800/10 rounded-[10px]
+                    flex items-center justify-center">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M16 21V19C16 16.7923 14.2077 15 12 15H6C3.79234 15 2 16.7923 2 19V21" stroke="#1A3A32" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M5 7C5 8.42906 5.7624 9.74957 7 10.4641C8.2376 11.1786 9.7624 11.1786 11 10.4641C12.2376 9.74957 13 8.42906 13 7C13 4.79234 11.2077 3 9 3C6.79234 3 5 4.79234 5 7H5" stroke="#1A3A32" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M22 21.0009V19.0009C21.9986 17.178 20.765 15.5866 19 15.1309" stroke="#1A3A32" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 3.13086C17.7699 3.58403 19.0078 5.17885 19.0078 7.00586C19.0078 8.83287 17.7699 10.4277 16 10.8809" stroke="#1A3A32" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+        </div>
+
+      </div>
+    </div>
+
+
+    <!-- Sessions actives -->
+    <div class="bg-white p-6 rounded-2xl border border-gray-200">
+
+      <p class="text-sm font-semibold text-gray-600">
+        Sessions actives
+      </p>
+
+      <div class="flex items-center justify-between mt-1">
+
+        <div>
+          <div class="text-3xl font-bold text-gray-900">
+            {{ sessionsActives() }}
+          </div>
+
+          <p class="text-xs font-medium text-green-600 mt-1">
+            ↑ 12% depuis la semaine dernière
+          </p>
+        </div>
+
+        <div class="size-12 bg-green-100 rounded-[10px]
+                    flex items-center justify-center">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M20 13.0004C20 18.0004 16.5 20.5004 12.34 21.9504C12.1222 22.0243 11.8855 22.0207 11.67 21.9404C7.5 20.5004 4 18.0004 4 13.0004V6.00045C4 5.44853 4.44808 5.00045 5 5.00045C7 5.00045 9.5 3.80045 11.24 2.28045C11.6777 1.90652 12.3223 1.90652 12.76 2.28045C14.51 3.81045 17 5.00045 19 5.00045C19.5523 5.00045 20 5.44816 20 6.00045V13.0004" stroke="#00A63E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M12 8V12" stroke="#00A63E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M12 16H12.01" stroke="#00A63E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+        </div>
+
+      </div>
+    </div>
+
+
+    <!-- Agents suspendus -->
+    <div class="bg-white p-6 rounded-2xl border border-gray-200">
+
+      <p class="text-sm font-semibold text-gray-600">
+        Agents suspendus
+      </p>
+
+      <div class="flex items-center justify-between mt-1">
+
+        <div>
+          <div class="text-3xl font-bold text-gray-900">
+            {{ agentsSuspendus() }}
+          </div>
+
+          <p class="text-xs font-medium text-orange-600 mt-1">
+            Action requise
+          </p>
+        </div>
+
+        <div class="size-12 bg-orange-100 rounded-[10px]
+                    flex items-center justify-center">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M15 2H6C4.89617 2 4 2.89617 4 4V20C4 21.1038 4.89617 22 6 22H18C19.1038 22 20 21.1038 20 20V7L15 2" stroke="#F54900" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M14 2V6C14 7.10383 14.8962 8 16 8H20" stroke="#F54900" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M10 9H8" stroke="#F54900" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 13H8" stroke="#F54900" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 17H8" stroke="#F54900" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+    <!-- Tableau -->
+  <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+
+    <!-- Pagination haut -->
+    <div class="px-4 py-3 border-b border-gray-200
+                flex items-center justify-between">
+
+      <span class="text-xs text-gray-500">
+        Affichage 1-{{ agents().length }} sur {{ totalAgents() }} agents
+      </span>
+
+      <div class="flex items-center gap-1">
+
+        <button
+          type="button"
+          (click)="changerPage(currentPage() - 1)"
+          class="size-6 rounded border border-gray-200
+                 flex items-center justify-center
+                 disabled:opacity-40"
+          [disabled]="currentPage() === 1"
+        >
+          ‹
+        </button>
+
+        <button
+          type="button"
+          class="size-6 rounded bg-green-700 text-white
+                 text-xs flex items-center justify-center"
+        >
+          {{ currentPage() }}
+        </button>
+
+        <button
+          type="button"
+          (click)="changerPage(currentPage() + 1)"
+          class="size-6 rounded border border-gray-200
+                 flex items-center justify-center"
+          [disabled]="currentPage() === totalPages()"
+        >
+          ›
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- Header tableau -->
+    <div class="hidden md:grid grid-cols-[1.5fr_1fr_1.5fr_1fr_1fr_100px]
+                bg-gray-50 border-b border-gray-200">
+
+      <div class="px-6 py-3 text-xs font-bold text-gray-700 uppercase">
+        Nom de l’agent
+      </div>
+
+      <div class="px-6 py-3 text-xs font-bold text-gray-700 uppercase">
+        Identifiant
+      </div>
+
+      <div class="px-6 py-3 text-xs font-bold text-gray-700 uppercase">
+        Département
+      </div>
+
+      <div class="px-6 py-3 text-xs font-bold text-gray-700 uppercase">
+        Dernière activité
+      </div>
+
+      <div class="px-6 py-3 text-xs font-bold text-gray-700 uppercase">
+        Statut
+      </div>
+
+      <div class="px-6 py-3 text-xs font-bold text-gray-700 uppercase text-right">
+        Actions
+      </div>
+
+    </div>
+
+
+    <!-- Lignes -->
+    @for (agent of agents(); track agent.identifiant) {
+
+      <div
+        class="grid grid-cols-1 md:grid-cols-[1.5fr_1fr_1.5fr_1fr_1fr_100px]
+                   border-b border-gray-200
+                   hover:bg-gray-50 transition-colors"
+      >
+
+        <!-- Nom -->
+        <div class="px-6 py-4 flex items-center gap-3">
+
+          <div
+            class="size-10 bg-gray-200 rounded-full
+                   flex items-center justify-center shrink-0"
+          >
+            <svg
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M20 21a8 8 0 0 0-16 0" />
+        <circle cx="12" cy="7" r="4" />
+      </svg>
+          </div>
+
+          <span class="text-sm font-semibold text-gray-900">
+            {{ agent.nom }}
+          </span>
+
+        </div>
+
+
+        <!-- Identifiant -->
+        <div class="px-6 py-4 flex items-center">
+          <span class="text-sm font-medium text-gray-700">
+            {{ agent.identifiant }}
+          </span>
+        </div>
+
+
+        <!-- Département -->
+        <div class="px-6 py-4 flex items-center">
+          <span class="text-sm text-gray-700">
+            {{ agent.departement }}
+          </span>
+        </div>
+
+
+        <!-- Activité -->
+        <div class="px-6 py-4 flex items-center">
+          <span class="text-sm text-gray-600">
+            {{ agent.derniereActivite }}
+          </span>
+        </div>
+
+
+        <!-- Statut -->
+        <div class="px-6 py-4 flex items-center">
+
+          <span
+            class="px-3 py-1 rounded-full text-xs font-semibold"
+            [class.bg-green-100]="agent.statut === 'Actif'"
+            [class.text-green-700]="agent.statut === 'Actif'"
+            [class.bg-gray-100]="agent.statut === 'Inactif'"
+            [class.text-gray-700]="agent.statut === 'Inactif'"
+            [class.bg-orange-100]="agent.statut === 'Suspendu'"
+            [class.text-orange-700]="agent.statut === 'Suspendu'"
+          >
+            {{ agent.statut }}
+          </span>
+
+        </div>
+
+
+        <!-- Actions -->
+        <div class="px-6 py-4 flex items-center justify-end gap-1">
+
+          <button
+            type="button"
+            (click)="voirAgent(agent)"
+            class="p-2 rounded-lg hover:bg-gray-100"
+            title="Voir"
+          >
+           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M8 2H3.33333C2.59745 2 2 2.59745 2 3.33333V12.6667C2 13.4026 2.59745 14 3.33333 14H12.6667C13.4026 14 14 13.4026 14 12.6667V8" stroke="#4A5565" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M12.2504 1.75015C12.8023 1.19824 13.6985 1.19824 14.2504 1.75015C14.8023 2.30207 14.8023 3.19824 14.2504 3.75015L8.24173 9.75948C8.08343 9.91765 7.88787 10.0334 7.67306 10.0962L5.75773 10.6562C5.64089 10.6902 5.51476 10.6579 5.42869 10.5719C5.34263 10.4858 5.31032 10.3597 5.3444 10.2428L5.9044 8.32748C5.96741 8.11285 6.08342 7.91752 6.24173 7.75948L12.2504 1.75015" stroke="#4A5565" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+          </button>
+
+          <button
+            type="button"
+            (click)="modifierAgent(agent)"
+            class="p-2 rounded-lg hover:bg-gray-100"
+            title="Modifier"
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M1.37468 8.23224C1.31912 8.08256 1.31912 7.91792 1.37468 7.76824C2.48136 5.08485 5.09737 3.33398 8.00001 3.33398C10.9027 3.33398 13.5187 5.08485 14.6253 7.76824C14.6809 7.91792 14.6809 8.08256 14.6253 8.23224C13.5187 10.9156 10.9027 12.6665 8.00001 12.6665C5.09737 12.6665 2.48136 10.9156 1.37468 8.23224" stroke="#4A5565" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M6 8C6 9.10383 6.89617 10 8 10C9.10383 10 10 9.10383 10 8C10 6.89617 9.10383 6 8 6C6.89617 6 6 6.89617 6 8V8" stroke="#4A5565" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+          </button>
+
+          <button
+            type="button"
+            (click)="supprimerAgent(agent)"
+            class="p-2 rounded-lg hover:bg-gray-100"
+            title="Supprimer"
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M2 4H14" stroke="#4A5565" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M12.6663 4V13.3333C12.6663 14 11.9997 14.6667 11.333 14.6667H4.66634C3.99967 14.6667 3.33301 14 3.33301 13.3333V4" stroke="#4A5565" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M5.33301 4.00065V2.66732C5.33301 2.00065 5.99967 1.33398 6.66634 1.33398H9.33301C9.99967 1.33398 10.6663 2.00065 10.6663 2.66732V4.00065" stroke="#4A5565" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M6.66699 7.33398V11.334" stroke="#4A5565" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M9.33301 7.33398V11.334" stroke="#4A5565" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+          </button>
+
+        </div>
+
+      </div>
+
+    }
+
+  </div>
+
+</div>
+
+
+@if (showAddAgentModal) {
+  <app-add-agent-modal
+    (close)="closeAddAgentModal()"
+  />
+}
