@@ -1,1 +1,401 @@
-<p>carte works!</p>
+<div class="relative w-full max-w-[384px] h-[872px] overflow-hidden rounded-[30px] bg-green-50">
+
+  <!-- =========================
+       HEADER / MAP
+  ========================== -->
+  <section
+    class="absolute inset-x-0 top-0 h-[814px] overflow-hidden rounded-t-[30px]"
+  >
+
+    <!-- =========================
+         LEAFLET MAP
+    ========================== -->
+    <div
+      id="map"
+      class="absolute inset-0 z-0"
+      aria-label="Carte des signalements"
+    ></div>
+
+
+    <!-- =========================
+         HEADER
+    ========================== -->
+    <header
+      class="absolute inset-x-0 top-0 z-20 flex h-20 items-center justify-center
+             rounded-t-[30px] bg-white pt-3
+             shadow-[0_4px_4px_rgba(0,0,0,0.14)]"
+    >
+
+      <button
+        type="button"
+        class="absolute left-4 flex size-9 items-center justify-center rounded-2xl
+               bg-teal-950/20 text-teal-950"
+        aria-label="Retour"
+      >
+        <!-- Arrow left -->
+        <svg
+          class="size-5"
+          viewBox="0 0 20 20"
+          fill="none"
+          aria-hidden="true"
+        >
+          <path
+            d="M10 4.17 4.17 10 10 15.83M4.17 10h11.66"
+            stroke="currentColor"
+            stroke-width="1.67"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </button>
+
+      <h1 class="text-base font-medium leading-6 tracking-tight text-teal-950">
+        Carte
+      </h1>
+
+    </header>
+
+
+    <!-- =========================
+         MAP FILTERS
+    ========================== -->
+    <nav
+      class="absolute inset-x-0 top-20 z-10 overflow-x-auto px-4 pt-4 pb-2
+             scrollbar-none"
+      aria-label="Filtres de carte"
+    >
+
+      <div class="flex w-max gap-2">
+
+        <!-- Tous -->
+        <button
+          type="button"
+          class="flex h-9 items-center gap-1 rounded-full bg-teal-950 px-3
+                 text-xs font-medium leading-4 text-green-50 shadow-sm"
+          aria-pressed="true"
+        >
+
+          <svg
+            class="size-4"
+            viewBox="0 0 16 16"
+            fill="none"
+            aria-hidden="true"
+          >
+            <path
+              d="M2 2h4v4H2V2Zm8 0h4v4h-4V2ZM2 10h4v4H2v-4Zm8 0h4v4h-4v-4Z"
+              stroke="currentColor"
+              stroke-width="1.33"
+              stroke-linejoin="round"
+            />
+          </svg>
+
+          Tous
+
+        </button>
+
+
+        <!-- Déchets -->
+        <button
+          type="button"
+          class="flex h-9 items-center gap-1 rounded-full bg-white/90 px-3
+                 text-xs font-medium leading-4 text-zinc-900 backdrop-blur-[10px]
+                 shadow-[0_1px_3px_rgba(0,0,0,0.1)]"
+          aria-pressed="false"
+        >
+
+          <svg
+            class="size-4"
+            viewBox="0 0 16 16"
+            fill="none"
+            aria-hidden="true"
+          >
+            <path
+              d="M5 5h6m-5-2h4m-5 2 1 8h4l1-8"
+              stroke="currentColor"
+              stroke-width="1.33"
+              stroke-linecap="round"
+            />
+          </svg>
+
+          Déchets
+
+        </button>
+
+
+        <!-- Canaux -->
+        <button
+          type="button"
+          class="flex h-9 items-center gap-1 rounded-full bg-white/90 px-3
+                 text-xs font-medium leading-4 text-zinc-900 backdrop-blur-[10px]
+                 shadow-[0_1px_3px_rgba(0,0,0,0.1)]"
+          aria-pressed="false"
+        >
+
+          <svg
+            class="size-4"
+            viewBox="0 0 16 16"
+            fill="none"
+            aria-hidden="true"
+          >
+            <path
+              d="M2 4h12M2 8h12M2 12h12"
+              stroke="currentColor"
+              stroke-width="1.33"
+              stroke-linecap="round"
+            />
+          </svg>
+
+          Canaux
+
+        </button>
+
+
+        <!-- Voirie -->
+        <button
+          type="button"
+          class="flex h-9 items-center gap-1 rounded-full bg-white/90 px-3
+                 text-xs font-medium leading-4 text-zinc-900 backdrop-blur-[10px]
+                 shadow-[0_1px_3px_rgba(0,0,0,0.1)]"
+          aria-pressed="false"
+        >
+
+          <svg
+            class="size-4"
+            viewBox="0 0 16 16"
+            fill="none"
+            aria-hidden="true"
+          >
+            <path
+              d="M2 5.5h12M4.5 5.5V3m7 2.5V3M4.5 5.5l1.5 5m5.5-5-1.5 5M7 5.5v5"
+              stroke="currentColor"
+              stroke-width="1.33"
+              stroke-linecap="round"
+            />
+          </svg>
+
+          Voirie
+
+        </button>
+
+
+        <!-- Eau -->
+        <button
+          type="button"
+          class="flex h-9 items-center gap-1 rounded-full bg-white/90 px-3
+                 text-xs font-medium leading-4 text-zinc-900 backdrop-blur-[10px]
+                 shadow-[0_1px_3px_rgba(0,0,0,0.1)]"
+          aria-pressed="false"
+        >
+
+          <svg
+            class="size-4"
+            viewBox="0 0 16 16"
+            fill="none"
+            aria-hidden="true"
+          >
+            <path
+              d="M8 2s-4 4.3-4 7a4 4 0 0 0 8 0c0-2.7-4-7-4-7Z"
+              stroke="currentColor"
+              stroke-width="1.33"
+              stroke-linejoin="round"
+            />
+          </svg>
+
+          Eau
+
+        </button>
+
+      </div>
+
+    </nav>
+
+
+    <!-- =========================
+         MAP CONTROLS
+    ========================== -->
+    <div
+      class="absolute right-3 bottom-[159px] z-10 flex flex-col gap-3"
+    >
+
+      <!-- Ma position -->
+      <button
+        type="button"
+        class="flex size-12 items-center justify-center rounded-full bg-white
+               text-stone-500 shadow-lg"
+        aria-label="Ma position"
+      >
+
+        <svg
+          class="size-5"
+          viewBox="0 0 20 20"
+          fill="none"
+        >
+          <path
+            d="M10 1.67v2.5m0 11.66v2.5M1.67 10h2.5m11.66 0h2.5"
+            stroke="currentColor"
+            stroke-width="1.67"
+            stroke-linecap="round"
+          />
+
+          <circle
+            cx="10"
+            cy="10"
+            r="5.83"
+            stroke="currentColor"
+            stroke-width="1.67"
+          />
+
+          <circle
+            cx="10"
+            cy="10"
+            r="2.5"
+            stroke="currentColor"
+            stroke-width="1.67"
+          />
+        </svg>
+
+      </button>
+
+
+      <!-- Calques -->
+      <button
+        type="button"
+        class="flex size-12 items-center justify-center rounded-full bg-white
+               text-orange-600 shadow-lg"
+        aria-label="Calques"
+      >
+
+        <svg
+          class="size-5"
+          viewBox="0 0 20 20"
+          fill="none"
+        >
+          <circle
+            cx="10"
+            cy="10"
+            r="8"
+            stroke="currentColor"
+            stroke-width="1.67"
+          />
+        </svg>
+
+      </button>
+
+    </div>
+
+  </section>
+
+
+  <!-- =========================
+       BOTTOM SHEET
+  ========================== -->
+  <aside
+    class="absolute inset-x-0 bottom-0 z-30 rounded-t-3xl bg-white/95
+           shadow-[0_-8px_30px_rgba(0,0,0,0.12)] backdrop-blur-lg"
+  >
+
+    <!-- Handle -->
+    <div class="flex justify-center pt-2">
+
+      <div class="h-1 w-10 rounded-full bg-zinc-200"></div>
+
+    </div>
+
+
+    <!-- Content -->
+    <div class="p-4">
+
+      <article
+        class="flex items-center gap-2 rounded-xl bg-white px-2 pt-3 pb-2"
+      >
+
+        <!-- Thumbnail -->
+        <div class="size-16 shrink-0 overflow-hidden rounded-xl">
+
+          <img
+            src="https://placehold.co/64x64"
+            alt="Photo du dépôt sauvage"
+            class="size-full object-cover"
+          />
+
+        </div>
+
+
+        <!-- Information -->
+        <div class="min-w-0 flex-1">
+
+          <div class="flex items-center gap-1">
+
+            <svg
+              class="size-3 shrink-0 text-red-600"
+              viewBox="0 0 12 12"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path
+                d="M6 1.5a3 3 0 0 1 3 3c0 2.2-3 6-3 6S3 6.7 3 4.5a3 3 0 0 1 3-3Z"
+                stroke="currentColor"
+                stroke-width="1"
+              />
+            </svg>
+
+            <h2
+              class="truncate text-xs font-semibold leading-4 text-zinc-950"
+            >
+              Dépôt sauvage
+            </h2>
+
+          </div>
+
+
+          <p class="truncate text-xs leading-4 text-zinc-500">
+            Médina · il y a 2h
+          </p>
+
+
+          <div class="mt-0.5 flex items-center gap-1">
+
+            <span class="size-1.5 rounded-full bg-red-600"></span>
+
+            <span class="text-xs font-medium leading-4 text-red-600">
+              Critique
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <!-- Detail button -->
+        <button
+          type="button"
+          class="flex h-8 shrink-0 items-center gap-2 rounded-full bg-teal-950
+                 px-3 py-2 text-xs font-medium leading-4 text-green-50
+                 shadow-sm"
+        >
+
+          Détail
+
+          <svg
+            class="size-3"
+            viewBox="0 0 12 12"
+            fill="none"
+          >
+            <path
+              d="M4.5 3 7.5 6l-3 3"
+              stroke="currentColor"
+              stroke-width="1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+
+        </button>
+
+      </article>
+
+    </div>
+
+  </aside>
+
+</div>

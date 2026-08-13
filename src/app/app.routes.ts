@@ -5,7 +5,7 @@ import { Accueil } from './features/tableau-de-bord/accueil';
 import { Carte } from './features/carte/carte';
 import { CarteIntervention } from './components/carte-intervention/carte-intervention';
 import { ListeIntervention } from './features/interventions/liste/liste';
-
+import { Agent } from './layouts/agent/agent';
 
 import { authGuard } from './core/guards/auth-guard';
 
@@ -84,6 +84,21 @@ export const routes: Routes = [
       // },
     ],
   },
+
+// ==========================================
+// PARCOURS AGENT
+// ==========================================
+{
+  path: 'agent',
+  component: Agent,
+  canActivate: [authGuard],
+  children: [
+    {
+      path: 'carte',
+      component: Carte,
+    },
+  ],
+},
 
   // ==========================================
   // PARCOURS MOBILE
