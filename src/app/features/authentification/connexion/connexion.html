@@ -1,0 +1,178 @@
+<div class="w-96 min-w-96 min-h-[874px] bg-white rounded-[30px] flex flex-col items-center">
+
+    <!-- Header + navigation connexion/inscription -->
+    <app-en-tete-authentification />
+
+    <!-- Introduction -->
+    <section class="w-full px-6 pt-6 pb-4">
+
+        <h1 class="text-2xl font-bold text-zinc-950 leading-8">
+            Bon retour 👋
+        </h1>
+
+        <p class="mt-1 text-sm text-zinc-500 leading-5">
+            Connectez-vous pour suivre vos signalements
+        </p>
+
+    </section>
+
+
+    <!-- Formulaire -->
+    <form [formGroup]="formulaireConnexion" (ngSubmit)="seConnecter()" class="w-full px-6 flex flex-col gap-4">
+
+        <!-- Email / téléphone -->
+        <div class="flex flex-col gap-2">
+
+            <label for="email" class="text-xs font-medium text-zinc-500">
+                Email ou téléphone
+            </label>
+
+            <div class="relative">
+
+                <input id="email" type="text" formControlName="email" placeholder="awa.diallo@email.com" class="w-full h-12 pl-10 pr-4
+                        bg-white
+                        rounded-xl
+                        border border-zinc-200
+                        shadow-sm
+                        text-base text-zinc-950
+                        placeholder:text-zinc-500
+                        outline-none
+                        focus:border-teal-950" />
+
+                <!-- Icône email -->
+                <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" viewBox="0 0 20 20"
+                    fill="none" aria-hidden="true">
+                    <rect x="1.33" y="3" width="17.34" height="14" rx="2" stroke="currentColor" stroke-width="1.33" />
+
+                    <path d="M2 4.67L10 11L18 4.67" stroke="currentColor" stroke-width="1.33" stroke-linecap="round" />
+                </svg>
+
+            </div>
+            @if (
+            formulaireConnexion.controls.email.touched &&
+            formulaireConnexion.controls.email.hasError('required')
+            ) {
+            <p class="text-xs text-red-500">
+                L'email est obligatoire.
+            </p>
+            }
+
+            @if (
+            formulaireConnexion.controls.email.touched &&
+            formulaireConnexion.controls.email.hasError('emailOuTelephoneInvalide')
+            ) {
+            <p class="text-xs text-red-500">
+                Veuillez saisir un email ou un numéro de téléphone valide.
+            </p>
+            }
+        </div>
+
+
+        <!-- Mot de passe -->
+        <div class="flex flex-col gap-2">
+
+            <label for="password" class="text-xs font-medium text-zinc-500">
+                Mot de passe
+            </label>
+
+            <div class="relative">
+
+                <input id="password" formControlName="motDePasse" [type]="motDePasseVisible() ? 'text' : 'password'"
+                    placeholder="Mot de passe" class="w-full h-12 pl-10 pr-10
+                    bg-white
+                    rounded-xl
+                    border border-zinc-200
+                    shadow-sm
+                    text-base text-zinc-950
+                    placeholder:text-zinc-500
+                    outline-none
+                    focus:border-teal-950" />
+
+                <!-- Icône cadenas -->
+                <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" viewBox="0 0 20 20"
+                    fill="none" aria-hidden="true">
+                    <rect x="2" y="8" width="16" height="10" rx="2" stroke="currentColor" stroke-width="1.33" />
+
+                    <path d="M5 8V6C5 3.79 6.79 2 9 2H11C13.21 2 15 3.79 15 6V8" stroke="currentColor"
+                        stroke-width="1.33" />
+                </svg>
+
+
+                <!-- Afficher / masquer le mot de passe -->
+                <button type="button" (click)="changerVisibiliteMotDePasse()"
+                    class="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500"
+                    aria-label="Afficher le mot de passe">
+
+                    <svg class="w-4 h-4" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                        <path d="M1.67 10S4.67 4.67 10 4.67S18.33 10 18.33 10S15.33 15.33 10 15.33S1.67 10 1.67 10Z"
+                            stroke="currentColor" stroke-width="1.33" />
+
+                        <circle cx="10" cy="10" r="2" stroke="currentColor" stroke-width="1.33" />
+                    </svg>
+
+                </button>
+
+            </div>
+
+            @if (
+            formulaireConnexion.controls.motDePasse.touched &&
+            formulaireConnexion.controls.motDePasse.hasError('required')
+            ) {
+            <p class="text-xs text-red-500">
+                Le mot de passe est obligatoire.
+            </p>
+            }
+
+
+            <!-- Mot de passe oublié -->
+            <div class="flex justify-end">
+
+                <a href="#" class="text-xs text-zinc-500 underline">
+                    Mot de passe oublié ?
+                </a>
+
+            </div>
+
+        </div>
+
+        <!-- Erreur générale -->
+        @if (erreur()) {
+        <p class="text-sm text-red-500 text-center">
+            {{ erreur() }}
+        </p>
+        }
+
+        <!-- Bouton connexion -->
+        <button type="submit" [disabled]="chargement()" class="w-full h-12 px-4
+                    bg-teal-950
+                    rounded-xl
+                    text-sm font-semibold
+                    text-green-50
+                    shadow-sm
+                    hover:bg-teal-900
+                    disabled:opacity-60
+                    disabled:cursor-not-allowed
+                    transition-colors">
+            @if (chargement()) {
+            Connexion...
+            } @else {
+            Se connecter
+            }
+        </button>
+
+    </form>
+
+    <!-- Connexion sans compte -->
+    <div class="w-full px-6 pt-4 pb-2 flex justify-center items-center gap-1">
+
+        <span class="text-xs text-zinc-500">
+            Vous pouvez
+        </span>
+
+        <a href="#" class="text-xs font-semibold text-teal-950 underline">
+            signaler sans compte →
+        </a>
+
+    </div>
+
+</div>
