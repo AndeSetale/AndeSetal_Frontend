@@ -1,0 +1,665 @@
+<div class="flex h-[calc(100vh-64px)] overflow-hidden bg-gray-50">
+  <!-- Liste des incidents -->
+  <div class="flex-1 p-6 overflow-auto incident">
+    <div class="mb-4">
+      <h1 class="text-2xl font-bold text-slate-900">Incidents</h1>
+      <p class="text-sm text-slate-500">
+        Gestion des signalements citoyens
+      </p>
+    </div>
+
+    <!-- Les filtres iront ici -->
+    <!-- FILTRES -->
+<!-- FILTRES + ACTIONS -->
+<div class="w-full mb-4">
+
+  <!-- Ligne 1 : Recherche + filtres -->
+  <div class="flex flex-wrap items-center gap-2 pb-3">
+
+    <!-- Recherche -->
+    <div
+      class="w-10 h-9 bg-white rounded-[10px] border border-gray-200
+             flex items-center justify-center cursor-pointer
+             hover:bg-gray-50 transition"
+      title="Rechercher"
+    >
+      <svg
+        class="w-3.5 h-3.5 text-slate-500"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="m21 21-4.35-4.35m2.35-5.65a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z"
+        />
+      </svg>
+    </div>
+
+    <!-- Champ recherche -->
+    <input
+      type="text"
+      placeholder="Rechercher..."
+      [value]="search()"
+      (input)="setSearch($event)"
+      class="h-9 w-44 px-3 bg-white rounded-[10px]
+             border border-gray-200 outline-none
+             text-xs text-teal-900
+             placeholder:text-slate-400
+             focus:border-teal-600"
+    />
+
+    <!-- Type -->
+    <select
+      [value]="selectedType()"
+      (change)="setType($event)"
+      class="h-9 px-3 bg-white rounded-[10px]
+             border border-gray-200 outline-none
+             text-xs text-teal-900
+             focus:border-teal-600 cursor-pointer"
+    >
+      <option value="Tous">Type (Tous)</option>
+
+      @for (type of types(); track type) {
+        <option [value]="type">
+          {{ type }}
+        </option>
+      }
+    </select>
+
+    <!-- Urgence -->
+    <select
+      [value]="selectedUrgence()"
+      (change)="setUrgence($event)"
+      class="h-9 px-3 bg-white rounded-[10px]
+             border border-gray-200 outline-none
+             text-xs text-teal-900
+             focus:border-teal-600 cursor-pointer"
+    >
+      <option value="Tous">Urgence (Tous)</option>
+
+      @for (urgence of urgences; track urgence) {
+        <option [value]="urgence">
+          {{ urgence }}
+        </option>
+      }
+    </select>
+
+    <!-- Statut -->
+    <select
+      [value]="selectedStatut()"
+      (change)="setStatut($event)"
+      class="h-9 px-3 bg-white rounded-[10px]
+             border border-gray-200 outline-none
+             text-xs text-teal-900
+             focus:border-teal-600 cursor-pointer"
+    >
+      <option value="Tous">Statut (Tous)</option>
+
+      @for (statut of statuts; track statut) {
+        <option [value]="statut">
+          {{ statut }}
+        </option>
+      }
+    </select>
+
+  </div>
+
+
+  <!-- Ligne 2 : Actions -->
+  <div class="flex items-center gap-2">
+
+    <!-- Export CSV -->
+    <button
+      type="button"
+      /* (click)="exportCSV()" */
+      class="h-9 px-3 bg-white rounded-[10px]
+             border border-gray-200
+             flex items-center gap-1.5
+             text-xs text-teal-700
+             hover:bg-gray-50 transition"
+    >
+      <svg
+        class="w-3.5 h-3.5"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M12 3v12m0 0 4-4m-4 4-4-4
+             M5 21h14a2 2 0 0 0 2-2V7.5
+             L16.5 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2Z"
+        />
+      </svg>
+
+      <span>Exportateur CSV</span>
+    </button>
+
+
+    <!-- PDF -->
+    <button
+      type="button"
+      /* (click)="exportPDF()" */
+      class="h-9 px-3 bg-white rounded-[10px]
+             border border-gray-200
+             flex items-center gap-1.5
+             text-xs text-teal-700
+             hover:bg-gray-50 transition"
+    >
+      <svg
+        class="w-3.5 h-3.5"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M6 3h9l4 4v14H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"
+        />
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M9 13h6M9 17h4"
+        />
+      </svg>
+
+      <span>PDF</span>
+    </button>
+
+
+    <!-- Réinitialiser -->
+    @if (
+      search() ||
+      selectedType() !== 'Tous' ||
+      selectedUrgence() !== 'Tous' ||
+      selectedStatut() !== 'Tous'
+    ) {
+      <button
+        type="button"
+        (click)="resetFilters()"
+        class="h-9 px-3 bg-white rounded-[10px]
+               border border-gray-200
+               text-xs text-slate-500
+               hover:bg-gray-50 transition"
+      >
+        Réinitialiser
+      </button>
+    }
+
+  </div>
+
+</div>
+
+    <!-- Le tableau ira ici -->
+  <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+  <!-- Header + pagination -->
+  <div class="px-4 py-3 border-b border-gray-200 flex items-center justify-between">
+    <p class="text-xs text-slate-500">
+      Affichage 1–6 sur {{ incidents().length }} incidents
+    </p>
+
+    <div class="flex items-center gap-2">
+      <button class="w-8 h-8 rounded border border-gray-300 text-slate-500 hover:bg-gray-50">
+        ‹
+      </button>
+
+      <button class="w-8 h-8 rounded bg-teal-700 text-white text-sm">
+        1
+      </button>
+
+      <button class="w-8 h-8 rounded border border-gray-300 text-sm text-slate-600 hover:bg-gray-50">
+        2
+      </button>
+
+      <button class="w-8 h-8 rounded border border-gray-300 text-slate-500 hover:bg-gray-50">
+        ›
+      </button>
+    </div>
+  </div>
+
+  <!-- Tableau -->
+  <div class="overflow-x-auto">
+    <table class="w-full">
+      <thead class="bg-gray-50 border-b border-gray-200">
+        <tr class="text-left text-xs font-light text-slate-500 uppercase">
+          <th class="px-4 py-3 w-10">
+            <input type="checkbox" class="rounded border-gray-300">
+          </th>
+          <th class="px-4 py-3">Identifiant</th>
+          <th class="px-4 py-3">Photo</th>
+          <th class="px-4 py-3">Type</th>
+          <th class="px-4 py-3">Quartier</th>
+          <th class="px-4 py-3">Date</th>
+          <th class="px-4 py-3 text-center">U</th>
+        </tr>
+      </thead>
+
+      <tbody>
+       @for (incident of filteredIncidents(); track incident.id){
+          <tr
+            (click)="selectIncident(incident)"
+            class="cursor-pointer border-b border-gray-100 hover:bg-gray-50 transition-colors"
+            [class.bg-teal-50]="selectedIncident()?.id === incident.id"
+            [class.border-l-2]="selectedIncident()?.id === incident.id"
+            [class.border-l-teal-700]="selectedIncident()?.id === incident.id"
+          >
+            <td class="px-4 py-4">
+              <input type="checkbox" class="rounded border-gray-300">
+            </td>
+
+            <td class="px-4 py-4 font-extralight text-sm text-slate-900">
+              {{ incident.id }}
+            </td>
+
+            <td class="px-4 py-4">
+              <div class="w-10 h-10 rounded-md bg-gray-100 border border-gray-200 flex items-center justify-center">
+                 <svg
+          class="w-5 h-5 text-gray-400"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="1.8"
+            d="M9 12h6m-6 4h4m5-9-4-4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"
+          />
+        </svg>
+              </div>
+            </td>
+
+            <td class="px-4 py-4 text-slate-700 text-sm">
+              {{ incident.type }}
+            </td>
+
+            <td class="px-4 py-4 text-slate-700 text-sm">
+              {{ incident.quartier }}
+            </td>
+
+            <td class="px-4 py-4 text-slate-500 text-sm">
+              {{ incident.date }}
+            </td>
+
+            <td class="px-4 py-4 text-center">
+              <span
+                class="inline-flex items-center justify-center w-7 h-7 rounded-md text-xs font-bold"
+                [ngClass]="{
+                  'bg-red-100 text-red-700': incident.urgence === 'CRITIQUE',
+                  'bg-orange-100 text-orange-700': incident.urgence === 'ELEVE',
+                  'bg-yellow-100 text-yellow-700': incident.urgence === 'MODERE',
+                  'bg-green-100 text-green-700': incident.urgence === 'ROUTINE'
+                }"
+              >
+                {{ incident.urgence.charAt(0) }}
+              </span>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
+  </div>
+
+  <!-- Panneau de détails -->
+<aside class="w-72 shrink-0 bg-white border-l border-gray-200 flex flex-col overflow-hidden">
+
+  @if (selectedIncident(); as incident) {
+
+    <!-- ================= HEADER ================= -->
+    <div class="h-16 px-5 py-4 border-b border-gray-200 flex items-center justify-between shrink-0">
+
+      <div class="flex flex-col gap-0.5 min-w-0">
+
+        <span class="text-sm font-normal text-slate-900">
+          #{{ incident.id }}
+        </span>
+
+        <span class="text-xs text-slate-500 truncate">
+          Signalé le {{ incident.date }}
+        </span>
+
+      </div>
+
+      <!-- Actions -->
+      <div class="flex items-center gap-3">
+
+        <!-- Partager -->
+        <button
+          type="button"
+          title="Partager"
+          class="w-4 h-4 text-slate-500 hover:text-teal-700 transition"
+        >
+          <svg
+            class="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.8"
+              d="M12 16V4m0 0L8 8m4-4 4 4M5 12v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"
+            />
+          </svg>
+        </button>
+
+        <!-- Fermer -->
+        <button
+          type="button"
+          title="Fermer"
+          (click)="selectedIncident.set(null)"
+          class="w-4 h-4 text-slate-500 hover:text-red-600 transition"
+        >
+          <svg
+            class="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.8"
+              d="M6 6l12 12M18 6 6 18"
+            />
+          </svg>
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- ================= CONTENU ================= -->
+    <div class="flex-1 p-5 flex flex-col gap-5 overflow-y-auto">
+
+      <!-- TYPE -->
+      <div class="flex flex-col gap-1">
+
+        <p class="text-xs font-normal uppercase tracking-tight text-slate-500">
+          Type d'incident
+        </p>
+
+        <p class="text-sm text-slate-900">
+          {{ incident.type }}
+        </p>
+
+      </div>
+
+
+      <!-- LOCALISATION -->
+      <div class="flex flex-col gap-1">
+
+        <p class="text-xs font-normal uppercase tracking-tight text-slate-500">
+          Localisation
+        </p>
+
+        <div class="flex items-start gap-1">
+
+          <svg
+            class="w-3 h-3.5 mt-0.5 shrink-0 text-slate-500"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.8"
+              d="M12 21s7-4.35 7-10a7 7 0 1 0-14 0c0 5.65 7 10 7 10Z"
+            />
+
+            <circle
+              cx="12"
+              cy="11"
+              r="2.5"
+              stroke-width="1.8"
+            />
+          </svg>
+
+          <p class="text-xs leading-4 text-slate-700">
+            {{ incident.adresse }}
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <!-- URGENCE -->
+      <div class="flex flex-col gap-2">
+
+        <p class="text-xs font-normal uppercase tracking-tight text-slate-500">
+          Urgence
+        </p>
+
+        <span
+          class="w-fit px-2 py-0.5 rounded-sm text-xs"
+          [ngClass]="badgeClass(incident.urgence)"
+        >
+          {{ incident.urgence }}
+        </span>
+
+      </div>
+
+
+      <!-- PHOTO / INFORMATIONS -->
+      <div class="flex flex-col gap-2">
+
+        <p class="text-xs font-normal uppercase tracking-tight text-slate-500">
+          Photo de signalisation
+        </p>
+
+        <div class="p-4 bg-gray-50 rounded-[10px] border border-gray-200 flex flex-col gap-3">
+
+          <p class="text-center text-xs leading-4 text-teal-900">
+            Votre incident sera traité dans les 48H
+          </p>
+
+          <div class="p-3 bg-white rounded-[10px] border border-gray-200 flex flex-col gap-2">
+
+            <div class="flex justify-between gap-2">
+              <span class="text-xs text-slate-500">
+                Référence
+              </span>
+
+              <span class="text-xs text-slate-700">
+                #AS-2026-XXXX
+              </span>
+            </div>
+
+            <div class="flex justify-between gap-2">
+              <span class="text-xs text-slate-500">
+                Catégorie
+              </span>
+
+              <span class="text-xs text-slate-700 text-right">
+                {{ incident.type }}
+              </span>
+            </div>
+
+            <div class="flex justify-between gap-2">
+              <span class="text-xs text-slate-500">
+                Urgence
+              </span>
+
+              <span class="text-xs text-slate-700">
+                {{ incident.urgence }}
+              </span>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- CESSION ET STATUT -->
+      <div class="flex flex-col gap-1">
+
+        <div class="pb-2">
+          <p class="text-sm text-slate-900">
+            Cession et statut
+          </p>
+        </div>
+
+
+        <!-- STATUT -->
+        <div class="p-3 bg-gray-50 rounded-[10px] border border-gray-200 flex flex-col gap-2.5">
+
+          <p class="text-xs font-normal uppercase tracking-tight text-slate-500">
+            Statut actuel
+          </p>
+
+          <span
+            class="w-fit px-2.5 py-1 rounded-sm text-xs tracking-wide"
+            [ngClass]="{
+              'bg-gray-200 text-slate-700': incident.statut === 'NOUVEAU',
+              'bg-orange-100 text-orange-700': incident.statut === 'EN_COURS',
+              'bg-green-100 text-green-700': incident.statut === 'RESOLU'
+            }"
+          >
+            {{ incident.statut }}
+          </span>
+
+        </div>
+
+
+        <!-- ASSIGNATION -->
+        <div class="py-2 flex flex-col gap-2">
+
+          <p class="text-xs font-normal uppercase tracking-tight text-slate-500">
+            Assigner à une équipe
+          </p>
+
+          <div class="flex items-center gap-2">
+
+            <select
+              class="flex-1 min-w-0 h-9 px-3 bg-white rounded-[10px] border border-gray-200 text-xs text-slate-700 outline-none focus:border-teal-600"
+            >
+              <option value="">
+                Sélectionner une...
+              </option>
+
+              <option>
+                Équipe Voirie
+              </option>
+
+              <option>
+                Équipe Déchets
+              </option>
+
+              <option>
+                Équipe Éclairage
+              </option>
+
+              <option>
+                Équipe Assainissement
+              </option>
+
+            </select>
+
+            <button
+              type="button"
+              class="h-9 px-3 bg-teal-700 hover:bg-teal-800 text-white rounded-[10px] text-sm transition"
+            >
+              Attribuer
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <!-- MARQUER ASSIGNÉ -->
+        <button
+          type="button"
+          class="w-full py-2.5 bg-gray-50 rounded-[10px] border border-gray-200 flex items-center justify-center gap-2 text-sm text-slate-500 hover:bg-gray-100 transition"
+        >
+
+          <svg
+            class="w-3.5 h-3.5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              cx="12"
+              cy="12"
+              r="9"
+              stroke-width="1.8"
+            />
+
+            <path
+              d="m8 12 2.5 2.5L16 9"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+
+          <span>
+            Marquer comme assigné
+          </span>
+
+        </button>
+
+
+        <!-- INFO -->
+        <p class="text-center text-xs leading-4 text-slate-500">
+          Nécessité qu'un agent soit assigné
+        </p>
+
+      </div>
+
+    </div>
+
+  } @else {
+
+    <!-- ================= ÉTAT VIDE ================= -->
+
+    <div class="flex-1 flex flex-col items-center justify-center p-6 text-center">
+
+      <div class="w-10 h-10 mb-3 rounded-xl bg-gray-100 flex items-center justify-center">
+
+        <svg
+          class="w-5 h-5 text-gray-400"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="1.8"
+            d="M9 12h6m-6 4h4m5-9-4-4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"
+          />
+        </svg>
+
+      </div>
+
+      <p class="text-sm font-medium text-slate-900">
+        Aucun incident sélectionné
+      </p>
+
+      <p class="mt-1 text-xs leading-4 text-slate-500">
+        Sélectionnez un incident dans la liste.
+      </p>
+
+    </div>
+
+  }
+
+</aside>
+</div>

@@ -1,0 +1,29 @@
+<div class="p-8 bg-gray-50 min-h-screen">
+
+  <app-breadcrumb-agent />
+
+  <div class="mt-6">
+    <app-agent-profile-header />
+  </div>
+
+  <div class="mt-6">
+    <app-agent-stats-grid />
+  </div>
+  <div class="mt-6">
+
+  
+   <div class="grid grid-cols-1 xl:grid-cols-[65fr_35fr] gap-4">
+    <app-activity-chart />
+    <app-repartition-incidents
+  title="Spécialisation"
+  subtitle="Types d'incidents traités"
+  [totalIncidents]="127"
+  [incidentTypes]="specialisationTypes"
+/>
+  </div>
+  </div>
+<div class="mt-6">
+<app-recent-activity-table/>
+</div>
+  
+</div>

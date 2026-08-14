@@ -1,21 +1,23 @@
 <header
-  class="h-16 px-6 bg-white border-b border-gray-200
-         flex items-center justify-between"
+  class="sticky top-0 z-50
+         h-16 px-6
+         bg-white border-b border-gray-200
+         flex items-center justify-between
+         shrink-0"
 >
   <!-- Titre -->
-  <h1 class="text-2xl font-medium text-teal-950 leading-7">
+  <h1 class="text-2xl font-medium text-teal-950 leading-7 truncate">
     {{ title() }}
   </h1>
 
   <!-- Actions -->
-  <div class="flex items-center gap-3">
+  <div class="flex items-center gap-3 shrink-0">
 
     <!-- Recherche -->
-    <div
-      class="relative w-64"
-    >
+    <div class="relative w-64">
       <svg
-        class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+        class="absolute left-3 top-1/2 -translate-y-1/2
+               text-gray-400 pointer-events-none"
         width="16"
         height="16"
         viewBox="0 0 24 24"
@@ -26,11 +28,7 @@
         stroke-linejoin="round"
         aria-hidden="true"
       >
-        <circle
-          cx="11"
-          cy="11"
-          r="8"
-        />
+        <circle cx="11" cy="11" r="8" />
         <path d="m21 21-4.3-4.3" />
       </svg>
 
@@ -53,10 +51,11 @@
     <button
       type="button"
       aria-label="Notifications"
-      class="size-10 rounded-[10px]
+      class="size-10 shrink-0 rounded-[10px]
              flex items-center justify-center
              text-teal-900
-             hover:bg-gray-100 transition-colors"
+             hover:bg-gray-100
+             transition-colors"
     >
       <svg
         width="18"
@@ -67,9 +66,13 @@
         stroke-width="2"
         stroke-linecap="round"
         stroke-linejoin="round"
+        aria-hidden="true"
       >
-        <path d="M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 1 0-12 0v3.2a2 2 0 0 1-.6 1.4L4 17h5"/>
-        <path d="M10 21a2 2 0 0 0 4 0"/>
+        <path
+          d="M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11
+             a6 6 0 1 0-12 0v3.2a2 2 0 0 1-.6 1.4L4 17h5"
+        />
+        <path d="M10 21a2 2 0 0 0 4 0" />
       </svg>
     </button>
 
@@ -77,10 +80,11 @@
     <button
       type="button"
       aria-label="Aide"
-      class="size-10 rounded-[10px]
+      class="size-10 shrink-0 rounded-[10px]
              flex items-center justify-center
              text-teal-900
-             hover:bg-gray-100 transition-colors"
+             hover:bg-gray-100
+             transition-colors"
     >
       <svg
         width="18"
@@ -91,12 +95,9 @@
         stroke-width="2"
         stroke-linecap="round"
         stroke-linejoin="round"
+        aria-hidden="true"
       >
-        <circle
-          cx="12"
-          cy="12"
-          r="10"
-        />
+        <circle cx="12" cy="12" r="10" />
         <path d="M9.1 9a3 3 0 1 1 5.8 1c0 2-3 2-3 4" />
         <path d="M12 17h.01" />
       </svg>
@@ -106,9 +107,13 @@
     <button
       type="button"
       aria-label="Profil"
-      class="size-10 bg-teal-950 rounded-full
+      class="size-10 shrink-0
+             bg-teal-950
+             rounded-full
              flex items-center justify-center
-             text-white"
+             text-white
+             hover:bg-teal-900
+             transition-colors"
     >
       <svg
         width="18"
@@ -119,13 +124,10 @@
         stroke-width="2"
         stroke-linecap="round"
         stroke-linejoin="round"
+        aria-hidden="true"
       >
-        <path d="M20 21a8 8 0 0 0-16 0"/>
-        <circle
-          cx="12"
-          cy="7"
-          r="4"
-        />
+        <path d="M20 21a8 8 0 0 0-16 0" />
+        <circle cx="12" cy="7" r="4" />
       </svg>
     </button>
 

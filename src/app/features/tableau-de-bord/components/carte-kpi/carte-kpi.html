@@ -1,0 +1,122 @@
+<div
+  class="bg-white border border-gray-200 rounded-3xl p-5 shadow-sm
+         hover:shadow-md transition-shadow duration-200"
+>
+  <!-- Header -->
+  <div class="flex items-start justify-between">
+    <p class="text-sm text-gray-500">
+      {{ title() }}
+    </p>
+
+    <div
+      class="w-10 h-2 rounded-xl 
+             flex items-center justify-center"
+    >
+      @switch (icon()) {
+
+        <!-- Incidents critiques -->
+        @case ('alert') {
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M14.4866 11.9995L9.15329 2.66617C9.037 2.46097 8.86836 2.29029 8.66457 2.17154C8.46078 2.0528 8.22915 1.99023 7.99329 1.99023C7.75743 1.99023 7.52579 2.0528 7.322 2.17154C7.11822 2.29029 6.94958 2.46097 6.83329 2.66617L1.49995 11.9995C1.38241 12.2031 1.32077 12.4341 1.32129 12.6692C1.32181 12.9042 1.38447 13.135 1.50292 13.338C1.62136 13.5411 1.79138 13.7092 1.99575 13.8254C2.20011 13.9415 2.43156 14.0016 2.66662 13.9995H13.3333C13.5672 13.9993 13.797 13.9375 13.9995 13.8204C14.202 13.7032 14.3701 13.5349 14.487 13.3322C14.6038 13.1296 14.6653 12.8998 14.6653 12.6658C14.6652 12.4319 14.6036 12.2021 14.4866 11.9995Z"
+              stroke="#FB2C36"
+              stroke-width="1.33333"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M8 6V8.66667"
+              stroke="#FB2C36"
+              stroke-width="1.33333"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M8 11.334H8.00667"
+              stroke="#FB2C36"
+              stroke-width="1.33333"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        }
+
+        <!-- En cours -->
+        @case ('clock') {
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#F59E0B"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 7v5l3 2" />
+          </svg>
+        }
+
+        <!-- Résolus ce mois -->
+        @case ('check') {
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#16A34A"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M20 6L9 17l-5-5" />
+          </svg>
+        }
+
+        <!-- Délai moyen -->
+        @case ('timer') {
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#0F766E"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="12" cy="13" r="8" />
+            <path d="M12 9v4l2.5 2" />
+            <path d="M9 2h6" />
+          </svg>
+        }
+      }
+    </div>
+  </div>
+
+  <!-- Valeur -->
+  <div class="mt-4">
+    <h2 class="text-3xl font-semibold text-slate-900">
+      {{ value() }}
+    </h2>
+  </div>
+
+  <!-- Tendance -->
+  <div class="mt-3 flex items-center gap-2">
+    <span
+      class="text-xs font-medium"
+      [class.text-green-600]="trendType() === 'up'"
+      [class.text-red-600]="trendType() === 'down'"
+      [class.text-gray-500]="trendType() === 'neutral'"
+    >
+      {{ trend() }}
+    </span>
+  </div>
+</div>

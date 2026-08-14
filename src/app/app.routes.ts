@@ -2,12 +2,18 @@ import { Routes } from '@angular/router';
 import { Dashboard } from './layouts/dashboard/dashboard';
 import { Mobile } from './layouts/mobile/mobile';
 import { Accueil } from './features/tableau-de-bord/accueil';
+import { Accueil as AccMobile } from './features/accueil/accueil';
 import { Carte } from './features/carte/carte';
 import { CarteIntervention } from './components/carte-intervention/carte-intervention';
 import { ListeIntervention } from './features/interventions/liste/liste';
 
 
 import { authGuard } from './core/guards/auth-guard';
+import { GestionAgents } from './features/gestion-agents/gestion-agents';
+import { AgentDetail } from './features/agent-detail/agent-detail';
+import { Incidents } from './features/incidents/incidents';
+import { CarteIncidentsComponent } from './features/carte-incidents/carte-incidents/carte-incidents';
+import { DetailIncident } from './features/detail-incident/detail-incident';
 
 export const routes: Routes = [
   {
@@ -57,11 +63,15 @@ export const routes: Routes = [
         path: 'map',
         component: Carte,
       },
+      {
+    path: 'map/incidents/:id',
+    component: DetailIncident,
+  },
 
       // Gestion des incidents
       {
         path: 'incidents',
-        component: ListeIntervention,
+        component: Incidents,
       },
 
       // Rapports
@@ -70,11 +80,16 @@ export const routes: Routes = [
       //   component: ,
       // },
 
-      // TODO : à connecter quand les composants seront prêts
-      // {
-      //   path: 'agents',
-      //   component: ...
-      // },
+     
+      {
+        path: 'agents',
+        component: GestionAgents
+      },
+
+       {
+    path: 'agents/:id',
+    component:AgentDetail
+  }
 
       // {
       //   path: 'set-setal',
@@ -102,7 +117,7 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        component: Accueil,
+        component: AccMobile,
       },
       {
         path: 'carte',

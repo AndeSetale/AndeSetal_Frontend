@@ -1,1 +1,58 @@
-<p>table</p>
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 p-6">
+
+  <app-carte-kpi
+    title="Incidents critiques"
+    value="12"
+    trend="+3 aujourd'hui"
+    trendType="up"
+    icon="alert"
+  />
+
+  <app-carte-kpi
+    title="En cours"
+    value="34"
+    trend="-5 vs hier"
+    trendType="down"
+    icon="clock"
+  />
+
+  <app-carte-kpi
+    title="Résolus ce mois"
+    value="127"
+    trend="+18%"
+    trendType="up"
+    icon="check"
+  />
+
+  <app-carte-kpi
+    title="Délai moyen"
+    value="31h"
+    trend="Objectif < 48h"
+    trendType="neutral"
+    icon="timer"
+  />
+
+</div>
+<div class="grid grid-cols-1 xl:grid-cols-[65fr_35fr] gap-4 p-6">
+
+  <app-graphique-incidents />
+
+  <app-repartition-incidents
+  title="Répartition par type"
+  subtitle="Types d'incidents"
+  [totalIncidents]="184"
+  [incidentTypes]="incidentTypes"
+/>
+
+</div>
+<div class="grid grid-cols-1 xl:grid-cols-[65fr_35fr] gap-4 p-6">
+
+  <div class="min-w-0">
+    <app-incidents-recents />
+  </div>
+
+  <div class="min-w-0">
+    <app-performance-agents />
+  </div>
+
+</div>

@@ -1,0 +1,195 @@
+<div class="w-64 p-4 bg-white rounded-2xl shadow-lg">
+
+  <!-- Header -->
+  <div class="flex items-center justify-between mb-4">
+    <h3 class="text-sm font-semibold text-teal-950">
+      Filtres
+    </h3>
+
+    <span class="text-gray-400">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M12.25 1.74805C12.5733 1.74805 12.8359 2.00969 12.8359 2.33301C12.8359 2.65632 12.5733 2.91797 12.25 2.91797H8.16699C7.84368 2.91797 7.58203 2.65632 7.58203 2.33301C7.58203 2.00969 7.84368 1.74805 8.16699 1.74805H12.25Z" fill="#99A1AF"/>
+<path d="M5.83301 1.74805C6.15632 1.74805 6.41895 2.00969 6.41895 2.33301C6.41895 2.65632 6.15632 2.91797 5.83301 2.91797H1.75C1.42668 2.91797 1.16504 2.65632 1.16504 2.33301C1.16504 2.00969 1.42668 1.74805 1.75 1.74805H5.83301Z" fill="#99A1AF"/>
+<path d="M12.25 6.41406C12.5733 6.41406 12.835 6.67571 12.835 6.99902C12.835 7.32234 12.5733 7.58398 12.25 7.58398H7C6.67668 7.58398 6.41504 7.32234 6.41504 6.99902C6.41504 6.67571 6.67668 6.41406 7 6.41406H12.25Z" fill="#99A1AF"/>
+<path d="M4.66699 6.41406C4.99016 6.41424 5.25195 6.67582 5.25195 6.99902C5.25195 7.32223 4.99016 7.58381 4.66699 7.58398H1.75C1.42668 7.58398 1.16504 7.32234 1.16504 6.99902C1.16504 6.67571 1.42668 6.41406 1.75 6.41406H4.66699Z" fill="#99A1AF"/>
+<path d="M12.25 11.082C12.5732 11.0822 12.835 11.3438 12.835 11.667C12.835 11.9902 12.5732 12.2518 12.25 12.252H9.33301C9.00969 12.252 8.74805 11.9903 8.74805 11.667C8.74805 11.3437 9.00969 11.082 9.33301 11.082H12.25Z" fill="#99A1AF"/>
+<path d="M7 11.082C7.32332 11.082 7.58496 11.3437 7.58496 11.667C7.58496 11.9903 7.32332 12.252 7 12.252H1.75C1.42668 12.252 1.16504 11.9903 1.16504 11.667C1.16504 11.3437 1.42668 11.082 1.75 11.082H7Z" fill="#99A1AF"/>
+<path d="M7.58203 3.5V1.16699C7.58203 0.843675 7.84368 0.582031 8.16699 0.582031C8.49031 0.582031 8.75195 0.843675 8.75195 1.16699V3.5C8.75195 3.82332 8.49031 4.08594 8.16699 4.08594C7.84368 4.08594 7.58203 3.82332 7.58203 3.5Z" fill="#99A1AF"/>
+<path d="M4.08203 8.16602V5.83301C4.08203 5.50969 4.34368 5.24805 4.66699 5.24805C4.99031 5.24805 5.25195 5.50969 5.25195 5.83301V8.16602C5.25195 8.48933 4.99031 8.75195 4.66699 8.75195C4.34368 8.75195 4.08203 8.48933 4.08203 8.16602Z" fill="#99A1AF"/>
+<path d="M8.74805 12.832V10.499C8.74805 10.1757 9.00969 9.91406 9.33301 9.91406C9.65632 9.91406 9.91797 10.1757 9.91797 10.499V12.832C9.91797 13.1553 9.65632 13.418 9.33301 13.418C9.00969 13.418 8.74805 13.1553 8.74805 12.832Z" fill="#99A1AF"/>
+</svg>
+
+    </span>
+  </div>
+
+
+ 
+
+  <!-- URGENCE -->
+  <div class="mb-4">
+
+    <p class="text-xs font-medium text-gray-500 mb-2">
+      Urgence
+    </p>
+
+    <div class="flex flex-wrap gap-2">
+
+      <button
+        type="button"
+        (click)="urgence = 'toutes'"
+        [class.bg-gray-100]="urgence === 'toutes'"
+        [class.border-teal-950]="urgence === 'toutes'"
+        class="px-2.5 py-1 bg-white rounded-full border border-gray-200 text-xs text-gray-600"
+      >
+        Toutes
+      </button>
+
+      <button
+        type="button"
+        (click)="urgence = 'critique'"
+        [class.bg-gray-100]="urgence === 'critique'"
+        [class.border-teal-950]="urgence === 'critique'"
+        class="px-2.5 py-1 bg-white rounded-full border border-gray-200 text-xs text-gray-600"
+      >
+        Critique
+      </button>
+
+      <button
+        type="button"
+        (click)="urgence = 'modere'"
+        [class.bg-gray-100]="urgence === 'modere'"
+        [class.border-teal-950]="urgence === 'modere'"
+        class="px-2.5 py-1 bg-white rounded-full border border-gray-200 text-xs text-gray-600"
+      >
+        Modérée
+      </button>
+
+      <button
+        type="button"
+        (click)="urgence = 'leger'"
+        [class.bg-gray-100]="urgence === 'leger'"
+        [class.border-teal-950]="urgence === 'leger'"
+        class="px-2.5 py-1 bg-white rounded-full border border-gray-200 text-xs text-gray-600"
+      >
+        Légère
+      </button>
+
+    </div>
+  </div>
+   <!-- TYPE D'INCIDENT -->
+  <div class="mb-4">
+
+    <p class="text-xs font-medium text-gray-500 mb-2">
+      Type d'incident
+    </p>
+
+    <div class="flex flex-wrap gap-2">
+
+      <button
+        type="button"
+        (click)="type = 'tous'"
+        [class.bg-gray-100]="type === 'tous'"
+        [class.border-teal-950]="type === 'tous'"
+        class="px-2.5 py-1 bg-white rounded-full border border-gray-200 text-xs text-gray-600"
+      >
+        Tous
+      </button>
+
+      <button
+        type="button"
+        (click)="type = 'depot_sauvage'"
+        [class.bg-gray-100]="type === 'depot_sauvage'"
+        [class.border-teal-950]="type === 'depot_sauvage'"
+        class="px-2.5 py-1 bg-white rounded-full border border-gray-200 text-xs text-gray-600"
+      >
+        Dépôt sauvage
+      </button>
+
+      <button
+        type="button"
+        (click)="type = 'dechets_plastiques'"
+        [class.bg-gray-100]="type === 'dechets_plastiques'"
+        [class.border-teal-950]="type === 'dechets_plastiques'"
+        class="px-2.5 py-1 bg-white rounded-full border border-gray-200 text-xs text-gray-600"
+      >
+        Plastiques
+      </button>
+
+      <button
+        type="button"
+        (click)="type = 'egouts_bouches'"
+        [class.bg-gray-100]="type === 'egouts_bouches'"
+        [class.border-teal-950]="type === 'egouts_bouches'"
+        class="px-2.5 py-1 bg-white rounded-full border border-gray-200 text-xs text-gray-600"
+      >
+        Égouts
+      </button>
+
+    </div>
+  </div>
+
+
+
+  <!-- STATUT -->
+  <div class="mb-4">
+
+    <p class="text-xs font-medium text-gray-500 mb-2">
+      Statut
+    </p>
+
+    <div class="flex flex-wrap gap-2">
+
+      <button
+        type="button"
+        (click)="statut = 'tous'"
+        [class.bg-gray-100]="statut === 'tous'"
+        [class.border-teal-950]="statut === 'tous'"
+        class="px-2.5 py-1 bg-white rounded-full border border-gray-200 text-xs text-gray-600"
+      >
+        Tous
+      </button>
+
+      <button
+        type="button"
+        (click)="statut = 'nouveau'"
+        [class.bg-gray-100]="statut === 'nouveau'"
+        [class.border-teal-950]="statut === 'nouveau'"
+        class="px-2.5 py-1 bg-white rounded-full border border-gray-200 text-xs text-gray-600"
+      >
+        Nouveau
+      </button>
+
+      <button
+        type="button"
+        (click)="statut = 'en_cours'"
+        [class.bg-gray-100]="statut === 'en_cours'"
+        [class.border-teal-950]="statut === 'en_cours'"
+        class="px-2.5 py-1 bg-white rounded-full border border-gray-200 text-xs text-gray-600"
+      >
+        En cours
+      </button>
+
+      <button
+        type="button"
+        (click)="statut = 'resolu'"
+        [class.bg-gray-100]="statut === 'resolu'"
+        [class.border-teal-950]="statut === 'resolu'"
+        class="px-2.5 py-1 bg-white rounded-full border border-gray-200 text-xs text-gray-600"
+      >
+        Résolu
+      </button>
+
+    </div>
+  </div>
+
+
+  <!-- BOUTON -->
+  <button
+    type="button"
+    (click)="appliquerFiltres()"
+    class="w-full py-2.5 bg-teal-950 text-white rounded-[10px] text-sm font-medium"
+  >
+    Appliquer les filtres
+  </button>
+
+</div>

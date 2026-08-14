@@ -38,20 +38,20 @@ export class Sidebar {
       route: '/dashboard/incidents',
       icon: 'incident',
     },
-    {
-      label: 'Set-Setal',
-      route: '/dashboard/set-setal',
-      icon: 'set-setal',
-    },
-    {
-      label: 'Financement participatif',
-      route: '/dashboard/financement',
-      icon: 'financement',
-    },
-    {
-      label: 'Paramètres',
-      route: '/dashboard/settings',
-      icon: 'settings',
-    },
+    // {
+    //   label: 'Set-Setal',
+    //   route: '/dashboard/set-setal',
+    //   icon: 'set-setal',
+    // },
+    // {
+    //   label: 'Financement participatif',
+    //   route: '/dashboard/financement',
+    //   icon: 'financement',
+    // },
+    // {
+    //   label: 'Paramètres',
+    //   route: '/dashboard/settings',
+    //   icon: 'settings',
+    // },
   ];
 }

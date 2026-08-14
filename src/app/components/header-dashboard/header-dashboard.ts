@@ -17,11 +17,10 @@ export class HeaderDashboard {
   private readonly titles: Record<string, string> = {
     '/dashboard': 'Tableau de bord',
     '/dashboard/map': 'Carte des incidents',
+   
     '/dashboard/incidents': 'Gestion des incidents',
     '/dashboard/agents': 'Gestion des agents',
-    '/dashboard/set-setal': 'Set-Setal',
-    '/dashboard/financement': 'Financement participatif',
-    '/dashboard/settings': 'Paramètres',
+
   };
 
   constructor() {
@@ -30,8 +29,21 @@ export class HeaderDashboard {
         filter((event) => event instanceof NavigationEnd)
       )
       .subscribe((event) => {
+        const url = event.urlAfterRedirects;
+
+        // Détail d'un agent
+        if (url.startsWith('/dashboard/agents/')) {
+          this.title.set('Gestion des agents');
+          return;
+        }
+         if (url.startsWith('/dashboard/map/incidents')) {
+          this.title.set('Detail incident');
+          return;
+        }
+
+        // Routes normales
         this.title.set(
-          this.titles[event.urlAfterRedirects] ?? 'Tableau de bord'
+          this.titles[url] ?? 'Tableau de bord'
         );
       });
   }

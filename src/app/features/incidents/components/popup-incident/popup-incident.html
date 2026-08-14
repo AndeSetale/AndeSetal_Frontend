@@ -1,0 +1,108 @@
+@if (incident) {
+
+  <div class="w-72 bg-white rounded-2xl shadow-lg overflow-hidden">
+
+    <!-- En-tête -->
+    <div class="h-28 bg-gray-100 relative flex items-center justify-center">
+
+      
+
+      <!-- Fermer -->
+      <button
+        type="button"
+        (click)="fermerPopup()"
+        class="absolute top-2 cursor-pointer right-2 w-6 h-6 bg-white rounded-full shadow flex items-center justify-center"
+      >
+       x
+      </button>
+
+    </div>
+
+    <!-- Contenu -->
+   <div class="p-4">
+  <!-- Badges -->
+  <div class="flex items-center gap-2 mb-4">
+    <span
+      class="px-2.5 py-1 rounded-md text-xs font-medium"
+      [class.bg-red-50]="incident.urgence === 'critique'"
+      [class.text-red-600]="incident.urgence === 'critique'"
+      [class.bg-amber-50]="incident.urgence === 'modere'"
+      [class.text-amber-600]="incident.urgence === 'modere'"
+      [class.bg-gray-100]="incident.urgence === 'leger'"
+      [class.text-gray-600]="incident.urgence === 'leger'"
+    >
+      {{ incident.urgence }}
+    </span>
+
+    <span
+      class="px-2.5 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-600"
+    >
+      {{ incident.statut }}
+    </span>
+  </div>
+
+  <!-- Titre -->
+  <h3 class="text-base font-semibold text-teal-950 mb-2">
+    {{ incident.titre }}
+  </h3>
+
+  <!-- Type -->
+  <p class="text-sm text-gray-600 mb-4 capitalize">
+    {{ incident.type.replace('_', ' ') }}
+  </p>
+
+  <!-- Informations -->
+  <div class="space-y-3 text-sm">
+
+    <div class="flex items-start gap-2">
+      
+      <div>
+        <p class="text-gray-500 text-xs">Adresse</p>
+        <p class="text-gray-800">{{ incident.adresse }}</p>
+      </div>
+    </div>
+
+    <div class="flex items-start gap-2">
+     
+      <div>
+        <p class="text-gray-500 text-xs">Signalé par</p>
+        <p class="text-gray-800">{{ incident.signalePar }}</p>
+      </div>
+    </div>
+
+    <div class="flex items-start gap-2">
+      
+      <div>
+        <p class="text-gray-500 text-xs">Date de création</p>
+        <p class="text-gray-800">
+          {{ incident.dateCreation  }}
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Photo -->
+  @if (incident.photoUrl) {
+    <div class="mt-4">
+      <img
+        [src]="incident.photoUrl"
+        alt="Photo de l'incident"
+        class="w-full h-36 object-cover rounded-xl border border-gray-100"
+      />
+    </div>
+  }
+
+  <!-- Bouton -->
+ <button
+  type="button"
+  [routerLink]="['/dashboard/map/incidents', incident.id]"
+  class="w-full mt-5 py-2.5 bg-teal-950 text-white rounded-xl text-sm font-medium hover:bg-teal-900 transition-colors"
+>
+  Voir les détails
+</button>
+</div>
+
+  </div>
+
+}

@@ -1,0 +1,62 @@
+<div
+  class="bg-white border border-gray-200 rounded-2xl
+         p-4 shadow-sm"
+>
+
+  <!-- Header -->
+  <div class="flex justify-between items-center mb-4">
+
+    <h2 class="text-sm font-medium text-gray-800">
+      Performance des agents
+    </h2>
+
+    <button
+      type="button"
+      class="w-8 h-8 rounded-lg flex items-center
+             justify-center text-gray-400
+             hover:bg-gray-100"
+    >
+      ⋮
+    </button>
+
+  </div>
+
+  <!-- Agents -->
+  <div class="flex flex-col gap-4">
+
+    @for (agent of agents(); track agent.name) {
+
+      <div class="flex flex-col gap-1">
+
+        <div class="flex justify-between items-center">
+
+          <span class="text-xs text-gray-600">
+            {{ agent.name }}
+          </span>
+
+          <span class="text-xs text-gray-500">
+            {{ agent.resolved }} résolus
+          </span>
+
+        </div>
+
+        <!-- Progression -->
+        <div
+          class="h-1.5 bg-gray-100 rounded-full
+                 overflow-hidden"
+        >
+
+          <div
+            class="h-full bg-teal-900 rounded-full transition-all duration-300"
+            [style.width.%]="agent.percentage"
+          ></div>
+
+        </div>
+
+      </div>
+
+    }
+
+  </div>
+
+</div>

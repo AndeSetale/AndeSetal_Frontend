@@ -1,0 +1,387 @@
+<div class="w-full min-h-full p-8">
+
+  <!-- Breadcrumb -->
+  <div class="flex items-center gap-1.5 mb-5 text-sm">
+    <span class="text-slate-500">Carte des incidents</span>
+    <span class="text-slate-400">›</span>
+    <span class="text-slate-800">Détail complet</span>
+  </div>
+
+  <!-- 2 COLONNES -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-5xl mx-auto">
+
+    <!-- ================= LEFT ASIDE ================= -->
+    <aside class="space-y-6">
+
+      <!-- Incident -->
+    <section class="bg-white rounded-xl p-6 shadow-sm">
+
+  <div class="flex justify-between items-start gap-4 mb-4">
+
+    <div>
+      <h1 class="text-2xl font-semibold text-gray-900">
+        {{ incident()?.titre }}
+      </h1>
+
+      <p class="text-sm text-gray-500 mt-1">
+        Incident #INC-{{ incident()?.id }}
+      </p>
+    </div>
+
+    <span
+      class="px-3 py-1.5 rounded-full text-sm font-medium"
+      [class.bg-red-700]="incident()?.urgence === 'critique'"
+      [class.text-white]="incident()?.urgence === 'critique'"
+      [class.bg-orange-100]="incident()?.urgence === 'modere'"
+      [class.text-orange-700]="incident()?.urgence === 'modere'"
+      [class.bg-green-100]="incident()?.urgence === 'leger'"
+      [class.text-green-700]="incident()?.urgence === 'leger'"
+    >
+      {{ incident()?.urgence }}
+    </span>
+
+  </div>
+
+ <!-- PHOTO PRINCIPALE -->
+<div class="w-full h-72 rounded-xl overflow-hidden">
+  <img
+    src="/images/image 27.png"
+    [alt]="incident()?.titre"
+    class="w-full h-full object-cover"
+  />
+</div>
+
+<!-- MINIATURES -->
+<div class="flex gap-3 mt-4">
+
+  <img
+    src="/images/image 27.png"
+    alt="Photo 1"
+    class="w-24 h-24 rounded-xl object-cover outline outline-2 outline-gray-200"
+  />
+
+  <img
+    src="/images/image 27.png"
+    alt="Photo 2"
+    class="w-24 h-24 rounded-xl object-cover outline outline-2 outline-gray-200"
+  />
+
+  <img
+    src="/images/image 27.png"
+    alt="Photo 3"
+    class="w-24 h-24 rounded-xl object-cover outline outline-2 outline-gray-200"
+  />
+
+</div>
+
+</section>
+
+      <!-- Localisation -->
+      <section class="bg-white rounded-xl p-6 shadow-sm">
+
+  <h2 class="text-lg font-semibold text-gray-900 mb-4">
+    Localisation GPS
+  </h2>
+
+  <div
+    id="incident-map"
+    class="w-full h-64 rounded-xl overflow-hidden"
+  ></div>
+
+  <div class="mt-3">
+
+    <p class="text-sm font-medium text-gray-900">
+      {{ incident()?.adresse }}
+    </p>
+
+    <p class="text-xs text-gray-500">
+      {{ incident()?.latitude }}° N,
+      {{ incident()?.longitude }}° W
+    </p>
+
+  </div>
+
+</section>
+
+    </aside>
+
+
+    <!-- ================= RIGHT ASIDE ================= -->
+    <aside class="space-y-6">
+
+      <!-- Suivi -->
+     <section class="bg-white rounded-xl p-6 shadow-sm">
+
+  <h2 class="text-lg font-semibold text-gray-900 mb-6">
+    Suivi de l'incident
+  </h2>
+
+  <div class="space-y-6">
+
+    <!-- SIGNALEMENT -->
+    <div class="flex gap-4">
+
+      <div class="flex flex-col items-center">
+
+        <div
+          class="w-10 h-10 bg-slate-500 rounded-full flex items-center justify-center text-white"
+        >
+         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_1_6808)">
+<path d="M1.66699 9.99935C1.66699 14.5986 5.40103 18.3327 10.0003 18.3327C14.5996 18.3327 18.3337 14.5986 18.3337 9.99935C18.3337 5.40006 14.5996 1.66602 10.0003 1.66602C5.40103 1.66602 1.66699 5.40006 1.66699 9.99935V9.99935" stroke="white" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M10 5V10L13.3333 11.6667" stroke="white" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_1_6808">
+<rect width="20" height="20" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+
+        </div>
+
+        <div class="w-0.5 h-10 bg-gray-300 mt-2"></div>
+
+      </div>
+
+      <div>
+
+        <h3 class="font-medium text-gray-900">
+          Signalement
+        </h3>
+
+        <p class="text-sm text-gray-600">
+          Par {{ incident()?.signalePar }}
+        </p>
+
+        <p class="text-xs text-gray-500">
+          {{ incident()?.dateCreation }}
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <!-- ASSIGNATION -->
+    <div class="flex gap-4">
+
+      <div class="flex flex-col items-center">
+
+        <div
+          class="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-gray-600"
+        >
+         <svg
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M20 21a8 8 0 0 0-16 0" />
+        <circle cx="12" cy="7" r="4" />
+      </svg>
+        </div>
+
+        <div class="w-0.5 h-10 bg-gray-200 mt-2"></div>
+
+      </div>
+
+      <div>
+
+        <h3 class="font-medium text-gray-900">
+          Assignation
+        </h3>
+
+        @if (incident()?.statut === 'nouveau') {
+
+          <p class="text-sm text-orange-600 font-medium">
+            En attente d'agent
+          </p>
+
+        } @else {
+
+          <p class="text-sm text-gray-600">
+            Agent assigné
+          </p>
+
+        }
+
+      </div>
+
+    </div>
+
+
+    <!-- INTERVENTION -->
+    <div class="flex gap-4">
+
+      <div
+        class="w-10 h-10 rounded-full flex items-center justify-center"
+        [class.bg-gray-200]="incident()?.statut !== 'en_cours'"
+        [class.bg-teal-100]="incident()?.statut === 'en_cours'"
+      >
+        --
+      </div>
+
+      <div>
+
+        <h3
+          class="font-medium"
+          [class.text-gray-400]="incident()?.statut !== 'en_cours'"
+          [class.text-gray-900]="incident()?.statut === 'en_cours'"
+        >
+          Intervention
+        </h3>
+
+        @if (incident()?.statut === 'nouveau') {
+
+          <p class="text-sm text-gray-400">
+            Non démarrée
+          </p>
+
+        } @else if (incident()?.statut === 'en_cours') {
+
+          <p class="text-sm text-teal-600 font-medium">
+            En cours
+          </p>
+
+        } @else {
+
+          <p class="text-sm text-green-600 font-medium">
+            Résolue
+          </p>
+
+        }
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+      <!-- Informations -->
+      <section class="bg-white rounded-xl p-6 shadow-sm">
+
+  <h2 class="text-lg font-semibold text-gray-900 mb-6">
+    Informations détaillées
+  </h2>
+
+  <div class="space-y-4">
+
+    <!-- TYPE -->
+    <div>
+      <p class="text-sm font-medium text-gray-700">
+        Type d'incident
+      </p>
+
+      <p class="text-sm text-gray-900">
+        {{ incident()!.type }}
+      </p>
+    </div>
+
+
+    <!-- ADRESSE -->
+    <div>
+      <p class="text-sm font-medium text-gray-700">
+        Adresse
+      </p>
+
+      <p class="text-sm text-gray-900">
+        {{ incident()!.adresse }}
+      </p>
+    </div>
+
+
+    <!-- DESCRIPTION -->
+    <div>
+      <p class="text-sm font-medium text-gray-700">
+        Description
+      </p>
+
+      <p class="text-sm text-gray-900 leading-5">
+        {{ incident()!.titre }}
+      </p>
+    </div>
+
+  </div>
+
+</section>
+
+
+      <!-- Gestion -->
+      <section class="bg-white rounded-xl p-6 shadow-sm">
+
+        <h2 class="text-lg font-semibold text-gray-900 mb-6">
+          Gestion de l'intervention
+        </h2>
+
+        <div class="space-y-5">
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Assigner à un agent
+            </label>
+
+            <select class="w-full h-14 px-4 rounded-xl border border-gray-300">
+              <option>Sélectionner un agent</option>
+              <option>Agent 1</option>
+              <option>Agent 2</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Niveau de priorité
+            </label>
+
+            <div class="grid grid-cols-3 gap-3">
+
+              <button class="px-4 py-2.5 bg-red-50 text-red-700 rounded-xl border-2 border-red-500">
+                Critique
+              </button>
+
+              <button class="px-4 py-2.5 text-gray-600 rounded-xl border-2 border-gray-200">
+                Modéré
+              </button>
+
+              <button class="px-4 py-2.5 text-gray-600 rounded-xl border-2 border-gray-200">
+                Léger
+              </button>
+
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Notes internes
+            </label>
+
+            <textarea
+              rows="5"
+              placeholder="Ajouter des notes ou instructions pour l'équipe..."
+              class="w-full px-4 py-3 rounded-xl border border-gray-300 resize-none"
+            ></textarea>
+          </div>
+
+          <button
+            class="w-full py-3 bg-gray-800 text-white rounded-xl font-medium"
+          >
+            Valider l'intervention
+          </button>
+
+        </div>
+
+      </section>
+
+    </aside>
+
+  </div>
+
+</div>
