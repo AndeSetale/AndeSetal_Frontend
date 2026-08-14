@@ -1,0 +1,29 @@
+<div class="carte-container ">
+
+  <!-- FILTRES -->
+  <div class="filtres-container">
+
+    <!-- Pour l'instant on mettra le composant ici -->
+     <app-filtres-incidents
+    (filtresChange)="onFiltresChange($event)"
+  />
+
+  </div>
+
+  <!-- CARTE -->
+  <div
+    #mapContainer
+    class="map-el">
+  </div>
+
+    <!-- POPUP -->
+ @if (incidentSelectionne(); as incident) {
+  <div class="popup">
+    <app-popup-incident
+      [incident]="incident"
+      (fermer)="fermerPopup()"
+    />
+  </div>
+}
+
+</div>

@@ -11,6 +11,8 @@ import { authGuard } from './core/guards/auth-guard';
 import { GestionAgents } from './features/gestion-agents/gestion-agents';
 import { AgentDetail } from './features/agent-detail/agent-detail';
 import { Incidents } from './features/incidents/incidents';
+import { CarteIncidentsComponent } from './features/carte-incidents/carte-incidents/carte-incidents';
+import { DetailIncident } from './features/detail-incident/detail-incident';
 
 export const routes: Routes = [
   {
@@ -52,6 +54,10 @@ export const routes: Routes = [
         path: 'map',
         component: Carte,
       },
+      {
+    path: 'map/incidents/:id',
+    component: DetailIncident,
+  },
 
       // Gestion des incidents
       {
