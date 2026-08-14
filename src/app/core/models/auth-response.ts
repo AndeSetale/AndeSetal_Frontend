@@ -10,7 +10,7 @@ export interface UtilisateurApi {
   email: string;
   first_name: string;
   last_name: string;
-  role: 'CITOYEN' | 'AGENT' | 'ADMIN';
+  role: 'citoyen' | 'agent' | 'admin';
   telephone?: string;
   quartier?: string;
 }

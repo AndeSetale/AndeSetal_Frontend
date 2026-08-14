@@ -107,33 +107,36 @@
     </div>
 
 
-      <!-- Compteur -->
-      <div class="pt-2 flex justify-center items-center gap-2">
+        <!-- Compteur -->
+      <div class="pt-2 flex flex-col items-center gap-2">
 
-        <svg class="size-4" viewBox="0 0 16 16" fill="none">
-          <path
-            d="M8 1.33V3.33M8 12.67V14.67M1.33 8H3.33M12.67 8H14.67"
-            stroke="currentColor"
-            stroke-width="1.33"
-          />
-          <circle
-            cx="8"
-            cy="8"
-            r="5.33"
-            stroke="currentColor"
-            stroke-width="1.33"
-          />
-        </svg>
+    @if (compteur() > 0) {
+
+      <div class="flex justify-center items-center gap-2">
 
         <span class="text-neutral-500 text-sm leading-5">
           Renvoyer le code dans
         </span>
 
         <span class="text-teal-950 text-sm font-bold leading-5">
-          00:42
+          00:{{ compteur().toString().padStart(2, '0') }}
         </span>
 
       </div>
+
+    } @else {
+
+      <button
+        type="button"
+        (click)="renvoyerCode()"
+        class="text-teal-950 text-sm font-bold leading-5"
+      >
+        Renvoyer le code
+      </button>
+
+    }
+
+  </div>
 
     </div>
 

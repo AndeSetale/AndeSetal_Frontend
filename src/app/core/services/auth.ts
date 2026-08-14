@@ -4,6 +4,22 @@ import { TokenStorage } from './token-storage';
 import { Utilisateur } from '../models/utilisateur';
 import { AuthResponse, UtilisateurApi } from '../models/auth-response';
 
+
+export interface InscriptionRequest {
+  nom_complet: string;
+  email_ou_telephone: string;
+  quartier: string;
+  password: string;
+  accepte_conditions: boolean;
+  recevoir_alertes: boolean;
+}
+
+export interface InscriptionResponse {
+  message: string;
+  user: UtilisateurApi;
+}
+
+
 @Injectable({
   providedIn: 'root'
 })
@@ -11,6 +27,7 @@ export class Auth {
 
   private readonly api = inject(Api);
   private readonly tokenStorage = inject(TokenStorage);
+
 
   // Utilisateur actuellement connecté
   private utilisateurConnecte = signal<Utilisateur | null>(null);
@@ -24,15 +41,41 @@ export class Auth {
   }
 
   // Connexion auprès du backend Django
-  connecter(email: string, motDePasse: string) {
+  connecter(identifiant: string, motDePasse: string) {
     return this.api.post<AuthResponse>(
       '/auth/login/',
       {
-        username: email,
+        identifiant,
         password: motDePasse
       }
     );
   }
+
+  inscrire(donnees: InscriptionRequest) {
+    return this.api.post<InscriptionResponse>(
+      '/auth/register/',
+      donnees
+    );
+  }
+
+  verifierEmail(email: string, code: string) {
+    return this.api.post(
+      '/auth/verify-email/',
+      {
+        email,
+        code
+      }
+    );
+  }
+
+  renvoyerCode(email: string) {
+    return this.api.post(
+      '/auth/resend-otp/',
+      {
+        email
+      }
+    );
+}
 
   // Enregistre la session après une connexion réussie
   enregistrerSession(reponse: AuthResponse): void {
@@ -63,16 +106,7 @@ export class Auth {
     role: UtilisateurApi['role']
   ): Utilisateur['role'] {
 
-    switch (role) {
-      case 'CITOYEN':
-        return 'citoyen';
-
-      case 'AGENT':
-        return 'agent';
-
-      case 'ADMIN':
-        return 'admin';
-    }
+    return role;
   }
 
   rafraichirToken() {

@@ -3,8 +3,12 @@ import {
   ElementRef,
   QueryList,
   ViewChildren,
-  signal
+  signal,
+  inject,
+  OnInit
 } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Auth } from '../../../core/services/auth';
 
 @Component({
   selector: 'app-verification',
@@ -12,7 +16,18 @@ import {
   templateUrl: './verification.html',
   styleUrl: './verification.css',
 })
-export class Verification {
+export class Verification implements OnInit {
+
+  private readonly auth = inject(Auth);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+
+  email = signal('');
+  chargement = signal(false);
+  erreur = signal<string | null>(null);
+  compteur = signal(60);
+  messageSucces = signal<string | null>(null);
+
   // Code de vérification saisi par l'utilisateur
   codeVerification = signal<string[]>(['', '', '', '', '', '']);
 
@@ -56,9 +71,57 @@ export class Verification {
 
   // Vérifie le code saisi
   verifierCode(): void {
-    const code = this.codeVerification().join('');
+    this.erreur.set(null);
 
-    console.log('Code saisi :', code);
+    const code = this.codeVerification().join('');
+    const email = this.email();
+
+    if (code.length !== 6) {
+      this.erreur.set('Veuillez saisir le code complet.');
+      return;
+    }
+
+    if (!email) {
+      this.erreur.set('Adresse email introuvable.');
+      return;
+    }
+
+    this.chargement.set(true);
+
+    this.auth.verifierEmail(email, code).subscribe({
+
+      next: (reponse) => {
+        console.log('Email vérifié :', reponse);
+
+        this.chargement.set(false);
+
+        this.router.navigate(['/connexion']);
+      },
+
+      error: (erreur) => {
+        console.error('Erreur de vérification :', erreur);
+
+        this.chargement.set(false);
+
+        this.erreur.set(
+          'Code incorrect ou expiré.'
+        );
+      }
+
+    });
+  }
+
+    demarrerCompteur(): void {
+      const interval = setInterval(() => {
+        this.compteur.update(valeur => {
+          if (valeur <= 1) {
+            clearInterval(interval);
+            return 0;
+          }
+
+          return valeur - 1;
+        });
+      }, 1000);
   }
 
   // Gère le collage complet du code OTP
@@ -103,5 +166,50 @@ export class Verification {
         .get(this.codeVerification().length - 1)
         ?.nativeElement.focus();
     }
+  }
+
+  ngOnInit(): void {
+    const email = this.route.snapshot.queryParamMap.get('email');
+
+    if (email) {
+      this.email.set(email);
+    }
+
+    this.demarrerCompteur();
+  }
+
+    renvoyerCode(): void {
+      const email = this.email();
+
+      if (!email) {
+        this.erreur.set('Adresse email introuvable.');
+        return;
+      }
+
+      this.erreur.set(null);
+      this.messageSucces.set(null);
+
+      this.auth.renvoyerCode(email).subscribe({
+
+        next: (reponse) => {
+          console.log('Nouveau code envoyé :', reponse);
+
+          this.messageSucces.set(
+            'Un nouveau code a été envoyé à votre adresse email.'
+          );
+
+          this.compteur.set(60);
+          this.demarrerCompteur();
+        },
+
+        error: (erreur) => {
+          console.error('Erreur lors du renvoi du code :', erreur);
+
+          this.erreur.set(
+            'Impossible de renvoyer le code. Veuillez réessayer.'
+          );
+        }
+
+      });
   }
 }
