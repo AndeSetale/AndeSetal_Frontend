@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { Dashboard } from './layouts/dashboard/dashboard';
 import { Mobile } from './layouts/mobile/mobile';
 import { Accueil } from './features/tableau-de-bord/accueil';
+import { Accueil as AccMobile } from './features/accueil/accueil';
 import { Carte } from './features/carte/carte';
 import { CarteIntervention } from './components/carte-intervention/carte-intervention';
 import { ListeIntervention } from './features/interventions/liste/liste';
@@ -108,7 +109,7 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        component: Accueil,
+        component: AccMobile,
       },
       {
         path: 'carte',
