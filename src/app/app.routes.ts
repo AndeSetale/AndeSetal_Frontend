@@ -38,13 +38,12 @@ export const routes: Routes = [
   },
 
 
-     // ==========================================
+  // ==========================================
   // PARCOURS DESKTOP — SIDEBAR
   // ==========================================
   {
     path: 'dashboard',
     component: Dashboard,
-    canActivate: [authGuard],
     children: [
 
       // Tableau de bord
