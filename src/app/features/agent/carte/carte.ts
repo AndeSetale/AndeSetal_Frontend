@@ -1,15 +1,19 @@
 import { AfterViewInit, Component } from '@angular/core';
 import * as L from 'leaflet';
+import { HeaderAgent } from '../components/header-agent/header-agent';
 
 @Component({
   selector: 'app-carte',
-  imports: [],
+  imports: [HeaderAgent],
   templateUrl: './carte.html',
   styleUrl: './carte.css',
 })
 export class Carte implements AfterViewInit {
 
   private map!: L.Map;
+  retour(): void {
+  window.history.back();
+}
 
   ngAfterViewInit(): void {
     this.initialiserCarte();

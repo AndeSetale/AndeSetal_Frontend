@@ -2,25 +2,24 @@
 
   <!-- ZONE CARTE -->
   <section
-    class="absolute inset-0 overflow-hidden rounded-[30px]"
+    class="relative h-screen w-full overflow-hidden rounded-[30px]"
   >
 
     <!-- LEAFLET -->
     <div
       id="map"
-      class="absolute inset-0 z-0 h-full w-full"
+      class="absolute inset-0 z-0 h-full w-full bg-red-200"
       aria-label="Carte des signalements"
     ></div>
 
 
-    <!-- =========================
-         HEADER
-    ========================== -->
-    <header
-      class="absolute inset-x-0 top-0 z-20 flex h-20 items-center justify-center
-             rounded-t-[30px] bg-white pt-3
-             shadow-[0_4px_4px_rgba(0,0,0,0.14)]"
-    >
+<!-- HEADER -->
+<div class="absolute inset-x-0 top-0 z-20">
+<app-header-agent
+  titre="Carte"
+  class="absolute inset-x-0 top-0 z-20"
+/>
+</div>
 
       <button
         type="button"
@@ -49,7 +48,6 @@
         Carte
       </h1>
 
-    </header>
 
 
     <!-- =========================

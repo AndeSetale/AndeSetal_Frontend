@@ -5,12 +5,12 @@ import { Accueil } from './features/tableau-de-bord/accueil';
 import { CarteIntervention } from './components/carte-intervention/carte-intervention';
 import { ListeIntervention } from './features/interventions/liste/liste';
 import { authGuard } from './core/guards/auth-guard';
-import { Carte } from './features/agent/carte/carte';
-import { Agent } from './layouts/agent/agent';
-import { AccueilAgent } from './features/agent/accueil-agent/accueil-agent';
+import { Carte } from './features/carte/carte';
+import { Carte as CarteAgent } from './features/agent/carte/carte';
+import { AccueilAgent } from './features/agent/accueil/accueil';
 import { Interventions } from './features/agent/interventions/interventions';
-import { HistoriqueRapportAgent } from './features/agent/historique-rapport-agent/historique-rapport-agent';
-import { DetailInterventionAgent } from './features/agent/detail-intervention-agent/detail-intervention-agent';
+import { HistoriqueRapport } from './features/agent/historique-rapport/historique-rapport';
+import { DetailIntervention } from './features/agent/detail-intervention/detail-intervention';
 import { Profil } from './features/agent/profil/profil';
 
 
@@ -134,7 +134,7 @@ export const routes: Routes = [
   
 {
   path: 'agent',
-  component: Agent,
+  component: CarteAgent,
   children: [
     {
       path: '',
@@ -148,12 +148,12 @@ export const routes: Routes = [
 
     {
       path: 'historique',
-      component: HistoriqueRapportAgent,
+      component: HistoriqueRapport,
     },
 
     {
       path: 'detail/:id',
-      component: DetailInterventionAgent,
+      component: DetailIntervention,
     },
 
     {
