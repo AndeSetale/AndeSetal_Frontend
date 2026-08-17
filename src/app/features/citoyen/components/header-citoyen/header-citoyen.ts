@@ -2,12 +2,12 @@ import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-header',
+  selector: 'app-header-citoyen',
   imports: [],
-  templateUrl: './header.html',
-  styleUrl: './header.css',
+  templateUrl: './header-citoyen.html',
+  styleUrl: './header-citoyen.css',
 })
-export class Header {
+export class HeaderCitoyen {
   readonly router = inject(Router);
 
   get currentRoute(): string {

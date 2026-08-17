@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { BarreNavigation } from './barre-navigation';
+import { Carte } from './carte';
 
-describe('BarreNavigation', () => {
-  let component: BarreNavigation;
-  let fixture: ComponentFixture<BarreNavigation>;
+describe('Carte', () => {
+  let component: Carte;
+  let fixture: ComponentFixture<Carte>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [BarreNavigation],
+      imports: [Carte],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(BarreNavigation);
+    fixture = TestBed.createComponent(Carte);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });
