@@ -123,6 +123,7 @@ export const routes: Routes = [
         path: 'carte',
         component: Carte,
       },
+      // route concernant le profil du citoyen  et l'
     ],
   },
 
