@@ -9,7 +9,7 @@ import { RecentActivityTable } from "../../components/agent-detail/recent-activi
 
 @Component({
   selector: 'app-agent-detail',
-  imports: [BreadcrumbAgent, AgentProfileHeader, AgentStatsGrid, GraphiqueIncidents, RepartitionIncidents, ActivityChart, RecentActivityTable],
+  imports: [BreadcrumbAgent, AgentProfileHeader, AgentStatsGrid, RepartitionIncidents, ActivityChart, RecentActivityTable],
   templateUrl: './agent-detail.html',
   styleUrl: './agent-detail.css',
 })

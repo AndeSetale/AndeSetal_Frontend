@@ -1,3 +1,4 @@
+<app-header-agent titre="Profil" />
 <div class="flex min-h-full flex-col gap-7 bg-stone-50 pb-8">
 
   <!-- ========================================== -->
@@ -6,35 +7,23 @@
 
   <section class="px-6 pt-9">
 
-    <div
-      class="relative flex min-h-72 flex-col items-center overflow-hidden
-             rounded-xl bg-teal-950 p-6 shadow-lg"
-    >
+    <div class="relative flex min-h-72 flex-col items-center overflow-hidden
+             rounded-xl bg-teal-950 p-6 shadow-lg">
 
       <!-- Background décoratif -->
-      <div
-        class="absolute inset-0 bg-radial from-white/5 to-transparent"
-        aria-hidden="true"
-      ></div>
+      <div class="absolute inset-0 bg-radial from-white/5 to-transparent" aria-hidden="true"></div>
 
 
       <!-- Avatar -->
       <div class="relative z-10">
 
-        <img
-          [src]="agent.photo"
-          [alt]="agent.nom"
-          class="size-24 rounded-full border-4 border-green-300 object-cover"
-        />
+        <img [src]="agent.photo" [alt]="agent.nom"
+          class="size-24 rounded-full border-4 border-green-300 object-cover" />
 
         <!-- Indicateur disponibilité -->
-        <span
-          class="absolute bottom-0 right-0 size-5 rounded-full
-                 border-2 border-teal-950"
-          [class.bg-green-500]="agent.disponible"
-          [class.bg-neutral-400]="!agent.disponible"
-          aria-hidden="true"
-        ></span>
+        <span class="absolute bottom-0 right-0 size-5 rounded-full
+                 border-2 border-teal-950" [class.bg-green-500]="agent.disponible"
+          [class.bg-neutral-400]="!agent.disponible" aria-hidden="true"></span>
 
       </div>
 
@@ -54,36 +43,23 @@
 
 
       <!-- Disponibilité -->
-      <div
-        class="relative z-10 mt-6 flex items-center gap-4
+      <div class="relative z-10 mt-6 flex items-center gap-4
                rounded-full bg-stone-100/10 px-4 py-2
-               backdrop-blur-[2px]"
-      >
+               backdrop-blur-[2px]">
 
         <span class="text-base font-semibold leading-4 text-white">
           {{ agent.disponible ? 'Disponible' : 'Indisponible' }}
         </span>
 
-        <button
-          type="button"
-          (click)="toggleDisponibilite()"
-          [attr.aria-pressed]="agent.disponible"
-          [attr.aria-label]="
+        <button type="button" (click)="toggleDisponibilite()" [attr.aria-pressed]="agent.disponible" [attr.aria-label]="
             agent.disponible
               ? 'Passer en indisponible'
               : 'Passer en disponible'
-          "
-          class="flex h-6 w-11 items-center rounded-full
-                 transition-colors"
-          [class.justify-start]="!agent.disponible"
-          [class.justify-end]="agent.disponible"
-          [class.bg-green-300]="agent.disponible"
-          [class.bg-neutral-400]="!agent.disponible"
-        >
+          " class="flex h-6 w-11 items-center rounded-full
+                 transition-colors" [class.justify-start]="!agent.disponible" [class.justify-end]="agent.disponible"
+          [class.bg-green-300]="agent.disponible" [class.bg-neutral-400]="!agent.disponible">
 
-          <span
-            class="mx-1 size-4 rounded-full bg-emerald-900"
-          ></span>
+          <span class="mx-1 size-4 rounded-full bg-emerald-900"></span>
 
         </button>
 
@@ -111,29 +87,18 @@
       <!-- TÂCHES RÉSOLUES -->
       <!-- ====================================== -->
 
-      <article
-        class="flex flex-col gap-2 rounded-xl bg-white p-4
-               shadow-[0_2px_12px_rgba(0,0,0,0.08)]"
-      >
+      <article class="flex flex-col gap-2 rounded-xl bg-white p-4
+               shadow-[0_2px_12px_rgba(0,0,0,0.08)]">
 
         <div class="flex items-center justify-between">
 
           <!-- Icône Lucide -->
-          <span
-            class="flex size-5 items-center justify-center
-                   text-emerald-900"
-            aria-hidden="true"
-          >
-            <svg
-              lucideCircleCheck
-              class="size-5"
-              [attr.stroke-width]="2"
-            ></svg>
+          <span class="flex size-5 items-center justify-center
+                   text-emerald-900" aria-hidden="true">
+            <svg lucideCircleCheck class="size-5" [attr.stroke-width]="2"></svg>
           </span>
 
-          <strong
-            class="text-xl font-bold leading-6 text-emerald-900"
-          >
+          <strong class="text-xl font-bold leading-6 text-emerald-900">
             {{ performance.tachesResolues }}
           </strong>
 
@@ -146,19 +111,12 @@
 
 
         <!-- Progression -->
-        <div
-          class="h-2 overflow-hidden rounded-full bg-stone-200"
-          role="progressbar"
-          [attr.aria-valuenow]="performance.tachesResolues"
-          [attr.aria-valuemin]="0"
-          [attr.aria-valuemax]="performance.objectifTaches"
-          aria-label="Progression des tâches résolues"
-        >
+        <div class="h-2 overflow-hidden rounded-full bg-stone-200" role="progressbar"
+          [attr.aria-valuenow]="performance.tachesResolues" [attr.aria-valuemin]="0"
+          [attr.aria-valuemax]="performance.objectifTaches" aria-label="Progression des tâches résolues">
 
-          <div
-            class="h-full rounded-full bg-emerald-900 transition-all"
-            [style.width.%]="pourcentageTachesResolues"
-          ></div>
+          <div class="h-full rounded-full bg-emerald-900 transition-all" [style.width.%]="pourcentageTachesResolues">
+          </div>
 
         </div>
 
@@ -174,29 +132,18 @@
       <!-- PONCTUALITÉ -->
       <!-- ====================================== -->
 
-      <article
-        class="flex flex-col gap-2 rounded-xl bg-white p-4
-               shadow-[0_2px_12px_rgba(0,0,0,0.08)]"
-      >
+      <article class="flex flex-col gap-2 rounded-xl bg-white p-4
+               shadow-[0_2px_12px_rgba(0,0,0,0.08)]">
 
         <div class="flex items-center justify-between">
 
           <!-- Icône Lucide -->
-          <span
-            class="flex size-5 items-center justify-center
-                   text-amber-800"
-            aria-hidden="true"
-          >
-            <svg
-              lucideClock3
-              class="size-5"
-              [attr.stroke-width]="2"
-            ></svg>
+          <span class="flex size-5 items-center justify-center
+                   text-amber-800" aria-hidden="true">
+            <svg lucideClock3 class="size-5" [attr.stroke-width]="2"></svg>
           </span>
 
-          <strong
-            class="text-xl font-bold leading-6 text-amber-800"
-          >
+          <strong class="text-xl font-bold leading-6 text-amber-800">
             {{ performance.ponctualite }}%
           </strong>
 
@@ -209,19 +156,11 @@
 
 
         <!-- Progression -->
-        <div
-          class="h-2 overflow-hidden rounded-full bg-stone-200"
-          role="progressbar"
-          [attr.aria-valuenow]="performance.ponctualite"
-          aria-valuemin="0"
-          aria-valuemax="100"
-          aria-label="Taux de ponctualité"
-        >
+        <div class="h-2 overflow-hidden rounded-full bg-stone-200" role="progressbar"
+          [attr.aria-valuenow]="performance.ponctualite" aria-valuemin="0" aria-valuemax="100"
+          aria-label="Taux de ponctualité">
 
-          <div
-            class="h-full rounded-full bg-amber-800 transition-all"
-            [style.width.%]="performance.ponctualite"
-          ></div>
+          <div class="h-full rounded-full bg-amber-800 transition-all" [style.width.%]="performance.ponctualite"></div>
 
         </div>
 
@@ -249,10 +188,7 @@
         Interventions Récentes
       </h2>
 
-      <a
-        routerLink="/agent/interventions"
-        class="shrink-0 text-xs font-medium text-emerald-900"
-      >
+      <a routerLink="/agent/interventions" class="shrink-0 text-xs font-medium text-emerald-900">
         Voir tout
       </a>
 
@@ -262,92 +198,85 @@
     <div class="flex flex-col gap-4">
 
       @for (
-        intervention of interventionsRecentes;
-        track intervention.id
+      intervention of interventionsRecentes;
+      track intervention.id
       ) {
 
-        <!-- ==================================== -->
-        <!-- INTERVENTION -->
-        <!-- ==================================== -->
+      <!-- ==================================== -->
+      <!-- INTERVENTION -->
+      <!-- ==================================== -->
 
-        <article
-          class="flex gap-4 rounded-xl bg-white p-4
-                 shadow-[0_2px_12px_rgba(0,0,0,0.08)]"
-        >
+      <article class="flex gap-4 rounded-xl bg-white p-4
+                 shadow-[0_2px_12px_rgba(0,0,0,0.08)]">
 
-          <img
-            [src]="intervention.image"
-            [alt]="intervention.titre"
-            class="size-16 shrink-0 rounded-lg object-cover"
-          />
+        <img [src]="intervention.image" [alt]="intervention.titre" class="size-16 shrink-0 rounded-lg object-cover" />
 
 
-          <div class="min-w-0 flex-1">
+        <div class="min-w-0 flex-1">
 
-            <div class="flex items-start justify-between gap-2">
+          <div class="flex items-start justify-between gap-2">
 
-              <h3
-                class="min-w-0 truncate text-base font-bold
-                       leading-6 text-zinc-900"
-              >
-                {{ intervention.titre }}
-              </h3>
+            <h3 class="min-w-0 truncate text-base font-bold
+                       leading-6 text-zinc-900">
+              {{ intervention.titre }}
+            </h3>
 
 
-              <!-- Statut -->
-              <span
-                class="shrink-0 rounded-sm px-2 py-1
-                       text-xs font-bold leading-4"
-                [class.bg-emerald-900/10]="
+            <!-- Statut -->
+            <span class="shrink-0 rounded-sm px-2 py-1
+                       text-xs font-bold leading-4" [class.bg-emerald-900/10]="
                   intervention.statut === 'Terminé'
-                "
-                [class.text-emerald-900]="
+                " [class.text-emerald-900]="
                   intervention.statut === 'Terminé'
-                "
-                [class.bg-orange-400/20]="
+                " [class.bg-orange-400/20]="
                   intervention.statut === 'En cours'
-                "
-                [class.text-amber-900]="
+                " [class.text-amber-900]="
                   intervention.statut === 'En cours'
-                "
-              >
-                {{ intervention.statut }}
-              </span>
-
-            </div>
-
-
-            <p class="mt-1 text-xs leading-5 text-neutral-500">
-              {{ intervention.description }}
-            </p>
-
-
-            <p class="mt-1 text-xs leading-4 text-stone-400">
-              {{ intervention.date }}
-            </p>
+                ">
+              {{ intervention.statut }}
+            </span>
 
           </div>
 
-        </article>
+
+          <p class="mt-1 text-xs leading-5 text-neutral-500">
+            {{ intervention.description }}
+          </p>
+
+
+          <p class="mt-1 text-xs leading-4 text-stone-400">
+            {{ intervention.date }}
+          </p>
+
+        </div>
+
+      </article>
 
       } @empty {
 
-        <!-- ==================================== -->
-        <!-- AUCUNE INTERVENTION -->
-        <!-- ==================================== -->
+      <!-- ==================================== -->
+      <!-- AUCUNE INTERVENTION -->
+      <!-- ==================================== -->
 
-        <div
-          class="rounded-xl bg-white px-6 py-8 text-center
+      <div class="rounded-xl bg-white px-6 py-8 text-center
                  text-sm text-neutral-500
-                 shadow-[0_2px_12px_rgba(0,0,0,0.08)]"
-        >
-          Aucune intervention récente.
-        </div>
+                 shadow-[0_2px_12px_rgba(0,0,0,0.08)]">
+        Aucune intervention récente.
+      </div>
 
       }
 
     </div>
 
-  </section>
+   <!-- Déconnexion -->
+<div class="flex w-full justify-center py-8">
+  <button
+  type="button"
+  class="flex items-center gap-2 text-base font-semibold leading-4 text-red-700"
+>
+  <svg lucideLogOut class="size-4"></svg>
+
+  <span>Se déconnecter</span>
+</button>
 
 </div>

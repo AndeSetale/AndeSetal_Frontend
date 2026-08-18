@@ -1,20 +1,38 @@
-import { Component, input } from '@angular/core';
-import { Location } from '@angular/common';
+import { Component, input, output } from '@angular/core';
+import { Router } from '@angular/router';
+import {
+  LucideArrowLeft,
+  LucideShare2,
+} from '@lucide/angular';
 
 @Component({
   selector: 'app-header-agent',
-  standalone: true,
-  imports: [],
+  imports: [
+    LucideArrowLeft,
+    LucideShare2,
+  ],
   templateUrl: './header-agent.html',
   styleUrl: './header-agent.css',
 })
 export class HeaderAgent {
 
-  titre = input.required<string>();
+  readonly titre = input<string>('');
 
-  constructor(private location: Location) {}
+  readonly showAction = input<boolean>(false);
+
+  readonly actionLabel = input<string>('');
+
+  readonly actionClick = output<void>();
+
+  constructor(
+    private readonly router: Router
+  ) {}
 
   retour(): void {
-    this.location.back();
+    this.router.navigate(['/agent']);
+  }
+
+  onActionClick(): void {
+    this.actionClick.emit();
   }
 }

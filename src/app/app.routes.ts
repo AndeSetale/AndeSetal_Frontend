@@ -22,6 +22,8 @@ import { AccueilAgent } from './features/agent/accueil/accueil';
 import { Interventions } from './features/agent/interventions/interventions';
 import { HistoriqueRapport } from './features/agent/historique-rapport/historique-rapport';
 import { DetailIntervention } from './features/agent/detail-intervention/detail-intervention';
+import { DetailIncident as DetailIncidentAgent } from './features/agent/detail-incident/detail-incident';
+import { RapportEnvoye } from './features/agent/rapport-envoye/rapport-envoye';
 import { Profil } from './features/agent/profil/profil';
 
 export const routes: Routes = [
@@ -155,6 +157,7 @@ export const routes: Routes = [
   path: 'agent',
   component: Agent,
   children: [
+
     {
       path: '',
       component: AccueilAgent,
@@ -166,13 +169,23 @@ export const routes: Routes = [
     },
 
     {
-      path: 'historique',
+      path: 'interventions/:id',
+      component: DetailIntervention,
+    },
+
+    {
+      path: 'incidents/:id',
+      component: DetailIncidentAgent,
+    },
+
+    {
+      path: 'historique/:id',
       component: HistoriqueRapport,
     },
 
     {
-      path: 'detail/:id',
-      component: DetailIntervention,
+      path: 'rapport-envoye/:id',
+      component: RapportEnvoye,
     },
 
     {
@@ -184,6 +197,7 @@ export const routes: Routes = [
       path: 'profil',
       component: Profil,
     },
+
   ],
 },
 
