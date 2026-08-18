@@ -1,0 +1,154 @@
+<!-- ───────────────────────────────────────────────────────────────────────────
+  Écran : Accueil citoyen connecté
+  Dégradé vert foncé → gris-vert clair (fidèle maquette)
+  Logo /logo/logo-and-setal.png + avatar rond
+  Salutation + événement Set-Setal + 3 signalements récents
+──────────────────────────────────────────────────────────────────────────── -->
+<!--<div class="gradient-bg pb-28">-->
+<div class="min-h-screen bg-gradient-to-b from-[#004030] via-[#4A9782] to-white pb-28">
+
+
+  <!-- ── Zone haute verte : logo + avatar + salutation ── -->
+  <div class="px-5 pt-10 pb-12"> 
+
+    <!-- Logo And Setal + avatar -->
+    <div class="flex items-center justify-between mb-8">
+
+      <!-- Logo depuis les assets -->
+      <img src="/logo/logo-and-setal.png"
+           alt="And Setal"
+           class="h-7 w-auto object-contain"/>
+
+      <!-- Avatar citoyen — photo ronde avec bordure légère -->
+      <div class="w-11 h-11 rounded-full overflow-hidden
+                  border-2 border-white/40 bg-gray-300 shrink-0">
+        <!-- TODO BACKEND : remplacer par <img [src]="photoUrl"> quand disponible -->
+        <div class="w-full h-full bg-gradient-to-br from-green-300 to-green-600
+                    flex items-center justify-center text-white text-sm font-bold">
+          {{ nomCitoyen().charAt(0).toUpperCase() }}
+        </div>
+      </div>
+
+    </div> 
+
+    <!-- Salutation -->
+    <h1 class="text-white text-[2rem] font-bold leading-tight">
+      Bonjour, {{ nomCitoyen() }}
+    </h1>
+    <p class="text-white/70 text-sm mt-1">
+      Ensemble, définit notre ville plus propre.
+    </p>
+
+  </div>
+
+  <!-- ── Zone gris-vert clair : sections contenu ── -->
+  <div class="px-5 space-y-6"> 
+
+    <!-- ─────────────────────────────────────────────────
+         Section : Prochain Événement
+    ──────────────────────────────────────────────────── -->
+    <section>
+    <!-- <div class="flex items-center justify-between mb-3" plus border radius 12px> -->
+      <div class="flex items-center justify-between mb-3  border-gray-200 pb-3">
+        <h2 class="text-base font-bold text-[white]">Prochain Événement</h2>
+        <a routerLink="/mobile/evenements"
+           class="text-xs font-semibold text-[white]">Voir tout</a>
+      </div>
+
+      <!-- Carte événement blanche -->
+      <div class="bg-white rounded-2xl px-4 py-4 shadow-sm flex items-center gap-4">
+
+        <!-- Bloc date : mois abrégé + numéro du jour -->
+        <div class="flex flex-col items-center justify-center
+                    w-14 shrink-0 bg-gray-100 rounded-xl py-3">
+          <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest leading-none">
+            {{ evenement.mois }}
+          </span>
+          <span class="text-[1.7rem] font-extrabold text-gray-900 leading-tight">
+            {{ evenement.jour }}
+          </span>
+        </div>
+
+        <!-- Titre + lieu -->
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-bold text-gray-900 leading-snug">
+            {{ evenement.titre }}
+          </p>
+          <div class="flex items-center gap-1 mt-1">
+            <!-- Icône pin localisation -->
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+                 stroke="#9CA3AF" stroke-width="2">
+              <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
+            <p class="text-xs text-gray-500">{{ evenement.lieu }}</p>
+          </div>
+        </div>
+
+        <!-- Bouton flèche vert foncé -->
+        <div class="w-11 h-11 rounded-full bg-[#1B5E3B]
+                    flex items-center justify-center shrink-0">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+               stroke="white" stroke-width="2.5" stroke-linecap="round">
+            <path d="M9 18l6-6-6-6"/>
+          </svg>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ─────────────────────────────────────────────────
+         Section : Mes Signalements Récents
+    ──────────────────────────────────────────────────── -->
+    <section>
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="text-base font-bold text-[black] ">Mes Signalements Récents</h2>
+        <!-- Lien vers l'écran historique -->
+        <a routerLink="/mobile/signalements"
+           class="text-xs font-semibold text-[green]">Historique</a>
+      </div>
+
+      <!-- État vide -->
+      @if (signalementsRecents().length === 0) {
+        <div class="bg-white rounded-2xl px-4 py-8 shadow-sm
+                    flex flex-col items-center text-gray-400">
+          <p class="text-sm">Aucun signalement pour l'instant</p>
+        </div>
+      }
+
+      <!-- Liste des 3 derniers signalements -->
+      <div class="space-y-3">
+        @for (s of signalementsRecents(); track s.id) {
+          <a [routerLink]="['/mobile/signalements', s.id]"
+             class="flex items-center gap-4 bg-white rounded-2xl px-4 py-4 shadow-sm
+                    active:scale-[0.98] transition-transform">
+
+            <!-- Icône type dans cercle gris -->
+            <div class="w-11 h-11 rounded-full bg-gray-100
+                        flex items-center justify-center shrink-0"
+                 [innerHTML]="getTypeIconSvg(s.type)">
+            </div>
+
+            <!-- Titre + adresse courte + date relative -->
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-bold text-gray-900 leading-tight truncate">
+                {{ s.titre }}
+              </p>
+              <p class="text-xs text-gray-500 mt-0.5 truncate">
+                {{ s.adresse }}, {{ getDateCourte(s.dateCreation) }}
+              </p>
+            </div>
+
+            <!-- Badge statut -->
+            <span class="shrink-0 px-3 py-1 rounded-full text-xs font-semibold"
+                  [ngClass]="getStatutClasses(s.statut)">
+              {{ getStatutLabel(s.statut) }}
+            </span>
+
+          </a>
+        }
+      </div>
+    </section>
+
+  </div> 
+</div>

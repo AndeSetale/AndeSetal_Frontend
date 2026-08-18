@@ -4,6 +4,7 @@ import { Mobile } from './layouts/mobile/mobile';
 import { Accueil } from './features/tableau-de-bord/accueil';
 
 import { Accueil as AccMobile } from './features/accueil/accueil';
+import { AccueilCitoyenConnecte } from './features/citoyen/accueil-citoyen-connecte/accueil-citoyen-connecte';
 import { Carte } from './features/carte/carte';
 
 import { CarteIntervention } from './components/carte-intervention/carte-intervention';
@@ -23,6 +24,7 @@ import { Interventions } from './features/agent/interventions/interventions';
 import { HistoriqueRapport } from './features/agent/historique-rapport/historique-rapport';
 import { DetailIntervention } from './features/agent/detail-intervention/detail-intervention';
 import { Profil } from './features/agent/profil/profil';
+
 
 export const routes: Routes = [
 
@@ -127,14 +129,41 @@ export const routes: Routes = [
     component: Mobile,
     children: [
       {
-        path: '',
-        component: AccMobile,
+        path: 'citoyen-connecte',
+        component: AccueilCitoyenConnecte,
       },
       {
         path: 'carte',
         component: Carte,
       },
-      // route concernant le profil du citoyen  et l'
+
+      // routes concernant le profil du citoyen  et le signalement
+      {
+        path: 'signalements',
+        loadComponent: () =>
+          import('./features/citoyen/signalements/historique/historique')
+            .then(m=> m.Historique)
+      },
+
+      // {
+      //   path: 'creation-signalement',
+      //   loadComponent: () =>
+      //     import('./features/citoyen/signalements/creation/creation')
+      //       .then(m => m.CreationSignalement)
+      // },
+      {
+        path: 'signalements/:id',
+        loadComponent: () =>
+          import('./features/citoyen/signalements/detail/detail')
+            .then(m => m.DetailSignalement) 
+      },
+
+      {
+        path: 'profil',
+        loadComponent: () =>
+          import('./features/citoyen/profil/profil')
+            .then(m => m.Profil)
+      },
     ],
   },
 
