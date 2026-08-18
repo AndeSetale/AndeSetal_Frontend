@@ -2,32 +2,32 @@
 
   <app-carte-kpi
     title="Incidents critiques"
-    value="12"
-    trend="+3 aujourd'hui"
+    [value]="incidentsCritiques().toString()"
+    trend="Incidents urgents"
     trendType="up"
     icon="alert"
   />
 
   <app-carte-kpi
     title="En cours"
-    value="34"
-    trend="-5 vs hier"
-    trendType="down"
+    [value]="incidentsEnCours().toString()"
+    trend="Interventions en cours"
+    trendType="neutral"
     icon="clock"
   />
 
   <app-carte-kpi
-    title="Résolus ce mois"
-    value="127"
-    trend="+18%"
+    title="Résolus"
+    [value]="incidentsResolus().toString()"
+    trend="Incidents traités"
     trendType="up"
     icon="check"
   />
 
   <app-carte-kpi
-    title="Délai moyen"
-    value="31h"
-    trend="Objectif < 48h"
+    title="Total incidents"
+    [value]="totalIncidents().toString()"
+    trend="Tous les incidents"
     trendType="neutral"
     icon="timer"
   />
@@ -40,8 +40,8 @@
   <app-repartition-incidents
   title="Répartition par type"
   subtitle="Types d'incidents"
-  [totalIncidents]="184"
-  [incidentTypes]="incidentTypes"
+  [totalIncidents]="totalIncidents()"
+  [incidentTypes]="incidentTypes()"
 />
 
 </div>

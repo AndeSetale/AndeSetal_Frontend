@@ -51,12 +51,19 @@
             <td class="px-4 py-4">
 
               <span
-                class="px-2 py-0.5 rounded-sm text-xs"
-                [class.bg-gray-100]="incident.urgence !== 'CRITIQUE'"
-                [class.bg-red-50]="incident.urgence === 'CRITIQUE'"
-                [class.text-red-600]="incident.urgence === 'CRITIQUE'"
-                [class.text-orange-500]="incident.urgence === 'MODÉRÉ'"
-                [class.text-green-600]="incident.urgence === 'LÉGER'"
+               class="px-2 py-0.5 rounded-sm text-xs"
+
+[class.bg-red-50]="incident.urgence === 'CRITIQUE'"
+[class.text-red-600]="incident.urgence === 'CRITIQUE'"
+
+[class.bg-orange-50]="incident.urgence === 'ELEVE'"
+[class.text-orange-500]="incident.urgence === 'ELEVE'"
+
+[class.bg-yellow-50]="incident.urgence === 'MODERE'"
+[class.text-yellow-600]="incident.urgence === 'MODERE'"
+
+[class.bg-gray-100]="incident.urgence === 'ROUTINE'"
+[class.text-gray-600]="incident.urgence === 'ROUTINE'"
               >
                 {{ incident.urgence }}
               </span>
