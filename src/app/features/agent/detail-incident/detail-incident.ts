@@ -8,8 +8,6 @@ import {
   LucideTrash2,
   LucideFlame,
   LucideMapPin,
-  LucideInfo,
-  LucideSend,
 } from '@lucide/angular';
 
 
@@ -23,8 +21,6 @@ import { IncidentService } from '../../../core/services/incident';
   LucideTrash2,
   LucideFlame,
   LucideMapPin,
-  LucideInfo,
-  LucideSend,
 ],
 
   templateUrl: './detail-incident.html',
