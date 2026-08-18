@@ -1,0 +1,108 @@
+<div class="min-h-screen bg-slate-50 text-slate-800 pb-12 flex flex-col">
+
+  <!-- Header -->
+  <div class="sticky top-0 z-10 bg-white/90 backdrop-blur-md px-4 py-3 border-b border-slate-100 flex items-center gap-3">
+    <button
+      (click)="goBack()"
+      class="size-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 hover:bg-slate-200 active:scale-95 transition-transform"
+      aria-label="Retour"
+    >
+      <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+      </svg>
+    </button>
+    <h1 class="text-base font-bold text-slate-900">Signaler un incident</h1>
+  </div>
+
+  <main class="flex-1 px-4 pt-4 max-w-md mx-auto w-full flex flex-col gap-4">
+
+    <!-- Carte de l'image capturée -->
+    <div class="relative w-full h-56 rounded-2xl overflow-hidden shadow-sm border border-slate-200/60 bg-slate-900 group">
+      <img
+        [src]="photoUrl"
+        alt="Photo de l'incident"
+        class="w-full h-full object-cover"
+      />
+      <!-- Tag IA sur la photo -->
+      <div class="absolute top-3 left-3 bg-teal-950/80 backdrop-blur-md text-white text-xs font-medium px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow">
+        <svg class="size-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+        </svg>
+        IA : {{ aiClassification.type }} ({{ aiClassification.urgence }})
+      </div>
+      <!-- Action changer photo -->
+      <button
+        (click)="goBack()"
+        class="absolute bottom-3 right-3 bg-white/90 backdrop-blur text-slate-700 text-xs font-semibold px-3 py-1.5 rounded-full shadow-md hover:bg-white active:scale-95 transition-transform"
+      >
+        Changer la photo
+      </button>
+    </div>
+
+    <!-- Boîte de Géolocalisation GPS -->
+    <div class="bg-emerald-50/80 border border-emerald-200/80 rounded-2xl p-4 flex items-start gap-3.5">
+      <div class="size-10 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
+        <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+        </svg>
+      </div>
+      <div class="flex-1 min-w-0">
+        <span class="text-[11px] uppercase tracking-wider font-semibold text-emerald-800 block mb-0.5">
+          Géolocalisé par GPS
+        </span>
+        <p class="text-sm font-medium text-slate-800 truncate">
+          {{ locationAddress }}
+        </p>
+      </div>
+    </div>
+
+    <!-- Informations complémentaires -->
+    <div class="flex flex-col gap-2">
+      <label for="incident-notes" class="text-xs font-bold text-slate-700 uppercase tracking-wide">
+        Informations complémentaires
+      </label>
+      <div class="relative">
+        <textarea
+          id="incident-notes"
+          [(ngModel)]="description"
+          rows="4"
+          placeholder="Près de l'école, intervention urgente requise..."
+          class="w-full p-4 text-sm bg-white border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-teal-700 focus:border-transparent transition-all placeholder:text-slate-400 text-slate-800 shadow-sm resize-none"
+        ></textarea>
+      </div>
+    </div>
+
+    <!-- Note d'information -->
+    <div class="flex items-center gap-2 text-xs text-slate-500 bg-slate-100 p-3 rounded-xl">
+      <svg class="size-4 text-amber-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+      </svg>
+      <span>Votre signalement sera automatiquement transmis aux services techniques de la Mairie de Dakar Plateau.</span>
+    </div>
+
+    <!-- Bouton Soumettre -->
+    <div class="mt-auto pt-4">
+      <button
+        (click)="submitIncident()"
+        [disabled]="isSubmitting"
+        class="w-full py-4 bg-teal-950 hover:bg-teal-900 active:scale-[0.99] disabled:opacity-75 text-white font-semibold text-base rounded-full shadow-lg shadow-teal-950/25 flex items-center justify-center gap-2 transition-all"
+      >
+        <span *ngIf="!isSubmitting" class="flex items-center gap-2">
+          <svg class="size-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+          </svg>
+          Envoyer le Signalement
+        </span>
+        <span *ngIf="isSubmitting" class="flex items-center gap-2">
+          <svg class="animate-spin size-5 text-white" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          Envoi en cours...
+        </span>
+      </button>
+    </div>
+
+  </main>
+</div>
