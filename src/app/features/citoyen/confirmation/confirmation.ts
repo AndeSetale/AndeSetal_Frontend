@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 
+import { IncidentService } from '../../../core/services/incident.service';
+
 @Component({
   selector: 'app-confirmation',
   standalone: true,
@@ -10,15 +12,20 @@ import { Router, RouterModule } from '@angular/router';
   styleUrl: './confirmation.css',
 })
 export class ConfirmationComponent implements OnInit {
-  ticketId: string = '#AS-2026-047';
+  ticketId: string = '#AS-2024-047';
   copied: boolean = false;
   showAccountModal: boolean = false;
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private incidentService: IncidentService
+  ) {}
 
   ngOnInit(): void {
-    const randomNum = Math.floor(100 + Math.random() * 900);
-    this.ticketId = `#AS-2026-${randomNum}`;
+    const realRef = this.incidentService.getLastTicketReference();
+    if (realRef) {
+      this.ticketId = realRef.startsWith('#') ? realRef : `#${realRef}`;
+    }
   }
 
   copyTicketId(): void {

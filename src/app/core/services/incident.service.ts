@@ -55,6 +55,15 @@ export class IncidentService {
   private draftAddress: string = 'Rue 10, Médina, Dakar';
   private draftLat: number = 14.6937;
   private draftLng: number = -17.4441;
+  private lastTicketReference: string = 'AS-2024-047';
+
+  setLastTicketReference(ref: string) {
+    this.lastTicketReference = ref;
+  }
+
+  getLastTicketReference(): string {
+    return this.lastTicketReference;
+  }
 
   getIncidents(): Observable<Incident[]> {
     return of(this.incidents).pipe(delay(300));

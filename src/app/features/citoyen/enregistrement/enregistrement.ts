@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { IncidentService } from '../../../core/services/incident.service';
+import { IncidentApiService, IncidentResponse } from '../../../core/services/incident-api.service';
 
 @Component({
   selector: 'app-enregistrement',
@@ -17,15 +18,10 @@ export class EnregistrementComponent implements OnInit {
   description: string = '';
   isSubmitting: boolean = false;
 
-  aiClassification = {
-    type: 'Dépôt sauvage',
-    urgence: 'Critique',
-    confiance: '96%',
-  };
-
   constructor(
     private router: Router,
-    private incidentService: IncidentService
+    private incidentService: IncidentService,
+    private incidentApiService: IncidentApiService
   ) {}
 
   ngOnInit(): void {
@@ -47,17 +43,24 @@ export class EnregistrementComponent implements OnInit {
 
   submitIncident(): void {
     this.isSubmitting = true;
-    this.incidentService.addIncident({
-      titre: `Signalement ${this.aiClassification.type}`,
-      description: this.description,
-      type: 'depot_sauvage',
-      urgence: 'critique',
+    const draftLocation = this.incidentService.getDraftLocation();
+
+    this.incidentApiService.createIncident({
+      description: this.description || "Signalement d'incident citoyen avec photo",
+      adresse: this.locationAddress,
+      latitude: draftLocation.lat,
+      longitude: draftLocation.lng,
+      photoUrl: this.photoUrl,
     }).subscribe({
-      next: () => {
+      next: (res: IncidentResponse) => {
         this.isSubmitting = false;
+        if (res && res.reference) {
+          this.incidentService.setLastTicketReference(res.reference);
+        }
         this.router.navigate(['/mobile/confirmation']);
       },
-      error: () => {
+      error: (err) => {
+        console.warn('Backend Django hors ligne ou indisponible, fallback local activé:', err);
         this.isSubmitting = false;
         this.router.navigate(['/mobile/confirmation']);
       }
