@@ -24,7 +24,8 @@
     </div>
 
     <!-- Formulaire -->
-  <form class="p-6 space-y-5 max-h-[calc(90vh-100px)] overflow-y-auto custom-scrollbar">
+  <form class="p-6 space-y-5 max-h-[calc(90vh-100px)] overflow-y-auto custom-scrollbar"
+  (ngSubmit)="inscrire()" >
 
       <!-- Nom -->
       <div>
@@ -33,11 +34,13 @@
         </label>
 
         <input
-          type="text"
-          placeholder="Saisir le nom complet de l'agent"
-          class="w-full h-11 px-4 rounded-[10px] border border-gray-300
-                 text-sm outline-none focus:border-teal-700"
-        />
+  type="text"
+  name="nom_complet"
+  [(ngModel)]="form.nom_complet"
+  placeholder="Saisir le nom complet de l'agent"
+  class="w-full h-11 px-4 rounded-[10px] border border-gray-300
+         text-sm outline-none focus:border-teal-700"
+/>
       </div>
 
       <!-- Email -->
@@ -49,6 +52,9 @@
         <input
           type="email"
           placeholder="agent@plateau.sn"
+            
+  name="email"
+  [(ngModel)]="form.email"
           class="w-full h-11 px-4 rounded-[10px] border border-gray-300
                  text-sm outline-none focus:border-teal-700"
         />
@@ -63,6 +69,8 @@
         <input
           type="password"
           placeholder="************"
+          name="password"
+  [(ngModel)]="form.password"
           class="w-full h-11 px-4 rounded-[10px] border border-gray-300
                  text-sm outline-none focus:border-teal-700"
         />
@@ -76,6 +84,8 @@
 
         <input
           type="tel"
+            name="telephone"
+  [(ngModel)]="form.telephone"
           placeholder="+221 77 123 45 67"
           class="w-full h-11 px-4 rounded-[10px] border border-gray-300
                  text-sm outline-none focus:border-teal-700"

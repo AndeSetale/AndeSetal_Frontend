@@ -15,6 +15,7 @@ import { AgentDetail } from './features/agent-detail/agent-detail';
 import { Incidents } from './features/incidents/incidents';
 import { CarteIncidentsComponent } from './features/carte-incidents/carte-incidents/carte-incidents';
 import { DetailIncident } from './features/detail-incident/detail-incident';
+import { PageConnexionDash } from './features/page-connexion-dash/page-connexion-dash';
 
 import { Carte as CarteAgent } from './features/agent/carte/carte';
 import { Agent } from './features/agent/layouts/agent/agent';
@@ -61,6 +62,10 @@ export const routes: Routes = [
   // ==========================================
   // PARCOURS DESKTOP — SIDEBAR
   // ==========================================
+  {
+    path: 'dash/connexion',
+    component: PageConnexionDash
+  },
   {
     path: 'dashboard',
     component: Dashboard,

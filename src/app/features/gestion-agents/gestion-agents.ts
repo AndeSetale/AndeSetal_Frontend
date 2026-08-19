@@ -1,13 +1,19 @@
-import { Component, signal, computed } from '@angular/core';
-import { AddAgentModal } from "../../components/add-agent-modal/add-agent-modal";
+import {
+  Component,
+  computed,
+  inject,
+  signal
+} from '@angular/core';
 
-interface Agent {
-  nom: string;
-  identifiant: string;
-  departement: string;
-  derniereActivite: string;
-  statut: 'Actif' | 'Inactif' | 'Suspendu';
-}
+import {
+  AddAgentModal
+} from '../../components/add-agent-modal/add-agent-modal';
+
+import {
+  AgentService,
+  Agent
+} from '../../core/services/agent.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-gestion-agents',
@@ -18,82 +24,219 @@ interface Agent {
 })
 export class GestionAgents {
 
-  agents = signal<Agent[]>([
-    {
-      nom: 'Amadou Diallo',
-      identifiant: 'AGT-2024-001',
-      departement: 'Gestion des déchets',
-      derniereActivite: 'Il y a 2 min',
-      statut: 'Actif',
-    },
-    {
-      nom: 'Fatou Sall',
-      identifiant: 'AGT-2024-002',
-      departement: 'Éclairage public',
-      derniereActivite: 'Il y a 15 min',
-      statut: 'Actif',
-    },
-    {
-      nom: 'Ousmane Ba',
-      identifiant: 'AGT-2024-003',
-      departement: 'Voirie et Infrastructures',
-      derniereActivite: 'Il y a 1h',
-      statut: 'Inactif',
-    },
-    {
-      nom: 'Mariama Ndiaye',
-      identifiant: 'AGT-2024-004',
-      departement: 'Parcs et Espaces verts',
-      derniereActivite: 'Il y a 3h',
-      statut: 'Actif',
-    },
-    {
-      nom: 'Ibrahima Sarr',
-      identifiant: 'AGT-2024-005',
-      departement: 'Sécurité',
-      derniereActivite: 'Il y a 2 jours',
-      statut: 'Suspendu',
-    },
-  ]);
+  private readonly agentService = inject(AgentService);
+
+  // =========================
+  // État
+  // =========================
+  private readonly router = inject(Router);
+
+  agents = signal<Agent[]>([]);
+
+  loading = signal(false);
+
+  error = signal<string | null>(null);
 
   currentPage = signal(1);
 
-  totalAgents = signal(6);
+  pageSize = 6;
 
-  sessionsActives = signal(4);
+  showAddAgentModal = false;
 
-  agentsSuspendus = signal(3);
 
-  totalPages = computed(() => Math.ceil(this.totalAgents() / 6));
+  // =========================
+  // Statistiques
+  // =========================
 
-   showAddAgentModal = false;
+  totalAgents = computed(() =>
+    this.agents().length
+  );
 
-openAddAgentModal(): void {
-  this.showAddAgentModal = true;
-}
+  sessionsActives = computed(() =>
+    this.agents().filter(agent => agent.disponible).length
+  );
 
-closeAddAgentModal(): void {
-  this.showAddAgentModal = false;
-}
+  agentsSuspendus = computed(() =>
+    this.agents().filter(agent => !agent.disponible).length
+  );
 
+
+  // =========================
+  // Pagination
+  // =========================
+
+  totalPages = computed(() =>
+    Math.ceil(
+      this.totalAgents() / this.pageSize
+    )
+  );
+
+  agentsAffiches = computed(() => {
+
+    const start =
+      (this.currentPage() - 1) *
+      this.pageSize;
+
+    const end =
+      start + this.pageSize;
+
+    return this.agents().slice(start, end);
+  });
+
+
+  // =========================
+  // Initialisation
+  // =========================
+
+  constructor() {
+    this.chargerAgents();
+  }
+
+
+  // =========================
+  // Récupération des agents
+  // =========================
+
+  chargerAgents(): void {
+
+    this.loading.set(true);
+
+    this.error.set(null);
+
+    this.agentService.getAgents().subscribe({
+
+      next: (agents) => {
+
+        this.agents.set(agents);
+
+        console.log(agents)
+
+        this.loading.set(false);
+
+      },
+
+      error: (error) => {
+
+        console.error(
+          'Erreur récupération agents :',
+          error
+        );
+
+        this.error.set(
+          'Impossible de récupérer les agents.'
+        );
+
+        this.loading.set(false);
+
+      }
+
+    });
+  }
+
+
+  // =========================
+  // Modal
+  // =========================
+
+  openAddAgentModal(): void {
+    this.showAddAgentModal = true;
+  }
+
+  closeAddAgentModal(): void {
+    this.showAddAgentModal = false;
+  }
+
+
+  // =========================
+  // Actions
+  // =========================
 
   voirAgent(agent: Agent): void {
-    console.log('Voir agent :', agent);
+
+    console.log(
+      'Voir agent :',
+      agent
+    );
+     this.router.navigate(['/dashboard/agents', agent.id]);
+
   }
+
 
   modifierAgent(agent: Agent): void {
-    console.log('Modifier agent :', agent);
+
+    console.log(
+      'Modifier agent :',
+      agent
+    );
+
   }
+
 
   supprimerAgent(agent: Agent): void {
-    console.log('Supprimer agent :', agent);
+
+    if (!agent.id) {
+      return;
+    }
+
+    const confirmation = confirm(
+      `Voulez-vous supprimer ${agent.nom_complet} ?`
+    );
+
+    if (!confirmation) {
+      return;
+    }
+
+    this.agentService.deleteAgent(agent.id).subscribe({
+
+      next: () => {
+
+        this.agents.update(
+          agents =>
+            agents.filter(
+              a => a.id !== agent.id
+            )
+        );
+
+        // Si on supprime le dernier élément
+        // de la dernière page
+        if (
+          this.currentPage() > this.totalPages() &&
+          this.totalPages() > 0
+        ) {
+          this.currentPage.set(
+            this.totalPages()
+          );
+        }
+
+      },
+
+      error: (error) => {
+
+        console.error(
+          'Erreur suppression agent :',
+          error
+        );
+
+      }
+
+    });
   }
 
+
+  // =========================
+  // Pagination
+  // =========================
+
   changerPage(page: number): void {
-    if (page < 1 || page > this.totalPages()) {
+
+    if (
+      page < 1 ||
+      page > this.totalPages()
+    ) {
       return;
     }
 
     this.currentPage.set(page);
   }
+
 }
