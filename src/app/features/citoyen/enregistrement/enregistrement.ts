@@ -40,7 +40,7 @@ export class EnregistrementComponent implements OnInit {
     }
 
     // Récupérer et mettre à jour l'adresse exacte en temps réel via GPS + Reverse Geocoding
-    this.incidentService.fetchCurrentLocation().then((loc) => {
+    this.incidentService.fetchCurrentLocation().then((loc: { address: string; lat: number; lng: number }) => {
       this.locationAddress = loc.address;
     });
   }
