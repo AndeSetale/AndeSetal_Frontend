@@ -14,6 +14,11 @@ import { AgentDetail } from './features/agent-detail/agent-detail';
 import { Incidents } from './features/incidents/incidents';
 import { CarteIncidentsComponent } from './features/carte-incidents/carte-incidents/carte-incidents';
 import { DetailIncident } from './features/detail-incident/detail-incident';
+import { AccueilComponent as AccueilCitoyen } from './features/citoyen/accueil/accueil';
+import { CartesComponent } from './features/citoyen/cartes/cartes';
+import { ScanComponent } from './features/citoyen/scan/scan';
+import { EnregistrementComponent } from './features/citoyen/enregistrement/enregistrement';
+import { ConfirmationComponent } from './features/citoyen/confirmation/confirmation';
 
 export const routes: Routes = [
   {
@@ -117,11 +122,23 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        component: AccMobile,
+        component: AccueilCitoyen,
       },
       {
         path: 'carte',
-        component: Carte,
+        component: CartesComponent,
+      },
+      {
+        path: 'scan',
+        component: ScanComponent,
+      },
+      {
+        path: 'enregistrement',
+        component: EnregistrementComponent,
+      },
+      {
+        path: 'confirmation',
+        component: ConfirmationComponent,
       },
     ],
   },

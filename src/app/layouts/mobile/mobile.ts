@@ -1,12 +1,11 @@
 import { Component } from '@angular/core';
-
-import { BarreNavigation } from "../../components/barre-navigation/barre-navigation";
 import { RouterOutlet } from '@angular/router';
-import { Header } from "../../components/header/header";
+import { NavigationCitoyen } from "../../features/citoyen/components/navigation-citoyen/navigation-citoyen";
 
 @Component({
   selector: 'app-mobile',
-  imports: [RouterOutlet, BarreNavigation, Header],
+  standalone: true,
+  imports: [RouterOutlet, NavigationCitoyen],
   templateUrl: './mobile.html',
   styleUrl: './mobile.css',
 })
