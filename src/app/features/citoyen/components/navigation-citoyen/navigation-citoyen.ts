@@ -2,13 +2,13 @@ import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
-  selector: 'app-barre-navigation',
+  selector: 'app-navigation-citoyen',
   standalone: true,
   imports: [
     RouterLink,
     RouterLinkActive,
   ],
-  templateUrl: './barre-navigation.html',
-  styleUrl: './barre-navigation.css',
+  templateUrl: './navigation-citoyen.html',
+  styleUrl: './navigation-citoyen.css',
 })
-export class BarreNavigation {}
+export class NavigationCitoyen {}

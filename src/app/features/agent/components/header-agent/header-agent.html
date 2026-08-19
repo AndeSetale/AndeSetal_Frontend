@@ -1,0 +1,42 @@
+<header
+  class="relative flex h-20 shrink-0 items-center justify-center border-b border-white/20 bg-white pt-3 shadow-[0_4px_4px_rgba(0,0,0,0.14)]"
+>
+
+  <!-- Retour -->
+  <button
+    type="button"
+    (click)="retour()"
+    class="absolute left-4 top-[21.5px] flex size-9 items-center justify-center rounded-2xl bg-teal-950/20"
+    aria-label="Retour"
+  >
+    <svg
+      lucideArrowLeft
+      class="size-5 text-teal-950"
+    ></svg>
+  </button>
+
+
+  <!-- Titre -->
+  <h1
+    class="text-base font-medium leading-6 tracking-tight text-teal-950"
+  >
+    {{ titre() }}
+  </h1>
+
+
+  <!-- Action -->
+  @if (showAction()) {
+    <button
+      type="button"
+      (click)="onActionClick()"
+      [attr.aria-label]="actionLabel()"
+      class="absolute right-4 top-[21.5px] flex size-9 items-center justify-center rounded-2xl bg-teal-950/20"
+    >
+      <svg
+        lucideShare2
+        class="size-5 text-teal-950"
+      ></svg>
+    </button>
+  }
+
+</header>
