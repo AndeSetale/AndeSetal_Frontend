@@ -1,0 +1,21 @@
+<div class="relative h-screen w-full overflow-hidden bg-white">
+
+  <!-- ========================================== -->
+  <!-- CONTENU DES PAGES AGENT -->
+  <!-- ========================================== -->
+
+  <main class="h-full w-full overflow-y-auto" [class.pb-24]="afficherNavigation()">
+
+    <router-outlet></router-outlet>
+
+  </main>
+
+
+  <!-- ========================================== -->
+  <!-- NAVIGATION AGENT -->
+  <!-- Masquée sur /agent/carte -->
+  <!-- ========================================== -->
+
+  <app-navigation-agent [class.hidden]="!afficherNavigation()"></app-navigation-agent>
+
+</div>
