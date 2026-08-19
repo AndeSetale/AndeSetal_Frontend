@@ -45,28 +45,15 @@ export class DetailIncident {
     this.incidentService
       .getIncidents()
       .subscribe((incidents) => {
+      const trouve = incidents.find(i => i.numericId === id) || null;
+      this.incident.set(trouve);
 
-
-        // 3. Trouver l'incident correspondant à l'ID
-        const trouve =
-          incidents.find(i => i.id === id) || null;
-
-
-        // 4. Stocker l'incident dans le signal
-        this.incident.set(trouve);
-
-
-        // 5. Initialiser la carte
-        if (trouve) {
-
-          setTimeout(() => {
-            this.initMap(trouve);
-          });
-
-        }
-
-      });
-
+      if (trouve) {
+        setTimeout(() => {
+          this.initMap(trouve);
+        });
+      }
+    });
   }
 
 

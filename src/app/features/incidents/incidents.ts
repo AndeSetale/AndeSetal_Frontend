@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
+import { IncidentService } from '../../core/services/incident.service';
 
 interface Incident {
   id: string;
@@ -21,49 +22,26 @@ interface Incident {
 })
 export class Incidents {
 
-  incidents = signal<Incident[]>([
-    {
-      id: 'INC-2026-001',
-      type: 'Dépôt sauvage de déchets',
-      quartier: 'Plateau',
-      adresse: 'Rue de Thiong, Plateau',
-      date: '12 août 2026 à 08:30',
-      urgence: 'CRITIQUE',
-      statut: 'NOUVEAU',
-      description: 'Accumulation importante de déchets sur la voie publique.',
-    },
-    {
-      id: 'INC-2026-002',
-      type: 'Éclairage public',
-      quartier: 'Médina',
-      adresse: 'Avenue Blaise Diagne',
-      date: '11 août 2026 à 19:15',
-      urgence: 'MODERE',
-      statut: 'EN_COURS',
-      description: 'Lampadaire hors service.',
-    },
-    {
-      id: 'INC-2026-004',
-      type: 'Dépôt sauvage de déchets',
-      quartier: 'Plateau',
-      adresse: 'Rue de Thiong, Plateau',
-      date: '12 août 2026 à 08:30',
-      urgence: 'CRITIQUE',
-      statut: 'NOUVEAU',
-      description: 'Accumulation importante de déchets sur la voie publique.',
-    },
-    {
-      id: 'INC-2026-005',
-      type: 'Dépôt sauvage de déchets',
-      quartier: 'Plateau',
-      adresse: 'Rue de Thiong, Plateau',
-      date: '12 août 2026 à 08:30',
-      urgence: 'CRITIQUE',
-      statut: 'NOUVEAU',
-      description: 'Accumulation importante de déchets sur la voie publique.',
-    },
-  ]);
+    private readonly incidentService = inject(IncidentService);
 
+  incidents = signal<Incident[]>([]);
+  chargement = signal(true);
+  erreur = signal<string | null>(null);
+  selectedIncident = signal<Incident | null>(null);
+
+  constructor() {
+    this.incidentService.getIncidents().subscribe({
+      next: (data) => {
+        this.incidents.set(data);
+        this.selectedIncident.set(data[0] ?? null);
+        this.chargement.set(false);
+      },
+      error: () => {
+        this.erreur.set("Impossible de charger les incidents.");
+        this.chargement.set(false);
+      },
+    });
+  }
   // -----------------------------
   // Filtres
   // -----------------------------
@@ -142,9 +120,7 @@ export class Incidents {
   // Incident sélectionné
   // -----------------------------
 
-  selectedIncident = signal<Incident | null>(
-    this.incidents()[0]
-  );
+
 
   selectIncident(incident: Incident) {
     this.selectedIncident.set(incident);
@@ -154,37 +130,97 @@ export class Incidents {
   // Modification des filtres
   // -----------------------------
 
-  setSearch(event: Event) {
-    const input = event.target as HTMLInputElement;
-    this.search.set(input.value);
-  }
+ setSearch(event: Event) {
+  const input = event.target as HTMLInputElement;
 
-  setType(event: Event) {
-    const select = event.target as HTMLSelectElement;
-    this.selectedType.set(select.value);
-  }
+  this.search.set(input.value);
+  this.currentPage.set(1);
+}
 
-  setUrgence(event: Event) {
-    const select = event.target as HTMLSelectElement;
-    this.selectedUrgence.set(select.value);
-  }
+setType(event: Event) {
+  const select = event.target as HTMLSelectElement;
 
-  setStatut(event: Event) {
-    const select = event.target as HTMLSelectElement;
-    this.selectedStatut.set(select.value);
-  }
+  this.selectedType.set(select.value);
+  this.currentPage.set(1);
+}
+
+setUrgence(event: Event) {
+  const select = event.target as HTMLSelectElement;
+
+  this.selectedUrgence.set(select.value);
+  this.currentPage.set(1);
+}
+
+setStatut(event: Event) {
+  const select = event.target as HTMLSelectElement;
+
+  this.selectedStatut.set(select.value);
+  this.currentPage.set(1);
+}
 
   // -----------------------------
   // Réinitialiser
   // -----------------------------
 
   resetFilters() {
-    this.search.set('');
-    this.selectedType.set('Tous');
-    this.selectedUrgence.set('Tous');
-    this.selectedStatut.set('Tous');
+  this.search.set('');
+  this.selectedType.set('Tous');
+  this.selectedUrgence.set('Tous');
+  this.selectedStatut.set('Tous');
+
+  this.currentPage.set(1);
+}
+
+  currentPage = signal(1);
+pageSize = 6;
+
+totalPages = computed(() =>
+  Math.ceil(this.filteredIncidents().length / this.pageSize)
+);
+
+paginatedIncidents = computed(() => {
+  const incidents = this.filteredIncidents();
+  const start = (this.currentPage() - 1) * this.pageSize;
+
+  return incidents.slice(start, start + this.pageSize);
+});
+
+paginationStart = computed(() => {
+  const total = this.filteredIncidents().length;
+
+  if (total === 0) {
+    return 0;
   }
 
+  return (this.currentPage() - 1) * this.pageSize + 1;
+});
+
+paginationEnd = computed(() => {
+  const total = this.filteredIncidents().length;
+
+  return Math.min(
+    this.currentPage() * this.pageSize,
+    total
+  );
+});
+
+nextPage() {
+  if (this.currentPage() < this.totalPages()) {
+    this.currentPage.update(page => page + 1);
+  }
+}
+
+previousPage() {
+  if (this.currentPage() > 1) {
+    this.currentPage.update(page => page - 1);
+  }
+}
+
+goToPage(page: number) {
+  if (page >= 1 && page <= this.totalPages()) {
+    this.currentPage.set(page);
+  }
+}
   // -----------------------------
   // Badge urgence
   // -----------------------------
