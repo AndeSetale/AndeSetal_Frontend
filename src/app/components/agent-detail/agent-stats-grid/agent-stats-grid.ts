@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { StatCard } from "../stat-card/stat-card";
+import { Agent } from '../../../core/services/agent.service';
 
 @Component({
   selector: 'app-agent-stats-grid',
@@ -7,4 +8,7 @@ import { StatCard } from "../stat-card/stat-card";
   templateUrl: './agent-stats-grid.html',
   styleUrl: './agent-stats-grid.css',
 })
-export class AgentStatsGrid {}
+export class AgentStatsGrid {
+
+  agent = input.required<Agent>();
+}

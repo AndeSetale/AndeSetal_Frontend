@@ -1,4 +1,5 @@
 import { Component, input } from '@angular/core';
+import { Agent } from '../../../core/services/agent.service';
 
 @Component({
   selector: 'app-agent-profile-header',
@@ -8,8 +9,7 @@ import { Component, input } from '@angular/core';
   styleUrl: './agent-profile-header.css',
 })
 export class AgentProfileHeader {
-  name = input('Amadou Diallo');
-  agentId = input('AGT-2024-001');
-  district = input('Plateau');
-  status = input('Actif');
+
+  agent = input.required<Agent>();
+
 }

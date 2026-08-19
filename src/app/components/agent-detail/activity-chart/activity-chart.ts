@@ -1,4 +1,11 @@
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  ViewChild,
+  input,
+} from '@angular/core';
+
 import {
   Chart,
   BarController,
@@ -8,6 +15,8 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
+
+import { Agent } from '../../../core/services/agent.service';
 
 Chart.register(
   BarController,
@@ -27,6 +36,8 @@ Chart.register(
 })
 export class ActivityChart implements AfterViewInit {
 
+  agent = input.required<Agent>();
+
   @ViewChild('activityChart')
   chartRef!: ElementRef<HTMLCanvasElement>;
 
@@ -35,6 +46,9 @@ export class ActivityChart implements AfterViewInit {
   }
 
   private createChart(): void {
+
+    const agent = this.agent();
+
     const canvas = this.chartRef.nativeElement;
 
     new Chart(canvas, {
@@ -54,15 +68,32 @@ export class ActivityChart implements AfterViewInit {
         datasets: [
           {
             label: 'Assignés',
-            data: [8, 10, 7, 12, 9, 5, 3],
+            data: [
+              8,
+              10,
+              7,
+              12,
+              9,
+              5,
+              3,
+            ],
             backgroundColor: '#D1D5DB',
             borderRadius: 3,
             barPercentage: 0.45,
             categoryPercentage: 0.7,
           },
+
           {
             label: 'Résolus',
-            data: [6, 9, 8, 10, 11, 4, 3],
+            data: [
+              agent.taches_resolues_semaine,
+              agent.taches_resolues_semaine,
+              agent.taches_resolues_semaine,
+              agent.taches_resolues_semaine,
+              agent.taches_resolues_semaine,
+              agent.taches_resolues_semaine,
+              agent.taches_resolues_semaine,
+            ],
             backgroundColor: '#1F2937',
             borderRadius: 3,
             barPercentage: 0.45,
@@ -99,14 +130,12 @@ export class ActivityChart implements AfterViewInit {
               color: '#374151',
               font: {
                 size: 12,
-                
               },
             },
           },
 
           y: {
             min: 0,
-            max: 12,
 
             ticks: {
               stepSize: 3,
