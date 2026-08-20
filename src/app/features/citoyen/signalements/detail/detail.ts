@@ -48,10 +48,11 @@ export class DetailSignalement implements OnInit {
    * Résolu   → fond vert foncé
    */
   getStatutClasses(statut: string): string {
+    // Fidèle maquette : orange-400 / green-300 / emerald-900
     const map: Record<string, string> = {
-      nouveau:  'bg-orange-500 text-white',
-      en_cours: 'bg-[#4CAF82] text-white',
-      resolu:   'bg-[#1B5E3B] text-white',
+      NOUVEAU:  'bg-orange-400 text-white',
+      EN_COURS: 'bg-green-300 text-white',
+      RESOLU:   'bg-emerald-900 text-white',
     };
     return map[statut] ?? 'bg-gray-200 text-gray-700';
   }
@@ -59,9 +60,9 @@ export class DetailSignalement implements OnInit {
   /** Traduit la clé statut en libellé français */
   getStatutLabel(statut: string): string {
     const map: Record<string, string> = {
-      nouveau:  'Nouveau',
-      en_cours: 'En cours',
-      resolu:   'Résolu',
+      NOUVEAU:  'Nouveau',
+      EN_COURS: 'En cours',
+      RESOLU:   'Résolu',
     };
     return map[statut] ?? statut;
   }
@@ -72,9 +73,10 @@ export class DetailSignalement implements OnInit {
    */
   getUrgenceClasses(urgence: string): string {
     const map: Record<string, string> = {
-      critique: 'bg-red-600 text-white',
-      modere:   'bg-orange-400 text-white',
-      leger:    'bg-green-100 text-green-700',
+      CRITIQUE: 'bg-red-600 text-white',
+      ELEVE:    'bg-orange-500 text-white',
+      MODERE:   'bg-orange-400 text-white',
+      ROUTINE:  'bg-green-100 text-green-700',
     };
     return map[urgence] ?? 'bg-gray-200 text-gray-600';
   }
@@ -82,11 +84,12 @@ export class DetailSignalement implements OnInit {
   /** Traduit la clé urgence en libellé majuscule comme dans la maquette */
   getUrgenceLabel(urgence: string): string {
     const map: Record<string, string> = {
-      critique: 'CRITIQUE',
-      modere:   'MODÉRÉ',
-      leger:    'LÉGER',
+      CRITIQUE: 'CRITIQUE',
+      ELEVE:    'ÉLEVÉ',
+      MODERE:   'MODÉRÉ',
+      ROUTINE:  'ROUTINE',
     };
-    return map[urgence] ?? urgence.toUpperCase();
+    return map[urgence] ?? urgence;
   }
 
   /**
@@ -94,34 +97,42 @@ export class DetailSignalement implements OnInit {
    * Utilisé avec [innerHTML] dans le template.
    */
   getTypeIconSvg(type: string): string {
-    const stroke = '#1B5E3B';
+    const stroke = '#134E3B';  // teal-950, fidèle maquette
     const attrs  = `width="20" height="20" viewBox="0 0 24 24" fill="none"
                     stroke="${stroke}" stroke-width="1.8" stroke-linecap="round"`;
     const icons: Record<string, string> = {
-      depot_sauvage: `<svg ${attrs}>
+      // Types backend (UPPERCASE)
+      DECHETS: `<svg ${attrs}>
         <polyline points="3 6 5 6 21 6"/>
         <path d="M19 6l-1 14H6L5 6"/>
         <path d="M10 11v6M14 11v6"/>
         <path d="M9 6V4h6v2"/>
       </svg>`,
-      egouts_bouches: `<svg ${attrs}>
+      CANAUX: `<svg ${attrs}>
         <path d="M12 2C6 10 4 14 4 16a8 8 0 0 0 16 0c0-2-2-6-8-14z"/>
       </svg>`,
-      ordures_menageres: `<svg ${attrs}>
+      VOIRIE: `<svg ${attrs}>
+        <path d="M3 3h18v2H3zM3 10h18v2H3zM3 17h18v2H3z"/>
+      </svg>`,
+      ECLAIRAGE_PUBLIC: `<svg ${attrs}>
         <circle cx="12" cy="10" r="5"/>
         <line x1="12" y1="15" x2="12" y2="19"/>
         <line x1="9" y1="19" x2="15" y2="19"/>
       </svg>`,
-      dechets_plastiques: `<svg ${attrs}>
+      ARBRE: `<svg ${attrs}>
         <path d="M12 22V12"/>
         <path d="M5 3s0 9 7 9 7-9 7-9"/>
       </svg>`,
-      autre: `<svg ${attrs}>
-        <circle cx="12" cy="12" r="10"/>
-        <line x1="12" y1="8" x2="12" y2="12"/>
-        <line x1="12" y1="16" x2="12.01" y2="16"/>
+      FUITE_EAU: `<svg ${attrs}>
+        <path d="M12 2C6 10 4 14 4 16a8 8 0 0 0 16 0c0-2-2-6-8-14z"/>
+        <line x1="12" y1="13" x2="12" y2="16"/>
       </svg>`,
     };
-    return icons[type] ?? icons['autre'];
+    const fallback = `<svg ${attrs}>
+      <circle cx="12" cy="12" r="10"/>
+      <line x1="12" y1="8" x2="12" y2="12"/>
+      <line x1="12" y1="16" x2="12.01" y2="16"/>
+    </svg>`;
+    return icons[type] ?? fallback;
   }
 }
