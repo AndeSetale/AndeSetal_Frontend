@@ -32,6 +32,7 @@ import { Profil } from './features/agent/profil/profil';
 import { guestGuard } from './core/guards/guestGuard';
 import { authDashGuard } from './core/guards/auth_dash.guard';
 import { AccueilParent } from './features/citoyen/acceuil-parent/accueil-parent';
+import { Page404 } from './features/page-404/page-404';
 
 
 
@@ -192,7 +193,7 @@ export const routes: Routes = [
   // ==========================================
   {
     path: '',
-    redirectTo: 'dashboard',
+    redirectTo: 'mobile',
     pathMatch: 'full',
   },
 
@@ -254,7 +255,7 @@ export const routes: Routes = [
   // ==========================================
   {
     path: '**',
-    redirectTo: 'dashboard',
-  },
+    component: Page404
+  }
 
 ];
