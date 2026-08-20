@@ -1,0 +1,51 @@
+/* Entrée en cascade : chaque bloc apparaît légèrement décalé */
+.nf-in {
+  opacity: 0;
+  animation: nf-fade-slide-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes nf-fade-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Flottement doux de la mascotte, en boucle une fois l'entrée terminée */
+.nf-float {
+  animation:
+    nf-fade-slide-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards,
+    nf-bob 4.5s ease-in-out 0.6s infinite;
+}
+
+@keyframes nf-bob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
+}
+
+/* Halo pulsé derrière le "404", écho du cercle de précision GPS */
+.nf-ping {
+  animation: nf-ping-scale 2.4s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes nf-ping-scale {
+  0%   { transform: scale(0.85); opacity: 0.55; }
+  70%  { transform: scale(1.25); opacity: 0; }
+  100% { transform: scale(1.25); opacity: 0; }
+}
+
+/* Respect des préférences d'accessibilité */
+@media (prefers-reduced-motion: reduce) {
+  .nf-in, .nf-float, .nf-ping,
+  animateMotion, animateTransform {
+    animation: none !important;
+  }
+  .nf-in {
+    opacity: 1;
+    transform: none;
+  }
+}
