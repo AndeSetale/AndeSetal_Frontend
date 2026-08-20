@@ -13,6 +13,11 @@ import { AgentDetail } from './features/agent-detail/agent-detail';
 import { Incidents } from './features/incidents/incidents';
 import { CarteIncidentsComponent } from './features/carte-incidents/carte-incidents/carte-incidents';
 import { DetailIncident } from './features/detail-incident/detail-incident';
+import { AccueilComponent as AccueilCitoyen } from './features/citoyen/accueil/accueil';
+import { CartesComponent } from './features/citoyen/cartes/cartes';
+import { ScanComponent } from './features/citoyen/scan/scan';
+import { EnregistrementComponent } from './features/citoyen/enregistrement/enregistrement';
+import { ConfirmationComponent } from './features/citoyen/confirmation/confirmation';
 import { PageConnexionDash } from './features/page-connexion-dash/page-connexion-dash';
 
 import { Carte as CarteAgent } from './features/agent/carte/carte';
@@ -142,7 +147,19 @@ export const routes: Routes = [
       },
       {
         path: 'carte',
-        component: Carte,
+        component: CartesComponent,
+      },
+      {
+        path: 'scan',
+        component: ScanComponent,
+      },
+      {
+        path: 'enregistrement',
+        component: EnregistrementComponent,
+      },
+      {
+        path: 'confirmation',
+        component: ConfirmationComponent,
       },
 
       // routes concernant le profil du citoyen  et le signalement
