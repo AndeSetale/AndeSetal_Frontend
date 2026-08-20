@@ -109,6 +109,15 @@ export class Auth {
     return role;
   }
 
+  // ============================================================
+// RÉCUPÉRER L'UTILISATEUR CONNECTÉ
+// ============================================================
+
+  me() {
+    return this.api.get<UtilisateurApi>('/auth/me/');
+  }
+
+
   rafraichirToken() {
     const refreshToken = this.tokenStorage.recupererRefreshToken();
 
