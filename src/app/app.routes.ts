@@ -3,13 +3,10 @@ import { Dashboard } from './layouts/dashboard/dashboard';
 import { Mobile } from './layouts/mobile/mobile';
 import { Accueil } from './features/tableau-de-bord/accueil';
 
-import { Accueil as AccMobile } from './features/accueil/accueil';
-import { AccueilCitoyenConnecte } from './features/citoyen/accueil-citoyen-connecte/accueil-citoyen-connecte';
+import { AccueilCitoyen } from './features/citoyen/accueil/accueil';
 import { Carte } from './features/carte/carte';
 
 import { CarteIntervention } from './components/carte-intervention/carte-intervention';
-import { ListeIntervention } from './features/interventions/liste/liste';
-import { authGuard } from './core/guards/auth-guard';
 
 import { GestionAgents } from './features/gestion-agents/gestion-agents';
 import { AgentDetail } from './features/agent-detail/agent-detail';
@@ -129,8 +126,8 @@ export const routes: Routes = [
     component: Mobile,
     children: [
       {
-        path: 'citoyen-connecte',
-        component: AccueilCitoyenConnecte,
+        path: '',
+        component: AccueilCitoyen,
       },
       {
         path: 'carte',
@@ -144,13 +141,6 @@ export const routes: Routes = [
           import('./features/citoyen/signalements/historique/historique')
             .then(m=> m.Historique)
       },
-
-      // {
-      //   path: 'creation-signalement',
-      //   loadComponent: () =>
-      //     import('./features/citoyen/signalements/creation/creation')
-      //       .then(m => m.CreationSignalement)
-      // },
       {
         path: 'signalements/:id',
         loadComponent: () =>
@@ -162,7 +152,7 @@ export const routes: Routes = [
         path: 'profil',
         loadComponent: () =>
           import('./features/citoyen/profil/profil')
-            .then(m => m.Profil)
+            .then(m => m.ProfilCitoyen)
       },
     ],
   },
