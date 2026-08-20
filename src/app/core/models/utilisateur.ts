@@ -5,4 +5,5 @@ export interface Utilisateur {
     telephone?: string;
     quartier?: string;
     role: 'citoyen' | 'agent' | 'admin';
+    photoUrl: string;   
 }

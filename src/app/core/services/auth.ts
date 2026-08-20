@@ -13,7 +13,7 @@ export interface InscriptionRequest {
   accepte_conditions: boolean;
   recevoir_alertes: boolean;
 }
-
+// Réponse du backend après une inscription
 export interface InscriptionResponse {
   message: string;
   user: UtilisateurApi;
@@ -101,8 +101,9 @@ export class Auth {
       nomComplet: `${utilisateur.first_name} ${utilisateur.last_name}`.trim(),
       email: utilisateur.email,
       telephone: utilisateur.telephone,
-      quartier: utilisateur.quartier,
-      role: this.convertirRole(utilisateur.role)
+      quartier: utilisateur.quartier, 
+      role: this.convertirRole(utilisateur.role), 
+      photoUrl: utilisateur.photo_profil ?? '' // Ne pas afficher l'image si non renseignée
     };
   }
 

@@ -13,4 +13,7 @@ export interface UtilisateurApi {
   role: 'citoyen' | 'agent' | 'admin';
   telephone?: string;
   quartier?: string;
+  photo_profil?: string;
+  email_verifie?: boolean;
+  date_joined?: string;
 }
