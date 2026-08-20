@@ -12,6 +12,7 @@ import { Signalement, StatutSignalement } from '../../../../core/models/signalem
 // Type union des clés de filtre disponibles dans la barre de filtres
 type Filtre = 'tous' | StatutSignalement;
 
+
 @Component({
   selector: 'app-historique',
   imports: [CommonModule, RouterLink],
@@ -32,9 +33,9 @@ export class Historique implements OnInit {
   // ── Configuration des boutons de filtre (ordre maquette) ─────────────────────
   readonly filtres: { cle: Filtre; label: string }[] = [
     { cle: 'tous',     label: 'Tous'      },
-    { cle: 'nouveau',  label: 'Nouveaux'  },
-    { cle: 'en_cours', label: 'En cours'  },
-    { cle: 'resolu',   label: 'Résolus'   },
+    { cle: 'NOUVEAU',  label: 'Nouveaux'  },
+    { cle: 'EN_COURS', label: 'En cours'  },
+    { cle: 'RESOLU',   label: 'Résolus'   },
   ];
 
   // ── Signal computed : liste filtrée ──────────────────────────────────────────
@@ -68,11 +69,14 @@ export class Historique implements OnInit {
    *   Résolu   → fond vert foncé (couleur principale)
    */
   getStatutClasses(statut: string): string {
+    // Fidèle à la maquette Figma
+    // Nouveau  : orange-400 / text-white
+    // En cours : green-300  / text-white
+    // Résolu   : emerald-900 / text-white
     const map: Record<string, string> = {
-      tous:     'bg-[#004333] text-white',
-      nouveau:  'bg-orange-500 text-white',
-      en_cours: 'bg-[#4CAF82] text-white',
-      resolu:   'bg-[#1B5E3B] text-white',
+      NOUVEAU:  'bg-orange-400 text-white',
+      EN_COURS: 'bg-green-300 text-white',
+      RESOLU:   'bg-emerald-900 text-white',
     };
     return map[statut] ?? 'bg-gray-200 text-gray-600';
   }
@@ -80,9 +84,9 @@ export class Historique implements OnInit {
   /** Traduit la clé statut en libellé affiché dans le badge */
   getStatutLabel(statut: string): string {
     const map: Record<string, string> = {
-      nouveau:  'Nouveau',
-      en_cours: 'En cours',
-      resolu:   'Résolu',
+      NOUVEAU:  'Nouveau',
+      EN_COURS: 'En cours',
+      RESOLU:   'Résolu',
     };
     return map[statut] ?? statut;
   }
