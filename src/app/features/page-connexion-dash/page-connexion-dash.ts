@@ -1,21 +1,49 @@
-import { Component, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, inject, signal } from '@angular/core';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators
+} from '@angular/forms';
+import { Router } from '@angular/router';
+import { Auth } from '../../core/services/auth';
+
 
 @Component({
   selector: 'app-page-connexion-dash',
   standalone: true,
-  imports: [FormsModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './page-connexion-dash.html',
   styleUrl: './page-connexion-dash.css',
 })
 export class PageConnexionDash {
 
-  email = '';
-  password = '';
+  private auth = inject(Auth);
+  private router = inject(Router);
 
   showPassword = signal(false);
   twoFactor = signal(true);
   loading = signal(false);
+  erreur = signal<string | null>(null);
+
+  formulaireConnexion = new FormGroup({
+
+    email: new FormControl('', {
+      validators: [
+        Validators.required,
+        Validators.email
+      ],
+      nonNullable: true
+    }),
+
+    password: new FormControl('', {
+      validators: [
+        Validators.required
+      ],
+      nonNullable: true
+    })
+
+  });
 
   togglePassword(): void {
     this.showPassword.update(value => !value);
@@ -27,22 +55,47 @@ export class PageConnexionDash {
 
   seConnecter(): void {
 
-    if (!this.email || !this.password) {
+    this.erreur.set(null);
+
+    if (this.formulaireConnexion.invalid) {
+      this.formulaireConnexion.markAllAsTouched();
       return;
     }
 
     this.loading.set(true);
 
-    console.log({
-      email: this.email,
-      password: this.password,
-      twoFactor: this.twoFactor()
+    const { email, password } =
+      this.formulaireConnexion.getRawValue();
+
+    this.auth.connecter(email, password).subscribe({
+
+      next: (reponse) => {
+
+        console.log('Connexion réussie', reponse);
+
+        // Enregistrement de la session
+        this.auth.enregistrerSession(reponse);
+
+        this.loading.set(false);
+
+        // Redirection dashboard
+        this.router.navigate(['/dashboard']);
+      },
+
+      error: (erreur) => {
+
+        console.error(
+          'Erreur de connexion :',
+          erreur
+        );
+
+        this.loading.set(false);
+
+        this.erreur.set(
+          'Identifiant ou mot de passe incorrect.'
+        );
+      }
+
     });
-
-    // On branchera Django ici ensuite
-
-    setTimeout(() => {
-      this.loading.set(false);
-    }, 1000);
   }
 }

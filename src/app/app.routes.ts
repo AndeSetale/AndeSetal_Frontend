@@ -26,6 +26,8 @@ import { DetailIntervention } from './features/agent/detail-intervention/detail-
 import { DetailIncident as DetailIncidentAgent } from './features/agent/detail-incident/detail-incident';
 import { RapportEnvoye } from './features/agent/rapport-envoye/rapport-envoye';
 import { Profil } from './features/agent/profil/profil';
+import { guestGuard } from './core/guards/guestGuard';
+import { authDashGuard } from './core/guards/auth_dash.guard';
 
 export const routes: Routes = [
 
@@ -64,11 +66,13 @@ export const routes: Routes = [
   // ==========================================
   {
     path: 'dash/connexion',
-    component: PageConnexionDash
+    component: PageConnexionDash,
+    canActivate: [guestGuard]
   },
   {
     path: 'dashboard',
     component: Dashboard,
+    canActivate:[authDashGuard],
     children: [
 
       // Tableau de bord
