@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Auth } from '../../core/services/auth';
 
 interface NavItem {
   label: string;
@@ -16,6 +17,8 @@ interface NavItem {
   styleUrl: './sidebar.css',
 })
 export class Sidebar {
+   readonly auth = inject(Auth);
+
   readonly navItems: NavItem[] = [
     {
       label: 'Tableau de bord',
@@ -54,4 +57,5 @@ export class Sidebar {
     //   icon: 'settings',
     // },
   ];
+  
 }
