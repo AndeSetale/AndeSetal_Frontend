@@ -23,7 +23,7 @@ export class CartesComponent implements AfterViewInit, OnDestroy {
   incidents: Incident[] = [];
   filteredIncidents: Incident[] = [];
   selectedIncident: Incident | null = null;
-  private markersMap: Map<number, L.Marker> = new Map();
+  private markersMap: Map<string, L.Marker> = new Map();
 
   ngAfterViewInit(): void {
     this.initMap();
@@ -91,7 +91,7 @@ export class CartesComponent implements AfterViewInit, OnDestroy {
     this.filteredIncidents.forEach((inc) => {
       // Icône personnalisée stylisée
       const isSelected = this.selectedIncident?.id === inc.id;
-      const color = inc.urgence === 'critique' ? '#ef4444' : inc.urgence === 'modere' ? '#f59e0b' : '#9333ea';
+      const color = inc.urgence === 'CRITIQUE' ? '#ef4444' : inc.urgence === 'MODERE' ? '#f59e0b' : '#9333ea';
       
       const customIcon = L.divIcon({
         className: 'custom-leaflet-marker',

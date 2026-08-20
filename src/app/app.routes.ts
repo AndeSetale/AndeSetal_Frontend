@@ -3,7 +3,7 @@ import { Dashboard } from './layouts/dashboard/dashboard';
 import { Mobile } from './layouts/mobile/mobile';
 import { Accueil } from './features/tableau-de-bord/accueil';
 
-import { AccueilCitoyen } from './features/citoyen/accueil/accueil';
+
 import { Carte } from './features/carte/carte';
 
 import { CarteIntervention } from './components/carte-intervention/carte-intervention';
@@ -31,6 +31,8 @@ import { RapportEnvoye } from './features/agent/rapport-envoye/rapport-envoye';
 import { Profil } from './features/agent/profil/profil';
 import { guestGuard } from './core/guards/guestGuard';
 import { authDashGuard } from './core/guards/auth_dash.guard';
+import { AccueilParent } from './features/citoyen/acceuil-parent/accueil-parent';
+
 
 
 export const routes: Routes = [
@@ -143,7 +145,7 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        component: AccueilCitoyen,
+        component: AccueilParent,
       },
       {
         path: 'carte',

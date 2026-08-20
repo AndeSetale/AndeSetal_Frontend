@@ -1,14 +1,26 @@
-import { Component } from '@angular/core';
-import { BreadcrumbAgent } from "../../components/agent-detail/breadcrumb-agent/breadcrumb-agent";
-import { AgentProfileHeader } from "../../components/agent-detail/agent-profile-header/agent-profile-header";
-import { AgentStatsGrid } from "../../components/agent-detail/agent-stats-grid/agent-stats-grid";
-import { RepartitionIncidents } from "../../components/repartition-incidents/repartition-incidents";
-import { ActivityChart } from "../../components/agent-detail/activity-chart/activity-chart";
-import { RecentActivityTable } from "../../components/agent-detail/recent-activity-table/recent-activity-table";
+import { Component, inject, signal } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+
+import { BreadcrumbAgent } from '../../components/agent-detail/breadcrumb-agent/breadcrumb-agent';
+import { AgentProfileHeader } from '../../components/agent-detail/agent-profile-header/agent-profile-header';
+import { AgentStatsGrid } from '../../components/agent-detail/agent-stats-grid/agent-stats-grid';
+import { GraphiqueIncidents } from '../../components/graphique-incidents/graphique-incidents';
+import { RepartitionIncidents } from '../../components/repartition-incidents/repartition-incidents';
+import { ActivityChart } from '../../components/agent-detail/activity-chart/activity-chart';
+import { RecentActivityTable } from '../../components/agent-detail/recent-activity-table/recent-activity-table';
+
+import { AgentService, Agent } from '../../core/services/agent.service';
 
 @Component({
   selector: 'app-agent-detail',
-  imports: [BreadcrumbAgent, AgentProfileHeader, AgentStatsGrid, RepartitionIncidents, ActivityChart, RecentActivityTable],
+  standalone: true,
+  imports: [
+    AgentProfileHeader,
+    AgentStatsGrid,
+    RepartitionIncidents,
+    ActivityChart,
+    RecentActivityTable
+  ],
   templateUrl: './agent-detail.html',
   styleUrl: './agent-detail.css',
 })

@@ -1,7 +1,5 @@
-import { Injectable } from '@angular/core';
-import { Observable, of, delay } from 'rxjs';
+import { Observable, of, delay,map } from 'rxjs';
 import { Injectable, inject } from '@angular/core';
-import { Observable, map } from 'rxjs';
 import { Api } from './api';
 
 export interface Incident {
@@ -53,7 +51,8 @@ const LABELS_TYPE: Record<string, string> = {
 
 @Injectable({ providedIn: 'root' })
 export class IncidentService {
-  private incidents: Incident[] = [...MOCK_INCIDENTS];
+  private readonly api = inject(Api);
+
 
   // State pour le signalement en cours
   private draftPhotoUrl: string | null = null;
@@ -70,9 +69,7 @@ export class IncidentService {
     return this.lastTicketReference;
   }
 
-  getIncidents(): Observable<Incident[]> {
-    return of(this.incidents).pipe(delay(300));
-  }
+ 
 
   setDraftPhoto(photoUrl: string) {
     this.draftPhotoUrl = photoUrl;
@@ -150,24 +147,7 @@ export class IncidentService {
     });
   }
 
-  addIncident(incidentData: { titre?: string; description?: string; type?: Incident['type']; urgence?: Incident['urgence'] }): Observable<Incident> {
-    const newId = this.incidents.length + 1;
-    const newIncident: Incident = {
-      id: newId,
-      latitude: this.draftLat,
-      longitude: this.draftLng,
-      type: incidentData.type || 'depot_sauvage',
-      urgence: incidentData.urgence || 'modere',
-      statut: 'nouveau',
-      titre: incidentData.titre || 'Signalement citoyen',
-      adresse: this.draftAddress,
-      photoUrl: this.draftPhotoUrl || undefined,
-      signalePar: 'Citoyen (Anonyme)',
-      dateCreation: new Date().toISOString(),
-    };
-    this.incidents.unshift(newIncident);
-    return of(newIncident).pipe(delay(400));
-  private readonly api = inject(Api);
+
 
   getIncidents(): Observable<Incident[]> {
     return this.api.get<ListeApi>('/incidents/').pipe(
