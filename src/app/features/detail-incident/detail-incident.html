@@ -199,19 +199,19 @@
           Assignation
         </h3>
 
-        @if (incident()?.statut === 'NOUVEAU') {
+       @if (incident()?.assigne_a) {
 
-          <p class="text-sm text-orange-600 font-medium">
-            En attente d'agent
-          </p>
+  <p class="text-sm text-green-600 font-medium">
+    Agent assigné
+  </p>
 
-        } @else {
+} @else {
 
-          <p class="text-sm text-gray-600">
-            Agent assigné
-          </p>
+  <p class="text-sm text-orange-600 font-medium">
+    En attente d'agent
+  </p>
 
-        }
+}
 
       </div>
 
@@ -337,11 +337,24 @@
               Assigner à un agent
             </label>
 
-            <select class="w-full h-14 px-4 rounded-xl border border-gray-300">
-              <option>Sélectionner un agent</option>
-              <option>Agent 1</option>
-              <option>Agent 2</option>
-            </select>
+            <select
+  class="w-full h-14 px-4 rounded-xl border border-gray-300"
+  [value]="agentSelectionne() ?? ''"
+  (change)="selectionnerAgent($event)"
+>
+  <option value="">
+    Sélectionner un agent
+  </option>
+
+  @for (agent of agents(); track agent.id) {
+
+    <option [value]="agent.id">
+      {{ agent.nom_complet }}
+      - {{ agent.matricule }}
+    </option>
+
+  }
+</select>
           </div>
 
           <div>
@@ -379,10 +392,14 @@
           </div>
 
           <button
-            class="w-full py-3 bg-gray-800 text-white rounded-xl font-medium"
-          >
-            Valider l'intervention
-          </button>
+  type="button"
+  (click)="assignerAgent()"
+  [disabled]="!agentSelectionne()"
+  class="w-full py-3 bg-gray-800 text-white rounded-xl font-medium
+         disabled:opacity-50 disabled:cursor-not-allowed"
+>
+  Valider l'intervention
+</button>
 
         </div>
 

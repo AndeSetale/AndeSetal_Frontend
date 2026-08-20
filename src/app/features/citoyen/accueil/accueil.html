@@ -1,1 +1,111 @@
-<p>accueil works!</p>
+<div class="relative min-h-screen bg-slate-900 text-white font-sans overflow-x-hidden pb-24">
+  <!-- Image de Fond Hero -->
+  <div class="absolute inset-0 z-0">
+    <img
+      src="/images/images.png"
+      alt="Dakar Plateau Hero"
+      class="w-full h-full object-cover"
+      onerror="this.onerror=null; this.src='/images/image 27.png';"
+    />
+    <!-- Superposition Dégradé Sombre -->
+    <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-slate-900/90"></div>
+  </div>
+
+  <!-- Contenu Supérieur (Header) avec fond transparent Glassmorphism -->
+  <header class="relative z-10 px-5 py-3.5 flex items-center justify-between bg-teal-950/40 backdrop-blur-md border-b border-white/10 shadow-sm">
+    <!-- Logo Andë Sétal depuis public/logo/logo-and-setal.png -->
+    <a routerLink="/mobile" class="flex items-center">
+      <img
+        src="/logo/logo-and-setal.png"
+        alt="Andë Sétal Logo"
+        class="h-8 w-auto object-contain drop-shadow"
+        onerror="this.onerror=null; this.src='/images/logo.png';"
+      />
+    </a>
+
+    <!-- Bouton Se Connecter -->
+    <button
+      (click)="goToConnexion()"
+      class="bg-white/15 hover:bg-white/30 active:scale-95 transition-all backdrop-blur-md border border-white/40 text-white text-xs font-semibold px-5 py-2 rounded-full shadow-lg"
+    >
+      Se connecter
+    </button>
+  </header>
+
+  <!-- Section Hero : Titre + Sous-titre + Bannière d'Action -->
+  <div class="relative z-10 px-6 pt-16 pb-8 flex flex-col justify-end min-h-[60vh]">
+    <h1 class="text-3xl md:text-4xl font-extrabold text-white leading-tight tracking-tight drop-shadow-md max-w-sm">
+      Ensemble,<br />faisons briller<br />Dakar Plateau
+    </h1>
+    <p class="mt-3 text-sm text-gray-200 font-medium max-w-xs drop-shadow">
+      Notre engagement est le moteur du changement
+    </p>
+
+    <!-- Bannière Glassmorphism Signaler un Incident -->
+    <div
+      (click)="goToScan()"
+      class="mt-8 bg-emerald-950/40 hover:bg-emerald-950/60 active:scale-98 transition-all backdrop-blur-md border border-white/20 rounded-2xl p-4 flex items-center justify-between shadow-2xl cursor-pointer"
+    >
+      <div class="flex items-center gap-4">
+        <div class="size-12 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white shadow-inner">
+          <svg class="size-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/>
+          </svg>
+        </div>
+        <div>
+          <h2 class="text-base font-bold text-white leading-snug">Signaler un incident</h2>
+          <p class="text-xs text-gray-200 font-normal">Photo, lieu, et c'est parti</p>
+        </div>
+      </div>
+
+      <div class="size-10 rounded-full bg-white/30 backdrop-blur-md flex items-center justify-center text-white shadow">
+        <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section : Notre Impact Collectif -->
+  <div class="relative z-10 px-5 pt-4 pb-6 bg-slate-900/80 backdrop-blur-md border-t border-white/10 rounded-t-3xl">
+    <h3 class="text-center text-lg font-bold text-white mb-6 tracking-wide">
+      Notre impact collectif
+    </h3>
+
+    <div class="grid grid-cols-3 gap-3">
+      <!-- Card 1 : Signalements -->
+      <div class="bg-white rounded-2xl p-4 flex flex-col items-center justify-center text-center shadow-lg border border-gray-100">
+        <div class="size-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-800 mb-2">
+          <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+          </svg>
+        </div>
+        <span class="text-2xl font-extrabold text-slate-900">122+</span>
+        <span class="text-[11px] text-gray-500 font-medium leading-tight mt-1">Signalements</span>
+      </div>
+
+      <!-- Card 2 : Résolus -->
+      <div class="bg-white rounded-2xl p-4 flex flex-col items-center justify-center text-center shadow-lg border border-gray-100">
+        <div class="size-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-800 mb-2">
+          <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+        <span class="text-2xl font-extrabold text-slate-900">1+</span>
+        <span class="text-[11px] text-gray-500 font-medium leading-tight mt-1">Résolus</span>
+      </div>
+
+      <!-- Card 3 : Citoyens actifs -->
+      <div class="bg-white rounded-2xl p-4 flex flex-col items-center justify-center text-center shadow-lg border border-gray-100">
+        <div class="size-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-800 mb-2">
+          <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+          </svg>
+        </div>
+        <span class="text-2xl font-extrabold text-slate-900">42+</span>
+        <span class="text-[11px] text-gray-500 font-medium leading-tight mt-1">Citoyens actifs</span>
+      </div>
+    </div>
+  </div>
+</div>

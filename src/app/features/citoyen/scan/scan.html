@@ -1,0 +1,150 @@
+<div class="relative min-h-screen bg-neutral-900 text-white flex flex-col justify-between overflow-hidden">
+
+  <!-- Header flottant -->
+  <div class="absolute top-4 left-4 z-20 flex items-center gap-3">
+    <button
+      (click)="goBack()"
+      class="size-11 rounded-full bg-black/40 backdrop-blur-md border border-white/10 flex items-center justify-center text-white active:scale-95 transition-transform"
+      aria-label="Retour"
+    >
+      <svg class="size-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+      </svg>
+    </button>
+    <span class="text-sm font-medium bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10">
+      Prise de vue d'incident
+    </span>
+  </div>
+
+  <!-- Zone de viseur / caméra ou aperçu -->
+  <div class="relative flex-1 w-full h-full flex items-center justify-center overflow-hidden bg-black">
+
+    <!-- Mode vidéo active -->
+    <video
+      #videoElement
+      autoplay
+      playsinline
+      muted
+      class="w-full h-full object-cover"
+      [class.hidden]="capturedPhoto !== null || !isCameraActive"
+    ></video>
+
+    <!-- Photo capturée -->
+    <img
+      *ngIf="capturedPhoto"
+      [src]="capturedPhoto"
+      alt="Incident capturé"
+      class="w-full h-full object-cover animate-fade-in"
+    />
+
+    <!-- Message d'erreur / Fallback -->
+    <div
+      *ngIf="!isCameraActive && !capturedPhoto"
+      class="p-6 text-center max-w-xs bg-white/10 backdrop-blur-lg rounded-3xl border border-white/10"
+    >
+      <svg class="size-12 mx-auto text-teal-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/>
+      </svg>
+      <p class="text-sm text-neutral-200 mb-4">{{ cameraError || 'Activation de l\'appareil photo...' }}</p>
+      <div class="flex flex-col gap-2">
+        <button
+          (click)="triggerFileInput()"
+          class="w-full py-3 bg-teal-600 hover:bg-teal-500 font-semibold rounded-xl text-white shadow-lg active:scale-95 transition-transform"
+        >
+          Choisir une photo de la galerie
+        </button>
+        <button
+          (click)="useDemoPhoto()"
+          class="w-full py-2.5 bg-white/10 hover:bg-white/20 text-xs font-medium rounded-xl text-neutral-300"
+        >
+          Utiliser la photo d'exemple
+        </button>
+      </div>
+    </div>
+
+    <!-- Grille de cadrage (viseur) -->
+    <div
+      *ngIf="isCameraActive && !capturedPhoto"
+      class="absolute inset-8 border-2 border-white/30 rounded-3xl pointer-events-none flex flex-col justify-between p-4"
+    >
+      <div class="flex justify-between">
+        <div class="size-5 border-t-2 border-l-2 border-teal-400"></div>
+        <div class="size-5 border-t-2 border-r-2 border-teal-400"></div>
+      </div>
+      <div class="text-center text-xs font-medium text-white/70 bg-black/40 px-3 py-1 rounded-full self-center backdrop-blur">
+        Cadrez le problème de salubrité
+      </div>
+      <div class="flex justify-between">
+        <div class="size-5 border-b-2 border-l-2 border-teal-400"></div>
+        <div class="size-5 border-b-2 border-r-2 border-teal-400"></div>
+      </div>
+    </div>
+
+    <!-- Canvas caché pour snapshot -->
+    <canvas #canvasElement class="hidden"></canvas>
+    <input #fileInput type="file" accept="image/*" class="hidden" (change)="onFileSelected($event)" />
+  </div>
+
+  <!-- Barre d'action inférieure -->
+  <div class="p-6 bg-gradient-to-t from-black via-black/80 to-transparent flex items-center justify-around z-20">
+
+    <!-- Non encore capturé -->
+    <ng-container *ngIf="!capturedPhoto">
+      <button
+        (click)="triggerFileInput()"
+        class="size-12 rounded-full bg-white/10 backdrop-blur border border-white/20 flex items-center justify-center text-white active:scale-90 transition-transform"
+        title="Importer une photo"
+      >
+        <svg class="size-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+        </svg>
+      </button>
+
+      <!-- Bouton Déclencheur circulaire principal -->
+      <button
+        (click)="capturePhoto()"
+        aria-label="Prendre la photo"
+        class="size-20 rounded-full border-4 border-white bg-teal-950 p-1 flex items-center justify-center shadow-[0_0_25px_rgba(19,117,71,0.6)] active:scale-90 transition-transform"
+      >
+        <div class="size-full rounded-full bg-white transition-colors hover:bg-teal-100"></div>
+      </button>
+
+      <!-- Mode secours -->
+      <button
+        (click)="useDemoPhoto()"
+        class="size-12 rounded-full bg-white/10 backdrop-blur border border-white/20 flex items-center justify-center text-white active:scale-90 transition-transform"
+        title="Photo modèle"
+      >
+        <svg class="size-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
+        </svg>
+      </button>
+    </ng-container>
+
+    <!-- Photo capturée : Recommencer ou Valider -->
+    <ng-container *ngIf="capturedPhoto">
+      <button
+        (click)="retakePhoto()"
+        class="flex items-center gap-2 px-5 py-3 rounded-full bg-neutral-800 border border-neutral-700 text-white font-medium active:scale-95 transition-transform"
+      >
+        <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+        </svg>
+        Reprendre
+      </button>
+
+      <button
+        (click)="confirmPhoto()"
+        class="flex items-center gap-2 px-7 py-3.5 rounded-full bg-teal-700 hover:bg-teal-600 text-white font-semibold shadow-lg shadow-teal-900/40 active:scale-95 transition-transform"
+      >
+        <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+        </svg>
+        Continuer
+      </button>
+    </ng-container>
+
+  </div>
+
+</div>

@@ -7,12 +7,12 @@ import {
   Validators
 } from '@angular/forms';
 import { emailOuTelephoneValide } from '../email-ou-telephone.validator';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { Auth } from '../../../core/services/auth';
 
 @Component({
   selector: 'app-connexion',
-  imports: [ReactiveFormsModule, EnTeteAuthentification],
+  imports: [ReactiveFormsModule, EnTeteAuthentification, RouterLink],
   templateUrl: './connexion.html',
   styleUrl: './connexion.css',
 })

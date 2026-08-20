@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Creation } from './creation';
+import { CreationSignalement as Creation } from './creation';
 
 describe('Creation', () => {
   let component: Creation;

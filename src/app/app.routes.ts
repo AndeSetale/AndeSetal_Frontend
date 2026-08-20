@@ -3,18 +3,21 @@ import { Dashboard } from './layouts/dashboard/dashboard';
 import { Mobile } from './layouts/mobile/mobile';
 import { Accueil } from './features/tableau-de-bord/accueil';
 
-import { Accueil as AccMobile } from './features/accueil/accueil';
+
 import { Carte } from './features/carte/carte';
 
 import { CarteIntervention } from './components/carte-intervention/carte-intervention';
-import { ListeIntervention } from './features/interventions/liste/liste';
-import { authGuard } from './core/guards/auth-guard';
 
 import { GestionAgents } from './features/gestion-agents/gestion-agents';
 import { AgentDetail } from './features/agent-detail/agent-detail';
 import { Incidents } from './features/incidents/incidents';
 import { CarteIncidentsComponent } from './features/carte-incidents/carte-incidents/carte-incidents';
 import { DetailIncident } from './features/detail-incident/detail-incident';
+import { AccueilComponent as AccueilCitoyen } from './features/citoyen/accueil/accueil';
+import { CartesComponent } from './features/citoyen/cartes/cartes';
+import { ScanComponent } from './features/citoyen/scan/scan';
+import { EnregistrementComponent } from './features/citoyen/enregistrement/enregistrement';
+import { ConfirmationComponent } from './features/citoyen/confirmation/confirmation';
 import { PageConnexionDash } from './features/page-connexion-dash/page-connexion-dash';
 
 import { Carte as CarteAgent } from './features/agent/carte/carte';
@@ -26,6 +29,11 @@ import { DetailIntervention } from './features/agent/detail-intervention/detail-
 import { DetailIncident as DetailIncidentAgent } from './features/agent/detail-incident/detail-incident';
 import { RapportEnvoye } from './features/agent/rapport-envoye/rapport-envoye';
 import { Profil } from './features/agent/profil/profil';
+import { guestGuard } from './core/guards/guestGuard';
+import { authDashGuard } from './core/guards/auth_dash.guard';
+import { AccueilParent } from './features/citoyen/acceuil-parent/accueil-parent';
+
+
 
 export const routes: Routes = [
 
@@ -64,11 +72,13 @@ export const routes: Routes = [
   // ==========================================
   {
     path: 'dash/connexion',
-    component: PageConnexionDash
+    component: PageConnexionDash,
+    canActivate: [guestGuard]
   },
   {
     path: 'dashboard',
     component: Dashboard,
+    canActivate:[authDashGuard],
     children: [
 
       // Tableau de bord
@@ -135,11 +145,44 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        component: AccMobile,
+        component: AccueilParent,
       },
       {
         path: 'carte',
-        component: Carte,
+        component: CartesComponent,
+      },
+      {
+        path: 'scan',
+        component: ScanComponent,
+      },
+      {
+        path: 'enregistrement',
+        component: EnregistrementComponent,
+      },
+      {
+        path: 'confirmation',
+        component: ConfirmationComponent,
+      },
+
+      // routes concernant le profil du citoyen  et le signalement
+      {
+        path: 'signalements',
+        loadComponent: () =>
+          import('./features/citoyen/signalements/historique/historique')
+            .then(m=> m.Historique)
+      },
+      {
+        path: 'signalements/:id',
+        loadComponent: () =>
+          import('./features/citoyen/signalements/detail/detail')
+            .then(m => m.DetailSignalement) 
+      },
+
+      {
+        path: 'profil',
+        loadComponent: () =>
+          import('./features/citoyen/profil/profil')
+            .then(m => m.ProfilCitoyen)
       },
     ],
   },

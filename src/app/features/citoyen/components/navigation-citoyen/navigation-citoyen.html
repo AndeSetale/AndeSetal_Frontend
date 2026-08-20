@@ -1,5 +1,5 @@
 <nav
-  class="fixed bottom-0 left-0 right-0 z-50 "
+  class="fixed bottom-0 left-0 right-0 z-50"
   aria-label="Navigation mobile"
 >
   <div
@@ -7,19 +7,18 @@
            shadow-[0px_-4px_20px_-8px_rgba(0,64,48,0.15)]"
   >
 
-    <!-- Navigation -->
+    <!-- Tabs de navigation -->
     <div
       class="h-full px-9 pt-3 pb-6
              flex items-center justify-between"
     >
 
-      <!-- Accueil -->
+      <!-- ── Accueil ── -->
       <a
         routerLink="/mobile"
-        routerLinkActive="text-teal-950"
+        routerLinkActive="text-teal-950 font-medium"
         [routerLinkActiveOptions]="{ exact: true }"
-        class="relative flex flex-col items-center gap-1
-               text-gray-400"
+        class="relative flex flex-col items-center gap-1 text-gray-400"
       >
         <svg
           width="20"
@@ -43,24 +42,18 @@
             stroke-linejoin="round"
           />
         </svg>
-
-        <span class="text-[10px] font-medium leading-6">
-          Accueil
-        </span>
-
+        <span class="text-[10px] leading-6">Accueil</span>
         <!-- Indicateur actif -->
         <span
-          class="absolute -bottom-1 size-1 rounded-full
-                 bg-current opacity-0
-                 group-[.router-link-active]:opacity-100"
+          class="absolute -bottom-1 size-1 rounded-full bg-teal-950
+                 opacity-0 [.router-link-active_&]:opacity-100"
         ></span>
       </a>
 
-
-      <!-- Carte -->
+      <!-- ── Carte ── -->
       <a
-        routerLink="mobile/carte"
-        routerLinkActive="text-teal-950"
+        routerLink="/mobile/carte"
+        routerLinkActive="text-teal-950 font-medium"
         class="flex flex-col items-center gap-1 text-gray-400"
       >
         <svg
@@ -77,70 +70,52 @@
             stroke-linecap="round"
             stroke-linejoin="round"
           />
-          <path
-            d="M7.5 5.83V19.17"
-            stroke="currentColor"
-            stroke-width="1.67"
-          />
-          <path
-            d="M12.5 3.33V16.67"
-            stroke="currentColor"
-            stroke-width="1.67"
-          />
+          <path d="M7.5 5.83V19.17" stroke="currentColor" stroke-width="1.67" />
+          <path d="M12.5 3.33V16.67" stroke="currentColor" stroke-width="1.67" />
         </svg>
-
-        <span class="text-[10px] font-normal leading-6">
-          Carte
-        </span>
+        <span class="text-[10px] leading-6">Carte</span>
       </a>
 
+      <!-- ── Espace central pour le bouton flottant ── -->
+      <div class="w-14 shrink-0" aria-hidden="true"></div>
 
-      <!-- Espace central -->
-      <div
-        class="w-14 shrink-0"
-        aria-hidden="true"
-      ></div>
-
-
-      <!-- Set-Setal -->
+      <!-- ── Signals ── -->
+      <!-- Icône : cloche de notification, fidèle à la maquette Figma -->
       <a
-        routerLink="/set-setal"
-        routerLinkActive="text-teal-950"
+        routerLink="/mobile/signalements"
+        routerLinkActive="text-teal-950 font-medium"
         class="flex flex-col items-center gap-1 text-gray-400"
       >
-  <svg
+        <svg
           width="20"
           height="20"
           viewBox="0 0 20 20"
           fill="none"
           aria-hidden="true"
         >
-          <circle
-            cx="10"
-            cy="6.67"
-            r="3.33"
-            stroke="currentColor"
-            stroke-width="1.67"
-          />
+          <!-- Cloche -->
           <path
-            d="M3.33 17.5C3.33 14.74 6.32 12.5 10 12.5C13.68 12.5 16.67 14.74 16.67 17.5"
+            d="M10 2.5C7.24 2.5 5 4.74 5 7.5V12.5L3.33 14.17V15H16.67V14.17L15 12.5V7.5C15 4.74 12.76 2.5 10 2.5Z"
             stroke="currentColor"
-            stroke-width="1.67"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <!-- Anneau de sonnette bas -->
+          <path
+            d="M8.5 15C8.5 15.83 9.17 16.5 10 16.5C10.83 16.5 11.5 15.83 11.5 15"
+            stroke="currentColor"
+            stroke-width="1.5"
             stroke-linecap="round"
           />
         </svg>
-
-
-        <span class="text-[10px] font-normal leading-6">
-          Set-Setal
-        </span>
+        <span class="text-[10px] leading-6">Signals</span>
       </a>
 
-
-      <!-- Profil -->
+      <!-- ── Profil ── -->
       <a
-        routerLink="/profil"
-        routerLinkActive="text-teal-950"
+        routerLink="/mobile/profil"
+        routerLinkActive="text-teal-950 font-medium"
         class="flex flex-col items-center gap-1 text-gray-400"
       >
         <svg
@@ -164,27 +139,20 @@
             stroke-linecap="round"
           />
         </svg>
-
-        <span class="text-[10px] font-normal leading-6">
-          Profil
-        </span>
+        <span class="text-[10px] leading-6">Profil</span>
       </a>
 
     </div>
 
-
-    <!-- Bouton Signaler -->
+    <!-- ── Bouton central flottant "Signaler" ── -->
     <a
-      routerLink="/interventions/creation"
+      routerLink="/scan"
       aria-label="Signaler un incident"
-      class="absolute left-1/2 -top-6
-             -translate-x-1/2
-             size-14
-             bg-teal-950
-             rounded-full
+      class="absolute left-1/2 -top-6 -translate-x-1/2
+             size-14 bg-teal-950 rounded-full
              flex items-center justify-center
              text-stone-100
-         
+             ring-[5px] ring-white
              shadow-[0px_8px_20px_-4px_rgba(0,64,48,0.50)]
              transition-transform
              hover:scale-105

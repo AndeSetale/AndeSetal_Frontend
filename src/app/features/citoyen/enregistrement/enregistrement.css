@@ -1,0 +1,4 @@
+/* Custom styles for enregistrement component if needed */
+textarea:focus {
+  box-shadow: 0 0 0 3px rgba(15, 90, 59, 0.15);
+}
