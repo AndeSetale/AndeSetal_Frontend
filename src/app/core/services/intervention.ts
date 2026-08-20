@@ -15,17 +15,17 @@ export class InterventionService {
    */
   private readonly interventionsSignal = signal<Intervention[]>([
     {
-      id: 1,
-      titre: 'Éclairage Public',
-      description: "Panne d'éclairage signalée.",
-      categorie: 'Éclairage',
-      adresse: "Place de l'Indépendance",
-      distance: '12 m',
-      priorite: 'critique',
-      statut: 'disponible',
-      image: 'https://placehold.co/80x80',
-      sla: '2h',
-    },
+  id: 4402,
+  titre: 'Réfection Chaussée',
+  description: "Panne d'éclairage signalée.",
+  categorie: 'Éclairage',
+  adresse: "Avenue Lamine Guèye, Dakar",
+  distance: '12 m',
+  priorite: 'critique',
+  statut: 'en_cours',
+  image: 'https://placehold.co/80x80',
+  sla: '2h',
+},
 
     {
       id: 2,
@@ -180,6 +180,12 @@ export class InterventionService {
             }
           : intervention
       )
+    );
+  }
+
+  getById(id: number | string): Intervention | undefined {
+    return this.interventionsSignal().find(
+      intervention => String(intervention.id) === String(id)
     );
   }
 }

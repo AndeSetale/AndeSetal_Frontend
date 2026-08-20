@@ -13,6 +13,7 @@ import { AgentDetail } from './features/agent-detail/agent-detail';
 import { Incidents } from './features/incidents/incidents';
 import { CarteIncidentsComponent } from './features/carte-incidents/carte-incidents/carte-incidents';
 import { DetailIncident } from './features/detail-incident/detail-incident';
+import { PageConnexionDash } from './features/page-connexion-dash/page-connexion-dash';
 
 import { Carte as CarteAgent } from './features/agent/carte/carte';
 import { Agent } from './features/agent/layouts/agent/agent';
@@ -20,7 +21,11 @@ import { AccueilAgent } from './features/agent/accueil/accueil';
 import { Interventions } from './features/agent/interventions/interventions';
 import { HistoriqueRapport } from './features/agent/historique-rapport/historique-rapport';
 import { DetailIntervention } from './features/agent/detail-intervention/detail-intervention';
+import { DetailIncident as DetailIncidentAgent } from './features/agent/detail-incident/detail-incident';
+import { RapportEnvoye } from './features/agent/rapport-envoye/rapport-envoye';
 import { Profil } from './features/agent/profil/profil';
+import { guestGuard } from './core/guards/guestGuard';
+import { authDashGuard } from './core/guards/auth_dash.guard';
 
 
 export const routes: Routes = [
@@ -59,8 +64,14 @@ export const routes: Routes = [
   // PARCOURS DESKTOP — SIDEBAR
   // ==========================================
   {
+    path: 'dash/connexion',
+    component: PageConnexionDash,
+    canActivate: [guestGuard]
+  },
+  {
     path: 'dashboard',
     component: Dashboard,
+    canActivate:[authDashGuard],
     children: [
 
       // Tableau de bord
@@ -175,6 +186,7 @@ export const routes: Routes = [
   path: 'agent',
   component: Agent,
   children: [
+
     {
       path: '',
       component: AccueilAgent,
@@ -186,13 +198,23 @@ export const routes: Routes = [
     },
 
     {
-      path: 'historique',
+      path: 'interventions/:id',
+      component: DetailIntervention,
+    },
+
+    {
+      path: 'incidents/:id',
+      component: DetailIncidentAgent,
+    },
+
+    {
+      path: 'historique/:id',
       component: HistoriqueRapport,
     },
 
     {
-      path: 'detail/:id',
-      component: DetailIntervention,
+      path: 'rapport-envoye/:id',
+      component: RapportEnvoye,
     },
 
     {
@@ -204,6 +226,7 @@ export const routes: Routes = [
       path: 'profil',
       component: Profil,
     },
+
   ],
 },
 

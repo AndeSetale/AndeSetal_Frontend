@@ -4,7 +4,7 @@
   <!-- CONTENU DES PAGES AGENT -->
   <!-- ========================================== -->
 
-  <main class="h-full w-full overflow-y-auto pb-24">
+  <main class="h-full w-full overflow-y-auto" [class.pb-24]="afficherNavigation()">
 
     <router-outlet></router-outlet>
 
@@ -12,9 +12,10 @@
 
 
   <!-- ========================================== -->
-  <!-- NAVIGATION AGENT FIXE -->
+  <!-- NAVIGATION AGENT -->
+  <!-- Masquée sur /agent/carte -->
   <!-- ========================================== -->
 
-  <app-navigation-agent></app-navigation-agent>
+  <app-navigation-agent [class.hidden]="!afficherNavigation()"></app-navigation-agent>
 
 </div>

@@ -1,17 +1,22 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { HeaderAgent } from '../components/header-agent/header-agent';
+
 import {
   LucideCircleCheck,
   LucideClock3,
+  LucideLogOut,
 } from '@lucide/angular';
+
 
 @Component({
   selector: 'app-profil',
-  standalone: true,
   imports: [
     RouterLink,
     LucideCircleCheck,
     LucideClock3,
+    LucideLogOut,
+    HeaderAgent,
   ],
   templateUrl: './profil.html',
   styleUrl: './profil.css',

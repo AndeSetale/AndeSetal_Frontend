@@ -30,7 +30,10 @@ export class Auth {
 
 
   // Utilisateur actuellement connecté
-  private utilisateurConnecte = signal<Utilisateur | null>(null);
+  private utilisateurConnecte = signal<Utilisateur | null>(
+  JSON.parse(localStorage.getItem('utilisateur') || 'null')
+);
+
 
   // Permet aux composants de consulter l'utilisateur connecté
   utilisateur = this.utilisateurConnecte.asReadonly();
@@ -85,6 +88,8 @@ export class Auth {
     this.utilisateurConnecte.set(
       this.convertirUtilisateur(reponse.user)
     );
+    const utilisateur = this.convertirUtilisateur(reponse.user);
+    localStorage.setItem('utilisateur', JSON.stringify(utilisateur));
   }
 
   // Transforme le format utilisateur du backend vers celui du frontend
@@ -110,6 +115,15 @@ export class Auth {
     return role;
   }
 
+  // ============================================================
+// RÉCUPÉRER L'UTILISATEUR CONNECTÉ
+// ============================================================
+
+  me() {
+    return this.api.get<UtilisateurApi>('/auth/me/');
+  }
+
+
   rafraichirToken() {
     const refreshToken = this.tokenStorage.recupererRefreshToken();
 
@@ -132,6 +146,7 @@ export class Auth {
   // Déconnexion
   deconnecter(): void {
     this.tokenStorage.supprimerTokens();
+    localStorage.removeItem('utilisateur');
     this.utilisateurConnecte.set(null);
   }
 }

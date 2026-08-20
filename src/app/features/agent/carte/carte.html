@@ -1,11 +1,16 @@
-<div class="relative mx-auto h-screen w-full max-w-[384px] overflow-hidden rounded-[30px] bg-green-50">
+<div
+  class="relative mx-auto h-screen w-full max-w-[384px] overflow-hidden bg-green-50"
+>
+  <!-- =========================================================
+       CARTE
+  ========================================================== -->
 
-  <!-- ZONE CARTE -->
-  <section
-    class="relative h-screen w-full overflow-hidden rounded-[30px]"
-  >
+  <section class="relative h-full w-full overflow-hidden">
 
-    <!-- LEAFLET -->
+    <!-- =======================================================
+         LEAFLET
+    ======================================================== -->
+
     <div
       id="map"
       class="absolute inset-0 z-0 h-full w-full bg-red-200"
@@ -13,62 +18,34 @@
     ></div>
 
 
-<!-- HEADER -->
-<div class="absolute inset-x-0 top-0 z-20">
-<app-header-agent
-  titre="Carte"
-  class="absolute inset-x-0 top-0 z-20"
-/>
-</div>
+    <!-- =======================================================
+         HEADER
+         Le header est fourni par app-header-agent.
+         Pas de doublon titre/flèche ici.
+    ======================================================== -->
 
-      <button
-        type="button"
-        class="absolute left-4 flex size-9 items-center justify-center rounded-2xl
-               bg-teal-950/20 text-teal-950"
-        aria-label="Retour"
-      >
-        <!-- Arrow left -->
-        <svg
-          class="size-5"
-          viewBox="0 0 20 20"
-          fill="none"
-          aria-hidden="true"
-        >
-          <path
-            d="M10 4.17 4.17 10 10 15.83M4.17 10h11.66"
-            stroke="currentColor"
-            stroke-width="1.67"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-      </button>
-
-      <h1 class="text-base font-medium leading-6 tracking-tight text-teal-950">
-        Carte
-      </h1>
+    <app-header-agent
+      titre="Carte"
+      class="absolute inset-x-0 top-0 z-40 block"
+    ></app-header-agent>
 
 
+    <!-- =======================================================
+         FILTRES
+    ======================================================== -->
 
-    <!-- =========================
-         MAP FILTERS
-    ========================== -->
     <nav
-      class="absolute inset-x-0 top-20 z-10 overflow-x-auto px-4 pt-4 pb-2
-             scrollbar-none"
+      class="absolute inset-x-0 top-20 z-30 overflow-x-auto px-3 pb-2 pt-3"
       aria-label="Filtres de carte"
     >
-
       <div class="flex w-max gap-2">
 
         <!-- Tous -->
         <button
           type="button"
-          class="flex h-9 items-center gap-1 rounded-full bg-teal-950 px-3
-                 text-xs font-medium leading-4 text-green-50 shadow-sm"
           aria-pressed="true"
+          class="flex h-9 shrink-0 items-center gap-1 rounded-full bg-teal-950 px-3 text-xs font-medium leading-4 text-green-50 shadow-sm"
         >
-
           <svg
             class="size-4"
             viewBox="0 0 16 16"
@@ -83,20 +60,16 @@
             />
           </svg>
 
-          Tous
-
+          <span>Tous</span>
         </button>
 
 
         <!-- Déchets -->
         <button
           type="button"
-          class="flex h-9 items-center gap-1 rounded-full bg-white/90 px-3
-                 text-xs font-medium leading-4 text-zinc-900 backdrop-blur-[10px]
-                 shadow-[0_1px_3px_rgba(0,0,0,0.1)]"
           aria-pressed="false"
+          class="flex h-9 shrink-0 items-center gap-1 rounded-full bg-white/90 px-3 text-xs font-medium leading-4 text-zinc-900 shadow-[0_1px_3px_rgba(0,0,0,0.1)] backdrop-blur-[10px]"
         >
-
           <svg
             class="size-4"
             viewBox="0 0 16 16"
@@ -111,20 +84,16 @@
             />
           </svg>
 
-          Déchets
-
+          <span>Déchets</span>
         </button>
 
 
         <!-- Canaux -->
         <button
           type="button"
-          class="flex h-9 items-center gap-1 rounded-full bg-white/90 px-3
-                 text-xs font-medium leading-4 text-zinc-900 backdrop-blur-[10px]
-                 shadow-[0_1px_3px_rgba(0,0,0,0.1)]"
           aria-pressed="false"
+          class="flex h-9 shrink-0 items-center gap-1 rounded-full bg-white/90 px-3 text-xs font-medium leading-4 text-zinc-900 shadow-[0_1px_3px_rgba(0,0,0,0.1)] backdrop-blur-[10px]"
         >
-
           <svg
             class="size-4"
             viewBox="0 0 16 16"
@@ -139,20 +108,16 @@
             />
           </svg>
 
-          Canaux
-
+          <span>Canaux</span>
         </button>
 
 
         <!-- Voirie -->
         <button
           type="button"
-          class="flex h-9 items-center gap-1 rounded-full bg-white/90 px-3
-                 text-xs font-medium leading-4 text-zinc-900 backdrop-blur-[10px]
-                 shadow-[0_1px_3px_rgba(0,0,0,0.1)]"
           aria-pressed="false"
+          class="flex h-9 shrink-0 items-center gap-1 rounded-full bg-white/90 px-3 text-xs font-medium leading-4 text-zinc-900 shadow-[0_1px_3px_rgba(0,0,0,0.1)] backdrop-blur-[10px]"
         >
-
           <svg
             class="size-4"
             viewBox="0 0 16 16"
@@ -167,20 +132,16 @@
             />
           </svg>
 
-          Voirie
-
+          <span>Voirie</span>
         </button>
 
 
         <!-- Eau -->
         <button
           type="button"
-          class="flex h-9 items-center gap-1 rounded-full bg-white/90 px-3
-                 text-xs font-medium leading-4 text-zinc-900 backdrop-blur-[10px]
-                 shadow-[0_1px_3px_rgba(0,0,0,0.1)]"
           aria-pressed="false"
+          class="flex h-9 shrink-0 items-center gap-1 rounded-full bg-white/90 px-3 text-xs font-medium leading-4 text-zinc-900 shadow-[0_1px_3px_rgba(0,0,0,0.1)] backdrop-blur-[10px]"
         >
-
           <svg
             class="size-4"
             viewBox="0 0 16 16"
@@ -195,34 +156,32 @@
             />
           </svg>
 
-          Eau
-
+          <span>Eau</span>
         </button>
 
       </div>
-
     </nav>
 
 
-    <!-- =========================
-         MAP CONTROLS
-    ========================== -->
+    <!-- =======================================================
+         CONTRÔLES DE LA CARTE
+    ======================================================== -->
+
     <div
-      class="absolute right-3 bottom-[159px] z-10 flex flex-col gap-3"
+      class="absolute bottom-[159px] right-3 z-20 flex flex-col gap-3"
     >
 
       <!-- Ma position -->
       <button
         type="button"
-        class="flex size-12 items-center justify-center rounded-full bg-white
-               text-stone-500 shadow-lg"
+        class="flex size-12 items-center justify-center rounded-full bg-white text-stone-500 shadow-lg"
         aria-label="Ma position"
       >
-
         <svg
           class="size-5"
           viewBox="0 0 20 20"
           fill="none"
+          aria-hidden="true"
         >
           <path
             d="M10 1.67v2.5m0 11.66v2.5M1.67 10h2.5m11.66 0h2.5"
@@ -247,22 +206,20 @@
             stroke-width="1.67"
           />
         </svg>
-
       </button>
 
 
       <!-- Calques -->
       <button
         type="button"
-        class="flex size-12 items-center justify-center rounded-full bg-white
-               text-orange-600 shadow-lg"
+        class="flex size-12 items-center justify-center rounded-full bg-white text-orange-600 shadow-lg"
         aria-label="Calques"
       >
-
         <svg
           class="size-5"
           viewBox="0 0 20 20"
           fill="none"
+          aria-hidden="true"
         >
           <circle
             cx="10"
@@ -272,10 +229,143 @@
             stroke-width="1.67"
           />
         </svg>
-
       </button>
 
     </div>
+
+
+    <!-- =======================================================
+         BOTTOM SHEET
+    ======================================================== -->
+
+    <footer
+      class="absolute inset-x-0 bottom-0 z-40 w-full rounded-t-3xl bg-white/95 shadow-[0_-8px_30px_rgba(0,0,0,0.12)] backdrop-blur-lg"
+    >
+
+      <!-- Handle -->
+      <div class="flex justify-center pt-2">
+        <div class="h-1 w-10 rounded-full bg-zinc-200"></div>
+      </div>
+
+
+      <!-- Contenu -->
+      <div class="flex flex-col gap-3 px-4 pb-4 pt-3">
+
+        <article
+          class="flex items-center gap-2 rounded-xl bg-white px-2 pb-2 pt-3"
+        >
+
+          <!-- =================================================
+               IMAGE
+          ================================================== -->
+
+          <div
+            class="size-16 shrink-0 overflow-hidden rounded-xl"
+          >
+            <img
+              src="https://placehold.co/64x64"
+              alt="Dépôt sauvage"
+              class="size-full object-cover"
+            />
+          </div>
+
+
+          <!-- =================================================
+               INFORMATIONS
+          ================================================== -->
+
+          <div class="min-w-0 flex-1">
+
+            <!-- Titre -->
+            <div class="flex items-center gap-1">
+
+              <!-- Icône localisation -->
+              <svg
+                class="size-3 shrink-0 text-red-600"
+                viewBox="0 0 16 16"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path
+                  d="M8 1.5a4 4 0 0 0-4 4c0 2.8 4 7 4 7s4-4.2 4-7a4 4 0 0 0-4-4Z"
+                  stroke="currentColor"
+                  stroke-width="1"
+                />
+              </svg>
+
+              <h3
+                class="truncate text-xs font-semibold leading-4 text-zinc-950"
+              >
+                Dépôt sauvage
+              </h3>
+
+            </div>
+
+
+            <!-- Localisation / date -->
+            <p
+              class="truncate text-xs font-normal leading-4 text-zinc-500"
+            >
+              Médina · il y a 2h
+            </p>
+
+
+            <!-- Statut -->
+            <div class="flex items-center gap-1 pt-0.5">
+
+              <span
+                class="size-1.5 shrink-0 rounded-full bg-red-600"
+              ></span>
+
+              <span
+                class="text-xs font-medium leading-4 text-red-600"
+              >
+                Critique
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <!-- =================================================
+               BOUTON DÉTAIL
+          ================================================== -->
+
+          <button
+            type="button"
+            class="flex h-8 shrink-0 items-center gap-2 rounded-full bg-teal-950 px-3 py-2 shadow-[0_1px_2px_rgba(0,0,0,0.05)]"
+          >
+
+            <span
+              class="text-xs font-medium leading-4 text-green-50"
+            >
+              Détail
+            </span>
+
+            <!-- Chevron -->
+            <svg
+              class="size-3 text-green-50"
+              viewBox="0 0 12 12"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path
+                d="M4.5 3 7.5 6l-3 3"
+                stroke="currentColor"
+                stroke-width="1"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+
+          </button>
+
+        </article>
+
+      </div>
+
+    </footer>
 
   </section>
 

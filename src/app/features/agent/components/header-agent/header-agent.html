@@ -1,38 +1,42 @@
 <header
-  class="relative flex h-20 shrink-0 items-center justify-center
-         rounded-t-[30px] border-b border-white/20 bg-white
-         pt-3 shadow-[0_4px_4px_rgba(0,0,0,0.14)]"
+  class="relative flex h-20 shrink-0 items-center justify-center border-b border-white/20 bg-white pt-3 shadow-[0_4px_4px_rgba(0,0,0,0.14)]"
 >
+
   <!-- Retour -->
   <button
     type="button"
     (click)="retour()"
-    class="absolute left-4 top-1/2 flex size-9
-           -translate-y-1/2 items-center justify-center
-           rounded-full bg-teal-950/20 text-teal-950"
+    class="absolute left-4 top-[21.5px] flex size-9 items-center justify-center rounded-2xl bg-teal-950/20"
     aria-label="Retour"
   >
     <svg
-      class="size-5"
-      viewBox="0 0 20 20"
-      fill="none"
-      aria-hidden="true"
-    >
-      <path
-        d="M10 4.17 4.17 10 10 15.83M4.17 10h11.66"
-        stroke="currentColor"
-        stroke-width="1.67"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      />
-    </svg>
+      lucideArrowLeft
+      class="size-5 text-teal-950"
+    ></svg>
   </button>
+
 
   <!-- Titre -->
   <h1
-    class="font-['Roboto'] text-base font-medium
-           leading-6 tracking-tight text-teal-950"
+    class="text-base font-medium leading-6 tracking-tight text-teal-950"
   >
     {{ titre() }}
   </h1>
+
+
+  <!-- Action -->
+  @if (showAction()) {
+    <button
+      type="button"
+      (click)="onActionClick()"
+      [attr.aria-label]="actionLabel()"
+      class="absolute right-4 top-[21.5px] flex size-9 items-center justify-center rounded-2xl bg-teal-950/20"
+    >
+      <svg
+        lucideShare2
+        class="size-5 text-teal-950"
+      ></svg>
+    </button>
+  }
+
 </header>
