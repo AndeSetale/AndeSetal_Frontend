@@ -24,12 +24,12 @@
   <div class="flex items-center gap-2 mb-4">
     <span
       class="px-2.5 py-1 rounded-md text-xs font-medium"
-      [class.bg-red-50]="incident.urgence === 'critique'"
-      [class.text-red-600]="incident.urgence === 'critique'"
-      [class.bg-amber-50]="incident.urgence === 'modere'"
-      [class.text-amber-600]="incident.urgence === 'modere'"
-      [class.bg-gray-100]="incident.urgence === 'leger'"
-      [class.text-gray-600]="incident.urgence === 'leger'"
+      [class.bg-red-50]="incident.urgence === 'CRITIQUE'"
+[class.text-red-600]="incident.urgence === 'CRITIQUE'"
+[class.bg-amber-50]="incident.urgence === 'MODERE'"
+[class.text-amber-600]="incident.urgence === 'MODERE'"
+[class.bg-gray-100]="incident.urgence === 'ROUTINE'"
+[class.text-gray-600]="incident.urgence === 'ROUTINE'"
     >
       {{ incident.urgence }}
     </span>
@@ -96,7 +96,7 @@
   <!-- Bouton -->
  <button
   type="button"
-  [routerLink]="['/dashboard/map/incidents', incident.id]"
+  [routerLink]="['/dashboard/map/incidents', incident.numericId]"
   class="w-full mt-5 py-2.5 bg-teal-950 text-white rounded-xl text-sm font-medium hover:bg-teal-900 transition-colors"
 >
   Voir les détails

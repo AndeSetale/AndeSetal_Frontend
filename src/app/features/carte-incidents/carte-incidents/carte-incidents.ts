@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 
 import * as L from 'leaflet';
+import { HttpClient } from '@angular/common/http';
 
 import {
   Incident,
@@ -30,6 +31,9 @@ export class CarteIncidentsComponent implements AfterViewInit, OnDestroy {
   mapContainer!: ElementRef<HTMLDivElement>;
 incidentSelectionne = signal<Incident | null>(null);
 
+private readonly http = inject(HttpClient);
+private plateauLayer?: L.GeoJSON;
+
   private incidents: Incident[] = [];
 
   private incidentService = inject(IncidentService);
@@ -38,36 +42,94 @@ incidentSelectionne = signal<Incident | null>(null);
 
   private markers = new Map<number, L.Marker>();
 
-  ngAfterViewInit(): void {
+ private chargerPerimetre(): void {
 
-    // 1. Création de la carte
-    this.map = L.map(this.mapContainer.nativeElement, {
-      center: [14.6928, -17.4467],
-      zoom: 14,
-      zoomControl: false,
-    });
+  console.log('Chargement du périmètre...');
 
-    // 2. Fond de carte OpenStreetMap
-    L.tileLayer(
-      'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-      {
-        attribution: '&copy; OpenStreetMap contributors',
-        maxZoom: 19,
+  this.http
+    .get<any>('assets/plateau_polygon.geojson')
+    .subscribe({
+
+      next: (data) => {
+
+        console.log('GeoJSON reçu :', data);
+
+        const geometry = Array.isArray(data)
+          ? data[0]?.geojson
+          : data;
+
+        if (!geometry) {
+          console.error('❌ Aucune géométrie trouvée dans le GeoJSON');
+          return;
+        }
+
+        console.log('Géométrie :', geometry);
+
+        this.plateauLayer = L.geoJSON(geometry, {
+
+         style: {
+  color: '#0F766E',
+  weight: 2,
+  opacity: 0.55,
+  fillColor: '#14B8A6',
+  fillOpacity: 0.09
+}
+
+        }).addTo(this.map);
+
+        console.log('✅ Périmètre Dakar-Plateau ajouté');
+
+        const bounds = this.plateauLayer.getBounds();
+
+        console.log('Bounds :', bounds);
+
+        this.map.fitBounds(bounds, {
+          padding: [30, 30]
+        });
+      },
+
+      error: (error) => {
+
+        console.error(
+          ' Erreur chargement GeoJSON :',
+          error
+        );
+
       }
-    ).addTo(this.map);
-
-    // 3. Récupération des incidents
-    this.incidentService.getIncidents().subscribe((incidents) => {
-
-      this.incidents = incidents;
-
-      // 4. Ajouter chaque incident sur la carte
-      incidents.forEach((incident) => {
-        this.addMarker(incident);
-      });
 
     });
-  }
+}
+ ngAfterViewInit(): void {
+
+  this.map = L.map(this.mapContainer.nativeElement, {
+    center: [14.667317, -17.437966],
+    zoom: 19,
+    zoomControl: false,
+  });
+
+  L.tileLayer(
+    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    {
+      attribution: '&copy; OpenStreetMap contributors',
+      maxZoom: 19,
+    }
+  ).addTo(this.map);
+
+  // Charger le périmètre
+  this.chargerPerimetre();
+
+  // Charger les incidents
+  this.incidentService.getIncidents().subscribe((incidents) => {
+
+    this.incidents = incidents;
+
+    incidents.forEach((incident) => {
+      this.addMarker(incident);
+    });
+
+  });
+}
+
 
  private addMarker(incident: Incident): void {
 
@@ -105,20 +167,35 @@ incidentSelectionne = signal<Incident | null>(null);
   });
   
   this.markers.set(
-    incident.id,
+    incident.numericId,
     marker
   );
 }
   private getIcon(incident: Incident): L.DivIcon {
 
-    const couleur =
-      incident.statut === 'resolu'
-        ? '#2F6F4E'
-        : incident.urgence === 'critique'
-          ? '#D64545'
-          : incident.urgence === 'modere'
-            ? '#E0A82E'
-            : '#8A8A8A';
+     let couleur = '#8A8A8A';
+
+  // Statut résolu = vert
+  if (incident.statut === 'RESOLU') {
+    couleur = '#2F6F4E';
+  }
+
+  // Sinon couleur selon l'urgence
+  else if (incident.urgence === 'CRITIQUE') {
+    couleur = '#D64545';
+  }
+
+  else if (incident.urgence === 'ELEVE') {
+    couleur = '#F97316';
+  }
+
+  else if (incident.urgence === 'MODERE') {
+    couleur = '#E0A82E';
+  }
+
+  else if (incident.urgence === 'ROUTINE') {
+    couleur = 'green';
+  }
 
     return L.divIcon({
       className: 'incident-marker',
@@ -136,36 +213,83 @@ incidentSelectionne = signal<Incident | null>(null);
     });
   }
 
-  onFiltresChange(filtres: FiltresIncidents): void {
+ onFiltresChange(filtres: FiltresIncidents): void {
   console.log('Filtres reçus :', filtres);
 
   // Supprimer les anciens marqueurs
-  this.markers.forEach((marker) => {
+  this.markers.forEach(marker => {
     this.map.removeLayer(marker);
   });
 
   this.markers.clear();
 
-  // Filtrer les incidents
-  const incidentsFiltres = this.incidents.filter((incident) => {
+  // Normalisation
+  const urgence = filtres.urgence.toUpperCase();
+  const statut = filtres.statut.toUpperCase();
 
-    const typeOk =
-      filtres.type === 'tous' ||
-      incident.type === filtres.type;
+  const incidentsFiltres = this.incidents.filter(incident => {
 
+    // =========================
+    // URGENCE
+    // =========================
     const urgenceOk =
       filtres.urgence === 'toutes' ||
-      incident.urgence === filtres.urgence;
+      incident.urgence === urgence;
 
+
+    // =========================
+    // STATUT
+    // =========================
     const statutOk =
       filtres.statut === 'tous' ||
-      incident.statut === filtres.statut;
+      incident.statut === statut;
 
-    return typeOk && urgenceOk && statutOk;
+
+    // =========================
+    // TYPE
+    // =========================
+    let typeOk = true;
+
+    if (filtres.type !== 'tous') {
+
+      switch (filtres.type) {
+
+        case 'depot_sauvage':
+          typeOk = incident.type === 'Dépôt sauvage de déchets';
+          break;
+
+        case 'dechets_plastiques':
+          typeOk =
+            incident.type.toLowerCase().includes('plastique');
+          break;
+
+        case 'egouts_bouches':
+          typeOk =
+            incident.type.toLowerCase().includes('canaux') ||
+            incident.type.toLowerCase().includes('égout');
+          break;
+
+        default:
+          typeOk = true;
+      }
+    }
+
+
+    return (
+      typeOk &&
+      urgenceOk &&
+      statutOk
+    );
   });
 
-  // Ajouter uniquement les incidents filtrés
-  incidentsFiltres.forEach((incident) => {
+  console.log(
+    'Incidents après filtrage :',
+    incidentsFiltres
+  );
+
+
+  // Ajouter les nouveaux marqueurs
+  incidentsFiltres.forEach(incident => {
     this.addMarker(incident);
   });
 }

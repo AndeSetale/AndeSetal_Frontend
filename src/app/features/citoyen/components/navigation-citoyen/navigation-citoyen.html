@@ -1,72 +1,187 @@
-<nav class="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t border-gray-100 px-4 py-2 shadow-lg">
-  <div class="max-w-md mx-auto flex items-center justify-between relative">
-    
-    <!-- Accueil -->
-    <a
-      routerLink="/mobile"
-      routerLinkActive="text-teal-900 font-semibold"
-      [routerLinkActiveOptions]="{ exact: true }"
-      #rlaAccueil="routerLinkActive"
-      class="flex flex-col items-center gap-1 text-gray-500 hover:text-teal-800 transition-colors w-14"
-    >
-      <svg class="size-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
-      </svg>
-      <span class="text-[10px] tracking-tight">Accueil</span>
-      <span *ngIf="rlaAccueil.isActive" class="size-1.5 rounded-full bg-teal-900"></span>
-    </a>
+<nav
+  class="fixed bottom-0 left-0 right-0 z-50"
+  aria-label="Navigation mobile"
+>
+  <div
+    class="relative w-full h-20 bg-white rounded-tl-3xl rounded-tr-3xl
+           shadow-[0px_-4px_20px_-8px_rgba(0,64,48,0.15)]"
+  >
 
-    <!-- Carte -->
-    <a
-      routerLink="/mobile/carte"
-      routerLinkActive="text-teal-900 font-semibold"
-      #rlaCarte="routerLinkActive"
-      class="flex flex-col items-center gap-1 text-gray-500 hover:text-teal-800 transition-colors w-14"
+    <!-- Tabs de navigation -->
+    <div
+      class="h-full px-9 pt-3 pb-6
+             flex items-center justify-between"
     >
-      <svg class="size-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
-      </svg>
-      <span class="text-[10px] tracking-tight">Carte</span>
-      <span *ngIf="rlaCarte.isActive" class="size-1.5 rounded-full bg-teal-900"></span>
-    </a>
 
-    <!-- Bouton central + (Scan) -->
-    <div class="relative -top-5 flex justify-center">
+      <!-- ── Accueil ── -->
       <a
-        routerLink="/mobile/scan"
-        class="size-14 rounded-full bg-teal-950 text-white flex items-center justify-center shadow-xl hover:bg-teal-900 active:scale-95 transition-all border-4 border-white"
-        title="Signaler un incident"
+        routerLink="/mobile"
+        routerLinkActive="text-teal-950 font-medium"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="relative flex flex-col items-center gap-1 text-gray-400"
       >
-        <svg class="size-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 20 20"
+          fill="none"
+          aria-hidden="true"
+        >
+          <path
+            d="M7.5 18.33V12.5H12.5V18.33"
+            stroke="currentColor"
+            stroke-width="1.67"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M2.5 9.17L10 2.5L17.5 9.17V17.5C17.5 17.96 17.13 18.33 16.67 18.33H3.33C2.87 18.33 2.5 17.96 2.5 17.5V9.17Z"
+            stroke="currentColor"
+            stroke-width="1.67"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
         </svg>
+        <span class="text-[10px] leading-6">Accueil</span>
+        <!-- Indicateur actif -->
+        <span
+          class="absolute -bottom-1 size-1 rounded-full bg-teal-950
+                 opacity-0 [.router-link-active_&]:opacity-100"
+        ></span>
       </a>
+
+      <!-- ── Carte ── -->
+      <a
+        routerLink="/mobile/carte"
+        routerLinkActive="text-teal-950 font-medium"
+        class="flex flex-col items-center gap-1 text-gray-400"
+      >
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 20 20"
+          fill="none"
+          aria-hidden="true"
+        >
+          <path
+            d="M12.5 3.33L7.5 5.83L2.5 3.33V16.67L7.5 19.17L12.5 16.67L17.5 19.17V5.83L12.5 3.33Z"
+            stroke="currentColor"
+            stroke-width="1.67"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <path d="M7.5 5.83V19.17" stroke="currentColor" stroke-width="1.67" />
+          <path d="M12.5 3.33V16.67" stroke="currentColor" stroke-width="1.67" />
+        </svg>
+        <span class="text-[10px] leading-6">Carte</span>
+      </a>
+
+      <!-- ── Espace central pour le bouton flottant ── -->
+      <div class="w-14 shrink-0" aria-hidden="true"></div>
+
+      <!-- ── Signals ── -->
+      <!-- Icône : cloche de notification, fidèle à la maquette Figma -->
+      <a
+        routerLink="/mobile/signalements"
+        routerLinkActive="text-teal-950 font-medium"
+        class="flex flex-col items-center gap-1 text-gray-400"
+      >
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 20 20"
+          fill="none"
+          aria-hidden="true"
+        >
+          <!-- Cloche -->
+          <path
+            d="M10 2.5C7.24 2.5 5 4.74 5 7.5V12.5L3.33 14.17V15H16.67V14.17L15 12.5V7.5C15 4.74 12.76 2.5 10 2.5Z"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <!-- Anneau de sonnette bas -->
+          <path
+            d="M8.5 15C8.5 15.83 9.17 16.5 10 16.5C10.83 16.5 11.5 15.83 11.5 15"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          />
+        </svg>
+        <span class="text-[10px] leading-6">Signals</span>
+      </a>
+
+      <!-- ── Profil ── -->
+      <a
+        routerLink="/mobile/profil"
+        routerLinkActive="text-teal-950 font-medium"
+        class="flex flex-col items-center gap-1 text-gray-400"
+      >
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 20 20"
+          fill="none"
+          aria-hidden="true"
+        >
+          <circle
+            cx="10"
+            cy="6.67"
+            r="3.33"
+            stroke="currentColor"
+            stroke-width="1.67"
+          />
+          <path
+            d="M3.33 17.5C3.33 14.74 6.32 12.5 10 12.5C13.68 12.5 16.67 14.74 16.67 17.5"
+            stroke="currentColor"
+            stroke-width="1.67"
+            stroke-linecap="round"
+          />
+        </svg>
+        <span class="text-[10px] leading-6">Profil</span>
+      </a>
+
     </div>
 
-    <!-- Signals (Incidents) -->
+    <!-- ── Bouton central flottant "Signaler" ── -->
     <a
-      routerLink="/mobile/enregistrement"
-      routerLinkActive="text-teal-900 font-semibold"
-      #rlaSignals="routerLinkActive"
-      class="flex flex-col items-center gap-1 text-gray-500 hover:text-teal-800 transition-colors w-14"
+      routerLink="/mobile/creation-signalement"
+      aria-label="Signaler un incident"
+      class="absolute left-1/2 -top-6 -translate-x-1/2
+             size-14 bg-teal-950 rounded-full
+             flex items-center justify-center
+             text-stone-100
+             ring-[5px] ring-white
+             shadow-[0px_8px_20px_-4px_rgba(0,64,48,0.50)]
+             transition-transform
+             hover:scale-105
+             active:scale-95
+             focus-visible:outline-none
+             focus-visible:ring-2
+             focus-visible:ring-teal-950
+             focus-visible:ring-offset-2"
     >
-      <svg class="size-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+      <svg
+        width="28"
+        height="28"
+        viewBox="0 0 28 28"
+        fill="none"
+        aria-hidden="true"
+      >
+        <path
+          d="M14 5.83V22.17"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+        />
+        <path
+          d="M5.83 14H22.17"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+        />
       </svg>
-      <span class="text-[10px] tracking-tight">Signals</span>
-      <span *ngIf="rlaSignals.isActive" class="size-1.5 rounded-full bg-teal-900"></span>
-    </a>
-
-    <!-- Profil -->
-    <a
-      routerLink="/connexion"
-      routerLinkActive="text-teal-900 font-semibold"
-      class="flex flex-col items-center gap-1 text-gray-500 hover:text-teal-800 transition-colors w-14"
-    >
-      <svg class="size-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-      </svg>
-      <span class="text-[10px] tracking-tight">Profil</span>
     </a>
 
   </div>

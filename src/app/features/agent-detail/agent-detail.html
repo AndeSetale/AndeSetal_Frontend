@@ -1,19 +1,46 @@
 <div class="p-8 bg-gray-50 min-h-screen">
 
-  <app-breadcrumb-agent />
+  <nav class="flex items-center gap-2 text-sm">
+  <a
+    routerLink="/dashboard/agents"
+    class="text-gray-600 font-medium hover:text-gray-800 transition-colors"
+  >
+    Gestion des agents
+  </a>
+
+  <svg
+    class="w-4 h-4 text-gray-400"
+    viewBox="0 0 16 16"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M6 4L10 8L6 12"
+      stroke="currentColor"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </svg>
+
+  <span class="text-gray-800 font-semibold">{{agent()?.nom_complet}}</span>
+</nav>
 
   <div class="mt-6">
-    <app-agent-profile-header />
+    <app-agent-profile-header [agent]="agent()!" />
   </div>
 
   <div class="mt-6">
-    <app-agent-stats-grid />
+    <app-agent-stats-grid
+  [agent]="agent()!"
+/>
   </div>
   <div class="mt-6">
-
   
    <div class="grid grid-cols-1 xl:grid-cols-[65fr_35fr] gap-4">
-    <app-activity-chart />
+    <app-activity-chart
+  [agent]="agent()!"
+/>
     <app-repartition-incidents
   title="Spécialisation"
   subtitle="Types d'incidents traités"

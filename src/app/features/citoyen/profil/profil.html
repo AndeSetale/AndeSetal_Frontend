@@ -1,0 +1,401 @@
+<!-- ───────────────────────────────────────────────────────────────────────────
+  Écran : Profil citoyen — fidèle maquette Figma
+  Fond blanc, flèche retour, avatar + badge statut en ligne, stats 3 colonnes,
+  infos personnelles (teal-950), sécurité, notifs toggle, bouton déconnexion
+  Pas de bottom nav — gérée par le layout mobile
+──────────────────────────────────────────────────────────────────────────── -->
+<div class="min-h-screen bg-white pb-28">
+
+  <!-- ── Spinner ── -->
+  @if (chargement()) {
+    <div class="flex items-center justify-center h-64">
+      <div class="w-8 h-8 border-4 border-teal-950 border-t-transparent
+                  rounded-full animate-spin"></div>
+    </div>
+  }
+
+  @if (!chargement() && profil()) {
+
+    <!-- ══════════════════════════════════════════════════════
+         HEADER : flèche retour
+    ═══════════════════════════════════════════════════════ -->
+    <div class="px-6 py-4 flex items-center">
+      <a
+        routerLink="/mobile"
+        class="size-9 bg-teal-950/20 rounded-2xl flex items-center justify-center"
+        aria-label="Retour"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+             stroke="#0F2A24" stroke-width="1.67" stroke-linecap="round"
+             stroke-linejoin="round">
+          <path d="M10 8l-4 4 4 4"/>
+          <path d="M6 12h12"/>
+        </svg>
+      </a>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         CARD PROFIL : avatar + nom + badge + stats
+    ═══════════════════════════════════════════════════════ -->
+    <div class="px-6">
+      <div class="bg-white rounded-2xl p-6 shadow-[0px_1px_3px_0px_rgba(0,0,0,0.10),0px_1px_2px_-1px_rgba(0,0,0,0.10)]
+                  flex flex-col items-center gap-4">
+
+        <!-- Avatar avec indicateur de statut -->
+        <div class="relative">
+          <div
+            class="size-20 rounded-full overflow-hidden
+                   ring-2 ring-emerald-500/40"
+          >
+            @if (profil()!.photoUrl) {
+              <img
+                [src]="profil()!.photoUrl"
+                [alt]="profil()!.prenom"
+                class="w-full h-full object-cover"
+              />
+            } @else {
+              <div
+                class="w-full h-full bg-gradient-to-br from-red-400 to-red-600
+                       flex items-center justify-center text-white text-2xl font-bold"
+              >
+                {{ getInitiales() }}
+              </div>
+            }
+          </div>
+          <!-- Badge vert "en ligne" -->
+          <div
+            class="absolute bottom-0 right-0 size-6 bg-emerald-500 rounded-full
+                   ring-2 ring-zinc-950
+                   flex items-center justify-center"
+          >
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+                 stroke="#14532d" stroke-width="2" stroke-linecap="round">
+              <path d="M20 6 9 17l-5-5"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Nom + badge rôle + quartier -->
+        <div class="flex flex-col items-center gap-1">
+          <h1 class="text-teal-950 text-lg font-bold font-['Inter'] leading-7">
+            {{ profil()!.prenom }} {{ profil()!.nom }}
+          </h1>
+          <div class="flex items-center gap-2">
+            <!-- Badge rôle -->
+            <span
+              class="px-2 py-0.5 bg-teal-950/25 rounded-full
+                     text-teal-950 text-[10px] font-medium font-['Inter'] leading-4"
+            >
+              Citoyenne
+            </span>
+            <!-- Localisation -->
+            <div class="flex items-center gap-1">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+                   stroke="#0F2A24" stroke-width="1.5">
+                <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+              <span class="text-teal-950 text-xs font-normal font-['Inter'] leading-4">
+                {{ profil()!.quartier }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stats 3 colonnes -->
+        <div class="self-stretch flex gap-2">
+
+          <div
+            class="flex-1 p-4 bg-stone-100 rounded-xl
+                   shadow-[0px_2px_12px_0px_rgba(0,0,0,0.08)]
+                   flex flex-col items-center"
+          >
+            <span class="text-teal-950 text-2xl font-bold font-['Plus_Jakarta_Sans'] leading-8">
+              {{ stats().signalements }}
+            </span>
+            <span class="text-neutral-700 text-xs font-normal font-['DM_Sans'] leading-5 pt-[3px]">
+              Signalements
+            </span>
+          </div>
+
+          <div
+            class="flex-1 p-4 bg-stone-100 rounded-xl
+                   shadow-[0px_2px_12px_0px_rgba(0,0,0,0.08)]
+                   flex flex-col items-center"
+          >
+            <span class="text-amber-800 text-2xl font-bold font-['Plus_Jakarta_Sans'] leading-8">
+              {{ stats().resolus }}
+            </span>
+            <span class="text-neutral-700 text-xs font-normal font-['DM_Sans'] leading-5 pt-[3px]">
+              Résolus
+            </span>
+          </div>
+
+          <div
+            class="flex-1 p-4 bg-stone-100 rounded-xl
+                   shadow-[0px_2px_12px_0px_rgba(0,0,0,0.08)]
+                   flex flex-col items-center"
+          >
+            <span class="text-teal-950 text-2xl font-bold font-['Plus_Jakarta_Sans'] leading-8">
+              {{ stats().setSetal }}
+            </span>
+            <span class="text-neutral-700 text-xs font-normal font-['DM_Sans'] leading-5 pt-[3px]">
+              Set-Setal
+            </span>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         INFORMATIONS PERSONNELLES
+    ═══════════════════════════════════════════════════════ -->
+    <div class="px-6 pt-6 pb-2 flex flex-col gap-2">
+
+      <!-- Titre section + icône crayon -->
+      <div class="flex items-center justify-between">
+        <h2 class="text-teal-950 text-sm font-semibold font-['Inter'] leading-5">
+          Informations personnelles
+        </h2>
+        <button aria-label="Modifier les informations">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+               stroke="#0F2A24" stroke-width="1.5" stroke-linecap="round">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+            <path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Liste des champs -->
+      <div
+        class="bg-white rounded-2xl p-4
+               shadow-[0px_1px_3px_0px_rgba(0,0,0,0.10),0px_1px_2px_-1px_rgba(0,0,0,0.10)]
+               flex flex-col gap-2"
+      >
+        @for (champ of champsInfos(); track champ.cle) {
+          <div
+            class="p-2 bg-teal-950 rounded-xl flex items-center justify-between"
+          >
+            <div class="flex flex-col gap-0.5">
+              <span
+                class="text-zinc-400 text-[10px] font-normal font-['Inter']
+                       uppercase leading-6 tracking-tight"
+              >
+                {{ champ.label }}
+              </span>
+              <span
+                class="text-neutral-50 text-sm font-medium font-['Inter'] leading-5"
+              >
+                {{ champ.valeur }}
+              </span>
+            </div>
+            <!-- Icône crayon emerald -->
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                 stroke="#10b981" stroke-width="1.5" stroke-linecap="round">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+              <path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+            </svg>
+          </div>
+        }
+      </div>
+
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         SÉCURITÉ
+    ═══════════════════════════════════════════════════════ -->
+    <div class="px-6 pb-2 flex flex-col gap-2">
+
+      <div class="flex items-center justify-between">
+        <h2 class="text-teal-950 text-sm font-semibold font-['Inter'] leading-5">
+          Sécurité
+        </h2>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+             stroke="#0F2A24" stroke-width="1.5">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+      </div>
+
+      <div
+        class="bg-white rounded-2xl p-2
+               shadow-[0px_1px_3px_0px_rgba(0,0,0,0.10),0px_1px_2px_-1px_rgba(0,0,0,0.10)]
+               flex flex-col gap-2"
+      >
+
+        <!-- Changer mot de passe -->
+        <div class="p-3 bg-teal-950 rounded-xl flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <div
+              class="size-8 bg-emerald-500/20 rounded-full
+                     flex items-center justify-center"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                   stroke="#10b981" stroke-width="1.5" stroke-linecap="round">
+                <rect x="3" y="11" width="18" height="11" rx="2"/>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+              </svg>
+            </div>
+            <span class="text-neutral-50 text-sm font-medium font-['Inter'] leading-5">
+              Changer le mot de passe
+            </span>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+               stroke="#9ca3af" stroke-width="1.5" stroke-linecap="round">
+            <path d="M9 18l6-6-6-6"/>
+          </svg>
+        </div>
+
+        <!-- Sessions actives -->
+        <div class="p-3 bg-teal-950 rounded-xl flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <div
+              class="size-8 bg-emerald-500/20 rounded-full
+                     flex items-center justify-center"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                   stroke="#10b981" stroke-width="1.5" stroke-linecap="round">
+                <rect x="2" y="3" width="20" height="14" rx="2"/>
+                <path d="M8 21h8M12 17v4"/>
+              </svg>
+            </div>
+            <div class="flex flex-col">
+              <span class="text-neutral-50 text-sm font-medium font-['Inter'] leading-5">
+                Sessions actives
+              </span>
+              <span class="text-zinc-400 text-[10px] font-normal font-['Inter'] leading-6">
+                2 appareils connectés
+              </span>
+            </div>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+               stroke="#9ca3af" stroke-width="1.5" stroke-linecap="round">
+            <path d="M9 18l6-6-6-6"/>
+          </svg>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         PRÉFÉRENCES DE NOTIFICATIONS
+    ═══════════════════════════════════════════════════════ -->
+    <div class="px-6 pb-2 flex flex-col gap-2">
+
+      <h2 class="text-teal-950 text-sm font-semibold font-['Inter'] leading-5">
+        Préférences de notifications
+      </h2>
+
+      <div
+        class="bg-white rounded-2xl p-2
+               shadow-[0px_1px_3px_0px_rgba(0,0,0,0.10),0px_1px_2px_-1px_rgba(0,0,0,0.10)]
+               flex flex-col gap-1"
+      >
+
+        <!-- Push -->
+        <div class="p-3 bg-teal-950 rounded-xl flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                 stroke="#10b981" stroke-width="1.5" stroke-linecap="round">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+            </svg>
+            <span class="text-neutral-50 text-sm font-medium font-['Inter'] leading-5">Push</span>
+          </div>
+          <!-- Toggle -->
+          <button
+            (click)="toggleNotif('push')"
+            class="relative w-8 h-5 rounded-full transition-colors
+                   outline outline-1 outline-white/10
+                   shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)]"
+            [class]="notifs().push ? 'bg-emerald-500' : 'bg-white/20'"
+          >
+            <span
+              class="absolute top-0.5 size-4 bg-zinc-950 rounded-full
+                     transition-transform"
+              [class]="notifs().push ? 'translate-x-3.5' : 'translate-x-0'"
+            ></span>
+          </button>
+        </div>
+
+        <!-- E-mail -->
+        <div class="p-3 bg-teal-950 rounded-xl flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                 stroke="#10b981" stroke-width="1.5" stroke-linecap="round">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,13 2,6"/>
+            </svg>
+            <span class="text-neutral-50 text-sm font-medium font-['Inter'] leading-5">E-mail</span>
+          </div>
+          <button
+            (click)="toggleNotif('email')"
+            class="relative w-8 h-5 rounded-full transition-colors
+                   outline outline-1 outline-white/10
+                   shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)]"
+            [class]="notifs().email ? 'bg-emerald-500' : 'bg-white/20'"
+          >
+            <span
+              class="absolute top-0.5 size-4 bg-zinc-950 rounded-full
+                     transition-transform"
+              [class]="notifs().email ? 'translate-x-3.5' : 'translate-x-0'"
+            ></span>
+          </button>
+        </div>
+
+        <!-- SMS -->
+        <div class="p-3 bg-teal-950 rounded-xl flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                 stroke="#9ca3af" stroke-width="1.5" stroke-linecap="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+            <span class="text-neutral-50 text-sm font-medium font-['Inter'] leading-5">SMS</span>
+          </div>
+          <button
+            (click)="toggleNotif('sms')"
+            class="relative w-8 h-5 rounded-full transition-colors
+                   outline outline-1 outline-white/10
+                   shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)]"
+            [class]="notifs().sms ? 'bg-emerald-500' : 'bg-white/20'"
+          >
+            <span
+              class="absolute top-0.5 size-4 bg-zinc-950 rounded-full
+                     transition-transform"
+              [class]="notifs().sms ? 'translate-x-3.5' : 'translate-x-0'"
+            ></span>
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         BOUTON DÉCONNEXION
+    ═══════════════════════════════════════════════════════ -->
+    <div class="px-6 pt-2 pb-6">
+      <a
+        routerLink="/connexion"
+        (click)="deconnecter()"
+        class="w-full h-12 px-3 flex items-center justify-center gap-2
+               bg-red-400/20 rounded-2xl
+               shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)]
+               text-red-400 text-sm font-semibold font-['Inter'] leading-5"
+      >
+        <!-- Icône logout -->
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+        Se déconnecter
+      </a>
+    </div>
+
+  }
+
+</div>
