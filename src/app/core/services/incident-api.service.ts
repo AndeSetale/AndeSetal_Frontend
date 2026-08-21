@@ -1,8 +1,7 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
 import { Observable, from } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { environment } from '../../../environments/environment';
+import { Api } from './api';
 
 export interface IncidentCreatePayload {
   description: string;
@@ -46,40 +45,44 @@ export interface IncidentResponse {
   providedIn: 'root'
 })
 export class IncidentApiService {
-  private apiUrl = `${environment.apiUrl}/incidents/`;
 
-  constructor(private http: HttpClient) {}
+  private readonly api = inject(Api);
 
   /**
-   * Crée un nouvel incident en envoyant les données et la photo initiale au Backend Django.
+   * Crée un nouvel incident via le service Api (avec token JWT).
+   * Cela garantit que le citoyen connecté est bien enregistré
+   * comme signale_par côté backend, et que le signalement
+   * apparaît dans GET /api/incidents/my/ (historique).
    */
   createIncident(payload: IncidentCreatePayload): Observable<IncidentResponse> {
     const formData = new FormData();
-    formData.append('description', payload.description || 'Signalement d\'incident citoyen avec photo');
-    if (payload.adresse) formData.append('adresse', payload.adresse);
-    if (payload.latitude) formData.append('latitude', payload.latitude.toString());
-    if (payload.longitude) formData.append('longitude', payload.longitude.toString());
-    if (payload.type) formData.append('type', payload.type);
+    formData.append('description', payload.description || "Signalement d'incident citoyen avec photo");
+    if (payload.adresse)        formData.append('adresse', payload.adresse);
+    if (payload.latitude)       formData.append('latitude', payload.latitude.toString());
+    if (payload.longitude)      formData.append('longitude', payload.longitude.toString());
+    if (payload.type)           formData.append('type', payload.type);
     if (payload.niveau_urgence) formData.append('niveau_urgence', payload.niveau_urgence);
 
     if (payload.file) {
       formData.append('image', payload.file, payload.file.name || 'incident.jpg');
-      return this.http.post<IncidentResponse>(this.apiUrl, formData);
+      return this.api.post<IncidentResponse>('/incidents/', formData);
+
     } else if (payload.photoUrl && payload.photoUrl.startsWith('data:')) {
-      // Conversion DataURL (Base64) de la caméra en fichier File pour multipart/form-data
+      // Conversion DataURL base64 (caméra) → File pour multipart/form-data
       return from(this.dataUrlToFile(payload.photoUrl, 'incident_photo.jpg')).pipe(
         switchMap(file => {
           formData.append('image', file, file.name);
-          return this.http.post<IncidentResponse>(this.apiUrl, formData);
+          return this.api.post<IncidentResponse>('/incidents/', formData);
         })
       );
+
     } else {
-      return this.http.post<IncidentResponse>(this.apiUrl, formData);
+      return this.api.post<IncidentResponse>('/incidents/', formData);
     }
   }
 
   /**
-   * Convertit une DataURL base64 (caméra HTML canvas) en objet File
+   * Convertit une DataURL base64 (caméra HTML canvas) en objet File.
    */
   private async dataUrlToFile(dataUrl: string, filename: string): Promise<File> {
     const res = await fetch(dataUrl);

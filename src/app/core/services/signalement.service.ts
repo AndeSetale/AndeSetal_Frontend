@@ -60,7 +60,7 @@ export class SignalementService {
    * Convertit un incident API (snake_case, UPPERCASE) en Signalement frontend.
    */
   private mapper(inc: SignalementApi): Signalement {
-    const premierePhoto = inc.preuves?.[0]?.image_url ?? undefined;
+    const premierePhoto = inc.preuves?.[0]?.url ?? undefined;
 
     return {
       id:           inc.id,

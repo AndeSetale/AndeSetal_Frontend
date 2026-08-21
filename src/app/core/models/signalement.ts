@@ -46,7 +46,7 @@ export type StatutSignalement = 'NOUVEAU' | 'EN_COURS' | 'RESOLU';
 export interface PreuveApi {
   id: number;
   type: string;
-  image_url: string | null;
+  url: string | null;      // correspond au champ "url" du PreuveSerializer backend
   date_ajout: string;
 }
 
