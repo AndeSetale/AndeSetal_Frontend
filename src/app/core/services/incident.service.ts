@@ -2,6 +2,17 @@ import { Observable, of, delay,map } from 'rxjs';
 import { Injectable, inject } from '@angular/core';
 import { Api } from './api';
 
+export interface DashboardStats {
+  signalements: {
+    total: number;
+    en_cours: number;
+    resolus: number;
+    urgents: number;
+  };
+  incidents_par_statut: { statut: string; count: number }[];
+  agents_disponibles: number;
+}
+
 export interface Incident {
   id: string; // reference Django, ex "INC-4F2A9B10"
   numericId: number; // pk numérique, utile pour PATCH /incidents/<id>/
@@ -156,8 +167,23 @@ export class IncidentService {
     );
   }
 
+  getDashboardStats(): Observable<DashboardStats> {
+    return this.api.get<DashboardStats>('/dashboard/stats/');
+  }
+
   getIncidentById(id: number): Observable<Incident> {
     return this.api.get<IncidentApi>(`/incidents/${id}/`).pipe(map(this.mapToIncident));
+  }
+
+  /**
+   * Récupère les incidents géolocalisés pour la carte admin.
+   * Utilise l'endpoint dédié /dashboard/incidents-carte/ qui retourne
+   * uniquement les incidents ayant des coordonnées GPS.
+   */
+  getIncidentsCarte(): Observable<Incident[]> {
+    return this.api.get<IncidentApi[]>('/dashboard/incidents-carte/').pipe(
+      map((liste) => liste.map(this.mapToIncident)),
+    );
   }
 
   private mapToIncident(item: IncidentApi): Incident {

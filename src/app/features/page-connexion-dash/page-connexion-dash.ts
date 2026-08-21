@@ -78,8 +78,17 @@ export class PageConnexionDash {
 
         this.loading.set(false);
 
-        // Redirection dashboard
-        this.router.navigate(['/dashboard']);
+        // Redirection selon le rôle
+        const role = reponse.user?.role;
+        if (role === 'admin') {
+          this.router.navigate(['/dashboard']);
+        } else if (role === 'agent') {
+          this.router.navigate(['/agent']);
+        } else {
+          // Un citoyen n'a pas accès au dashboard — renvoyer vers mobile
+          this.erreur.set('Accès réservé aux administrateurs et agents.');
+          this.auth.deconnecter();
+        }
       },
 
       error: (erreur) => {

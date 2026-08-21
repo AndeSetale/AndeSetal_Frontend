@@ -6,7 +6,8 @@ import { RepartitionIncidents } from '../../components/repartition-incidents/rep
 import { IncidentsRecents } from '../../components/incidents-recents/incidents-recents';
 import { PerformanceAgents } from '../../components/performance-agents/performance-agents';
 
-import { IncidentService } from '../../core/services/incident.service';
+import { DashboardStats, IncidentService } from '../../core/services/incident.service';
+import type { Incident } from '../../core/services/incident.service';
 
 @Component({
   selector: 'app-accueil',
@@ -26,10 +27,14 @@ export class Accueil {
   private readonly incidentService = inject(IncidentService);
 
   // =========================
-  // INCIDENTS
+  // ÉTAT
   // =========================
 
-  incidents = signal<any[]>([]);
+  /** Stats globales depuis /api/dashboard/stats/ */
+  stats = signal<DashboardStats | null>(null);
+
+  /** Liste complète pour les graphiques de répartition */
+  incidents = signal<Incident[]>([]);
 
   chargement = signal(true);
 
@@ -38,29 +43,31 @@ export class Accueil {
 
   constructor() {
 
-    this.incidentService.getIncidents().subscribe({
+    // 1. Statistiques consolidées côté serveur (admin uniquement)
+    this.incidentService.getDashboardStats().subscribe({
 
       next: (data) => {
-
-        this.incidents.set(data);
-
+        this.stats.set(data);
         this.chargement.set(false);
-
       },
 
       error: (error) => {
-
-        console.error(
-          'Erreur chargement incidents dashboard :',
-          error
-        );
-
-        this.erreur.set(
-          'Impossible de charger les statistiques.'
-        );
-
+        console.error('Erreur chargement stats dashboard :', error);
+        this.erreur.set('Impossible de charger les statistiques.');
         this.chargement.set(false);
+      }
 
+    });
+
+    // 2. Liste complète pour les graphiques (répartition par type, etc.)
+    this.incidentService.getIncidents().subscribe({
+
+      next: (data) => {
+        this.incidents.set(data);
+      },
+
+      error: (error) => {
+        console.error('Erreur chargement liste incidents :', error);
       }
 
     });
@@ -69,45 +76,29 @@ export class Accueil {
 
 
   // =========================
-  // KPI
+  // KPI — depuis l'API stats
   // =========================
 
   incidentsCritiques = computed(() => {
-
-    return this.incidents().filter(
-      incident => incident.urgence === 'CRITIQUE'
-    ).length;
-
+    return this.stats()?.signalements.urgents ?? 0;
   });
-
 
   incidentsEnCours = computed(() => {
-
-    return this.incidents().filter(
-      incident => incident.statut === 'EN_COURS'
-    ).length;
-
+    return this.stats()?.signalements.en_cours ?? 0;
   });
-
 
   incidentsResolus = computed(() => {
-
-    return this.incidents().filter(
-      incident => incident.statut === 'RESOLU'
-    ).length;
-
+    return this.stats()?.signalements.resolus ?? 0;
   });
 
-
   totalIncidents = computed(() => {
-
-    return this.incidents().length;
-
+    return this.stats()?.signalements.total ?? 0;
   });
 
 
   // =========================
   // RÉPARTITION PAR TYPE
+  // (calculée côté client depuis la liste complète)
   // =========================
 
   incidentTypes = computed(() => {

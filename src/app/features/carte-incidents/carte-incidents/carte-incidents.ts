@@ -119,7 +119,7 @@ private plateauLayer?: L.GeoJSON;
   this.chargerPerimetre();
 
   // Charger les incidents
-  this.incidentService.getIncidents().subscribe((incidents) => {
+  this.incidentService.getIncidentsCarte().subscribe((incidents) => {
 
     this.incidents = incidents;
 
