@@ -2,11 +2,12 @@ import { AfterViewInit, Component, OnDestroy } from '@angular/core';
 import * as L from 'leaflet';
 
 import { HeaderAgent } from '../components/header-agent/header-agent';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-carte',
   standalone: true,
-  imports: [HeaderAgent],
+  imports: [HeaderAgent, RouterLink],
   templateUrl: './carte.html',
   styleUrl: './carte.css',
 })

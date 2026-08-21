@@ -10,8 +10,13 @@
 
     <section class="relative h-64 w-full shrink-0 overflow-hidden bg-white shadow-[0px_2px_4px_-2px_rgba(0,0,0,0.10)]">
 
-      <img [src]="intervention().image || 'https://placehold.co/402x256'" [alt]="intervention().titre"
-        class="block h-full w-full object-cover" />
+      <!-- <img [src]="intervention().image || 'images/avant.webp'" [alt]="intervention().titre"
+        class="block h-full w-full object-cover" /> -->
+        <img
+        src="images/avant.webp"
+        [alt]="intervention().titre"
+        class="block h-full w-full object-cover"
+      />
 
       <!-- Statut -->
       <div
@@ -374,70 +379,59 @@
 
         <section class="flex w-full gap-3 pt-px">
 
-          <!-- ================= PHOTO AVANT ================= -->
+  <!-- ================= PHOTO AVANT ================= -->
 
-          <div class="flex min-w-0 flex-1 flex-col gap-1">
+  <div class="flex min-w-0 flex-1 flex-col gap-1">
 
-            <h3 class="text-center text-xs font-bold leading-5 text-neutral-500">
-              Photo Avant
-            </h3>
+    <h3 class="text-center text-xs font-bold leading-5 text-neutral-500">
+      Photo Avant
+    </h3>
 
-            <button type="button" class="flex h-32 w-full flex-col items-center justify-center rounded-xl
-             bg-stone-100 outline outline-2 outline-offset-[-2px]
-             outline-stone-300">
+    <button
+      type="button"
+      class="relative h-32 w-full overflow-hidden rounded-xl
+      outline outline-2 outline-offset-[-2px] outline-stone-300"
+    >
 
-              <!-- Appareil photo + -->
-              <svg class="size-7 text-[#005548]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <!-- appareil -->
-                <path d="M14.5 4h-5L8 6H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-3l-1.5-2Z" />
+      <img
+        src="images/avant.webp"
+        alt="Photo avant"
+        class="absolute inset-0 h-full w-full object-cover"
+      />
 
-                <!-- objectif -->
-                <circle cx="12" cy="13" r="3" />
+    </button>
 
-                <!-- + en haut à droite -->
-                <path d="M19 3v4" />
-                <path d="M17 5h4" />
-              </svg>
-
-              <span class="pt-1 text-[10px] font-bold uppercase leading-4 text-neutral-500">
-                CHARGER
-              </span>
-
-            </button>
-
-          </div>
+  </div>
 
 
-          <!-- ================= PHOTO APRÈS ================= -->
+  <!-- ================= PHOTO APRÈS ================= -->
 
-          <div class="flex min-w-0 flex-1 flex-col gap-1">
+  <div class="flex min-w-0 flex-1 flex-col gap-1">
 
-            <h3 class="text-center text-xs font-bold leading-5 text-neutral-500">
-              Photo Après
-            </h3>
+    <h3 class="text-center text-xs font-bold leading-5 text-neutral-500">
+      Photo Après
+    </h3>
 
-            <button type="button" class="flex h-32 w-full flex-col items-center justify-center rounded-xl
-             bg-stone-100 outline outline-2 outline-offset-[-2px]
-             outline-stone-300">
+    <button
+      type="button"
+      class="relative h-32 w-full overflow-hidden rounded-xl
+      outline outline-2 outline-offset-[-2px] outline-stone-300"
+    >
 
-              <!-- Appareil photo simple -->
-              <svg class="size-7 text-[#005548]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M14.5 4h-5L8 6H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-3l-1.5-2Z" />
+      <img
+        src="images/apres.png"
+        alt="Photo après"
+        class="absolute inset-0 h-full w-full object-cover"
+      />
 
-                <circle cx="12" cy="13" r="3" />
-              </svg>
+    </button>
 
-              <span class="pt-1 text-[10px] font-bold uppercase leading-4 text-neutral-500">
-                CHARGER
-              </span>
+  </div>
 
-            </button>
+</section>
 
-          </div>
 
-        </section>
+
 
 
         <!-- ================================================= -->

@@ -273,7 +273,7 @@
 
 
                         <!-- Action -->
-                        <button type="button"
+                        <button type="button" routerLink="/agent/interventions"
                             class="flex h-12 w-full items-center justify-center gap-2 rounded-2xl bg-teal-950 px-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-teal-900">
 
                             <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -296,6 +296,7 @@
                             </svg>
 
                         </button>
+
 
                     </div>
 
@@ -409,19 +410,21 @@
                             Historique
                         </span>
 
-                        <button type="button" routerLink="/agent/historique" (click)="fermerMenu()"
-                            aria-label="Historique des rapports" class="flex h-10 w-10 items-center justify-center rounded-full
-                 bg-teal-950 text-white shadow-lg">
+                        <button type="button" routerLink="/agent/historique/1" (click)="fermerMenu()"
+                            aria-label="Historique des rapports"
+                            class="flex h-10 w-10 items-center justify-center rounded-full bg-teal-950 text-white shadow-lg">
 
-                            <!-- Icône History -->
                             <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+
                                 <path d="M3 12a9 9 0 1 0 3-6.7" />
                                 <path d="M3 4v5h5" />
                                 <path d="M12 7v5l3 2" />
+
                             </svg>
 
                         </button>
+
 
                     </div>
 
@@ -436,8 +439,9 @@
                             Carte
                         </span>
 
-                        <button type="button" routerLink="/agent/carte" (click)="fermerMenu()" aria-label="Carte" class="flex h-10 w-10 items-center justify-center rounded-full
-                 bg-teal-950 text-white shadow-lg">
+                        <button type="button" routerLink="/agent/carte" (click)="fermerMenu()" aria-label="Carte"
+                            class="flex h-10 w-10 items-center justify-center rounded-full bg-teal-950 text-white shadow-lg">
+
 
                             <!-- Icône Carte -->
                             <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
