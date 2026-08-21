@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable,map } from 'rxjs';
 import { Api } from './api';
 
 export interface Agent {
@@ -66,10 +66,19 @@ export interface CreateAgent {
   email: string;
   password: string;
   telephone: string;
+  quartier: string;
+  matricule: string;
   departement: string;
-  role: string;
+  specialisation: string;
+  disponible: boolean;
 }
 
+interface AgentsResponse {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: Agent[];
+}
 // ============================================================
 // AJOUT — DONNÉES D'UNE INTERVENTION AGENT
 // ============================================================
@@ -96,8 +105,10 @@ export class AgentService {
   private readonly endpoint = '/agents/';
 
   getAgents(): Observable<Agent[]> {
-    return this.api.get<Agent[]>(this.endpoint);
-  }
+  return this.api.get<AgentsResponse>(this.endpoint).pipe(
+    map(response => response.results)
+  );
+}
 
   getAgent(id: number): Observable<Agent> {
     return this.api.get<Agent>(`${this.endpoint}${id}/`);

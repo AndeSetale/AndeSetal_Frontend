@@ -39,6 +39,7 @@ export class DetailIncident {
 
 
   constructor() {
+    
 
     const id = Number(
       this.route.snapshot.paramMap.get('id')
@@ -130,6 +131,7 @@ export class DetailIncident {
 
 
   private initMap(incident: Incident): void {
+    
 
     this.map = L.map('incident-map').setView(
       [

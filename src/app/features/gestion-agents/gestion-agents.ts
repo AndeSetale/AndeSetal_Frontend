@@ -106,14 +106,9 @@ export class GestionAgents {
     this.agentService.getAgents().subscribe({
 
       next: (agents) => {
-
-        this.agents.set(agents);
-
-        console.log(agents)
-
-        this.loading.set(false);
-
-      },
+  this.agents.set(agents);
+  this.loading.set(false);
+},
 
       error: (error) => {
 

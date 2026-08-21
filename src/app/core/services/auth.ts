@@ -3,6 +3,8 @@ import { Api } from './api';
 import { TokenStorage } from './token-storage';
 import { Utilisateur } from '../models/utilisateur';
 import { AuthResponse, UtilisateurApi } from '../models/auth-response';
+import { Router } from '@angular/router';
+
 
 
 export interface InscriptionRequest {
@@ -27,6 +29,7 @@ export class Auth {
 
   private readonly api = inject(Api);
   private readonly tokenStorage = inject(TokenStorage);
+  private readonly router = inject(Router);
 
 
   // Utilisateur actuellement connecté
@@ -148,5 +151,6 @@ export class Auth {
     this.tokenStorage.supprimerTokens();
     localStorage.removeItem('utilisateur');
     this.utilisateurConnecte.set(null);
+    this.router.navigate(['/dash/connexion']);
   }
 }

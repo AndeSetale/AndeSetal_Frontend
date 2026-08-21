@@ -91,6 +91,33 @@
                  text-sm outline-none focus:border-teal-700"
         />
       </div>
+      <div>
+  <label class="block mb-2 text-sm font-semibold text-gray-700">
+    Matricule
+  </label>
+
+  <input
+    type="text"
+    name="matricule"
+    [(ngModel)]="form.matricule"
+    placeholder="Ex : AGT-001"
+    class="w-full h-11 px-4 rounded-[10px] border border-gray-300
+           text-sm outline-none focus:border-teal-700"
+  />
+</div>
+<select
+  name="specialisation"
+  [(ngModel)]="form.specialisation"
+  class="w-full h-11 px-4 rounded-[10px] border border-gray-300 bg-white"
+>
+  <option value="">Sélectionner la spécialisation</option>
+  <option value="DECHETS">Déchets</option>
+  <option value="CANAUX">Canaux</option>
+  <option value="VOIRIE">Voirie</option>
+  <option value="ECLAIRAGE_PUBLIC">Éclairage public</option>
+  <option value="ARBRE">Arbre</option>
+  <option value="FUITE_EAU">Fuite d'eau</option>
+</select>
 
       <!-- Département -->
       <div>

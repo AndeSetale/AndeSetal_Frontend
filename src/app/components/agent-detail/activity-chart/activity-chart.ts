@@ -1,9 +1,9 @@
 import {
-  AfterViewInit,
   Component,
   ElementRef,
   ViewChild,
   input,
+  effect,
 } from '@angular/core';
 
 import {
@@ -34,24 +34,35 @@ Chart.register(
   templateUrl: './activity-chart.html',
   styleUrl: './activity-chart.css',
 })
-export class ActivityChart implements AfterViewInit {
+export class ActivityChart {
 
-  agent = input.required<Agent>();
+  agent = input<Agent | null>(null);
 
   @ViewChild('activityChart')
   chartRef!: ElementRef<HTMLCanvasElement>;
 
-  ngAfterViewInit(): void {
-    this.createChart();
+  private chart?: Chart;
+
+  constructor() {
+    effect(() => {
+      const agent = this.agent();
+
+      if (!agent || !this.chartRef) {
+        return;
+      }
+
+      this.createChart(agent);
+    });
   }
 
-  private createChart(): void {
+  private createChart(agent: Agent): void {
 
-    const agent = this.agent();
+    // Évite de créer plusieurs graphiques
+    this.chart?.destroy();
 
     const canvas = this.chartRef.nativeElement;
 
-    new Chart(canvas, {
+    this.chart = new Chart(canvas, {
       type: 'bar',
 
       data: {
@@ -68,6 +79,7 @@ export class ActivityChart implements AfterViewInit {
         datasets: [
           {
             label: 'Assignés',
+
             data: [
               8,
               10,
@@ -77,6 +89,7 @@ export class ActivityChart implements AfterViewInit {
               5,
               3,
             ],
+
             backgroundColor: '#D1D5DB',
             borderRadius: 3,
             barPercentage: 0.45,
@@ -85,6 +98,7 @@ export class ActivityChart implements AfterViewInit {
 
           {
             label: 'Résolus',
+
             data: [
               agent.taches_resolues_semaine,
               agent.taches_resolues_semaine,
@@ -94,6 +108,7 @@ export class ActivityChart implements AfterViewInit {
               agent.taches_resolues_semaine,
               agent.taches_resolues_semaine,
             ],
+
             backgroundColor: '#1F2937',
             borderRadius: 3,
             barPercentage: 0.45,
@@ -128,6 +143,7 @@ export class ActivityChart implements AfterViewInit {
 
             ticks: {
               color: '#374151',
+
               font: {
                 size: 12,
               },
@@ -140,6 +156,7 @@ export class ActivityChart implements AfterViewInit {
             ticks: {
               stepSize: 3,
               color: '#6B7280',
+
               font: {
                 size: 12,
               },

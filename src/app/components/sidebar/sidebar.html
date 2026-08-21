@@ -198,5 +198,12 @@
  {{ auth.utilisateur()?.email}}
 </span>
     </div>
+     <button
+    type="button"
+    (click)="auth.deconnecter()"
+    class="mt-2 text-left text-xs text-white/70 hover:text-white transition"
+  >
+    Déconnexion
+  </button>
   </div>
 </aside>

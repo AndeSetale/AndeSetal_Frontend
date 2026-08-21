@@ -1,6 +1,7 @@
 import { Observable, of, delay,map } from 'rxjs';
 import { Injectable, inject } from '@angular/core';
 import { Api } from './api';
+import { environment } from '../../../environments/environment';
 
 export interface DashboardStats {
   signalements: {
@@ -46,7 +47,13 @@ interface IncidentApi {
   date_creation: string;
   signale_par?: string | null;
   assigne_a?: number | null;
-  preuves?: { image: string }[];
+  preuves?: {
+    id: number;
+    type: string;
+    type_display: string;
+    url: string;
+    date_ajout: string;
+}[];
 }
 
 type ListeApi = IncidentApi[] | { results: IncidentApi[] };
@@ -211,7 +218,9 @@ export class IncidentService {
       statut: item.statut,
       description: item.description,
       signalePar: item.signale_par ?? 'Anonyme', // ajuste selon ce que renvoie ton serializer
-      photoUrl: item.preuves?.[0]?.image ?? null, // idem, à vérifier côté PreuveSerializer
+      photoUrl: item.preuves?.[0]?.url
+  ? `${environment.mediaUrl}${item.preuves[0].url}`
+  : null,// idem, à vérifier côté PreuveSerializer
       assigne_a: item.assigne_a ?? null,
     };
   }

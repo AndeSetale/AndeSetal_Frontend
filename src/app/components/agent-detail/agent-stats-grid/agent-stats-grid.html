@@ -2,7 +2,7 @@
 
   <app-stat-card
     title="Incidents résolus"
-    [value]="agent().taches_resolues_semaine.toString()"
+    [value]="agent()?.taches_resolues_semaine.toString()"
     description="Cette semaine"
     icon="check-circle"
     iconBg="bg-gray-800/10"
@@ -13,7 +13,7 @@
 
   <app-stat-card
     title="Taux de complétion"
-    [value]="agent().taux_completion + '%'"
+    [value]="agent()?.taux_completion + '%'"
     description="Missions réalisées"
     icon="target"
     iconBg="bg-blue-100"
@@ -24,7 +24,7 @@
 
   <app-stat-card
     title="Ponctualité"
-    [value]="agent().ponctualite + '%'"
+    [value]="agent()?.ponctualite + '%'"
     description="Performance"
     icon="clock"
     iconBg="bg-green-100"

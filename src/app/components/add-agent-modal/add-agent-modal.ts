@@ -19,14 +19,17 @@ export class AddAgentModal {
   loading = false;
   error = '';
 
-  form: CreateAgent = {
-    nom_complet: '',
-    email: '',
-    password: '',
-    telephone: '',
-    departement: '',
-    role: 'agent',
-  };
+ form: CreateAgent = {
+  nom_complet: '',
+  email: '',
+  password: '',
+  telephone: '',
+  quartier: '',
+  matricule: '',
+  departement: '',
+  specialisation: '',
+  disponible: true
+};
 
   onClose(): void {
     this.close.emit();

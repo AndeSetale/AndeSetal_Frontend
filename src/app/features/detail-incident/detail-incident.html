@@ -45,36 +45,15 @@
   </div>
 
  <!-- PHOTO PRINCIPALE -->
-<div class="w-full h-72 rounded-xl overflow-hidden">
-  <img
-    src="/images/image 27.png"
-    [alt]="incident()?.titre"
-    class="w-full h-full object-cover"
-  />
-</div>
-
-<!-- MINIATURES -->
-<div class="flex gap-3 mt-4">
-
-  <img
-    src="/images/image 27.png"
-    alt="Photo 1"
-    class="w-24 h-24 rounded-xl object-cover outline outline-2 outline-gray-200"
-  />
-
-  <img
-    src="/images/image 27.png"
-    alt="Photo 2"
-    class="w-24 h-24 rounded-xl object-cover outline outline-2 outline-gray-200"
-  />
-
-  <img
-    src="/images/image 27.png"
-    alt="Photo 3"
-    class="w-24 h-24 rounded-xl object-cover outline outline-2 outline-gray-200"
-  />
-
-</div>
+@if (incident()?.photoUrl) {
+  <div class="w-full h-72 rounded-xl overflow-hidden">
+    <img
+      [src]="incident()!.photoUrl!"
+      [alt]="incident()?.titre"
+      class="w-full h-full object-cover"
+    />
+  </div>
+}
 
 </section>
 
