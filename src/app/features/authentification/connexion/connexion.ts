@@ -17,6 +17,7 @@ import { Auth } from '../../../core/services/auth';
   styleUrl: './connexion.css',
 })
 export class Connexion {
+
   private auth = inject(Auth);
   private router = inject(Router);
 
@@ -58,8 +59,12 @@ export class Connexion {
     );
   }
 
-  // Soumission du formulaire
+
+  // ============================================================
+  // SOUMISSION DU FORMULAIRE DE CONNEXION
+  // ============================================================
   seConnecter(): void {
+
     // Réinitialiser l'erreur précédente
     this.erreur.set(null);
 
@@ -71,23 +76,69 @@ export class Connexion {
 
     this.chargement.set(true);
 
-    const { email, motDePasse } = this.formulaireConnexion.getRawValue();
+    const { email, motDePasse } =
+      this.formulaireConnexion.getRawValue();
+
 
     this.auth.connecter(email, motDePasse).subscribe({
+
       next: (reponse) => {
-        // Enregistrer les tokens et l'utilisateur connecté
+
+        // ============================================================
+        // Enregistrer les tokens et les informations de l'utilisateur
+        // retournées par le backend Django.
+        // ============================================================
+
         this.auth.enregistrerSession(reponse);
 
         this.chargement.set(false);
 
-        // Rediriger vers l'espace citoyen
-        this.router.navigate(['/mobile']);
+        // ============================================================
+        // Redirection vers le parcours correspondant au rôle.
+        //
+        // admin   → /dashboard
+        // agent   → /agent
+        // citoyen → /mobile
+        // ============================================================
+
+        const routeAccueil =
+          this.auth.getRouteAccueilSelonRole();
+
+
+        // ============================================================
+        // SÉCURITÉ :
+        // Si aucun rôle valide n'est disponible, on supprime
+        // la session et on reste sur la page de connexion.
+        // ============================================================
+
+        if (routeAccueil === '/connexion') {
+
+          this.auth.deconnecter();
+
+          this.erreur.set(
+            'Rôle utilisateur non reconnu.'
+          );
+
+          return;
+        }
+
+
+        // ============================================================
+        // REDIRECTION VERS LE PARCOURS UTILISATEUR
+        // ============================================================
+
+        this.router.navigate([routeAccueil]);
       },
 
+
       error: (erreur) => {
+
         this.chargement.set(false);
 
-        console.error('Erreur de connexion :', erreur);
+        console.error(
+          'Erreur de connexion :',
+          erreur
+        );
 
         // Message affiché à l'utilisateur
         this.erreur.set(

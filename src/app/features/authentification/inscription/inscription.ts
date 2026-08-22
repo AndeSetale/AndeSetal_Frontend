@@ -27,6 +27,31 @@ export class Inscription {
   chargement = signal(false);
   erreur = signal<string | null>(null);
 
+  // ============================================================
+  // INDICATEUR DE FORCE DU MOT DE PASSE
+// ============================================================
+
+    getForceMotDePasse(): number {
+
+    const longueur =
+      this.formulaireInscription.controls.motDePasse.value.length;
+
+    if (longueur < 4) {
+      return 0;
+    }
+
+    if (longueur < 6) {
+      return 1;
+    }
+
+    if (longueur < 8) {
+      return 2;
+    }
+
+    return 4;
+  }
+
+
   formulaireInscription = new FormGroup({
 
     nomComplet: new FormControl('', {
@@ -130,4 +155,5 @@ export class Inscription {
 
   });
   }
+
 }

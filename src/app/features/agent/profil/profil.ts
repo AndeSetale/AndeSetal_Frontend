@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { RouterLink, Router } from '@angular/router';
 import { HeaderAgent } from '../components/header-agent/header-agent';
+import { Auth } from '../../../core/services/auth';
+
 
 import {
   LucideCircleCheck,
@@ -22,6 +24,14 @@ import {
   styleUrl: './profil.css',
 })
 export class Profil {
+  private readonly auth = inject(Auth);
+  private readonly router = inject(Router);
+
+  deconnecter(): void {
+  this.auth.deconnecter();
+  this.router.navigate(['/mobile']);
+}
+
 
   agent = {
     nom: 'Moussa Diop',

@@ -201,13 +201,24 @@
                 <!-- Indicateur de force -->
                 <div class="pt-1 flex items-center gap-1">
 
-                    <span class="flex-1 h-1 bg-teal-950 rounded-full"></span>
-                    <span class="flex-1 h-1 bg-teal-950 rounded-full"></span>
-                    <span class="flex-1 h-1 bg-green-500/40 rounded-full"></span>
-                    <span class="flex-1 h-1 bg-zinc-100 rounded-full"></span>
+                    <!-- Barre 1 -->
+                    <span class="flex-1 h-1 rounded-full transition-colors"
+                        [class.bg-teal-950]="getForceMotDePasse() >= 1" [class.bg-green-100]="getForceMotDePasse() < 1">
+                    </span>
 
-                    <span class="pl-2 text-xs text-zinc-500">
-                        Moyen
+                    <!-- Barre 2 -->
+                    <span class="flex-1 h-1 rounded-full transition-colors"
+                        [class.bg-teal-950]="getForceMotDePasse() >= 2" [class.bg-green-100]="getForceMotDePasse() < 2">
+                    </span>
+
+                    <!-- Barre 3 -->
+                    <span class="flex-1 h-1 rounded-full transition-colors"
+                        [class.bg-teal-950]="getForceMotDePasse() >= 3" [class.bg-green-100]="getForceMotDePasse() < 3">
+                    </span>
+
+                    <!-- Barre 4 -->
+                    <span class="flex-1 h-1 rounded-full transition-colors"
+                        [class.bg-teal-950]="getForceMotDePasse() >= 4" [class.bg-green-100]="getForceMotDePasse() < 4">
                     </span>
 
                 </div>

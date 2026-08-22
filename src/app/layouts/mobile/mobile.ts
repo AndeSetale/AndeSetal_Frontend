@@ -5,7 +5,7 @@ import { HeaderCitoyen } from "../../features/citoyen/components/header-citoyen/
 
 @Component({
   selector: 'app-mobile',
-  imports: [RouterOutlet, HeaderCitoyen, NavigationCitoyen],
+  imports: [RouterOutlet, NavigationCitoyen],
   templateUrl: './mobile.html',
   styleUrl: './mobile.css',
 })

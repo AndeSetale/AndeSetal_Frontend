@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { Dashboard } from './layouts/dashboard/dashboard';
 import { Mobile } from './layouts/mobile/mobile';
 import { Accueil } from './features/tableau-de-bord/accueil';
+import { roleGuard } from './core/guards/role-guard';
 
 
 import { Carte } from './features/carte/carte';
@@ -143,6 +144,12 @@ export const routes: Routes = [
   {
     path: 'mobile',
     component: Mobile,
+      // Si l'utilisateur est connecté, roleGuard vérifie
+  // qu'il possède bien le rôle "citoyen".
+  // ============================================================
+    canActivate: [
+      roleGuard(['citoyen'], true)
+    ],
     children: [
       {
         path: '',
@@ -205,6 +212,9 @@ export const routes: Routes = [
 {
   path: 'agent',
   component: Agent,
+  canActivate: [
+    roleGuard(['agent'])
+  ],
   children: [
 
     {
