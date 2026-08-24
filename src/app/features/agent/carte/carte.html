@@ -24,69 +24,132 @@
     <!-- =======================================================
          FILTRES
     ======================================================== -->
+    <nav
+  class="absolute inset-x-0 top-20 z-30 overflow-x-auto px-3 pb-2 pt-3"
+  aria-label="Filtres de carte"
+>
+  <div class="flex w-max gap-2">
 
-    <nav class="absolute inset-x-0 top-20 z-30 overflow-x-auto px-3 pb-2 pt-3" aria-label="Filtres de carte">
-      <div class="flex w-max gap-2">
+    <!-- TOUS -->
+    <button
+      type="button"
+      (click)="selectionnerFiltre('TOUS')"
+      [attr.aria-pressed]="filtreActif === 'TOUS'"
+      class="flex h-9 shrink-0 items-center gap-1 rounded-full px-3 text-xs font-medium leading-4 shadow-sm transition"
+      [class.bg-teal-950]="filtreActif === 'TOUS'"
+      [class.text-green-50]="filtreActif === 'TOUS'"
+      [class.bg-white]="filtreActif !== 'TOUS'"
+      [class.text-zinc-900]="filtreActif !== 'TOUS'"
+    >
+      <svg
+        class="size-4"
+        viewBox="0 0 16 16"
+        fill="none"
+        aria-hidden="true"
+      >
+        <path
+          d="M2 2h4v4H2V2Zm8 0h4v4h-4V2ZM2 10h4v4H2v-4Zm8 0h4v4h-4v-4Z"
+          stroke="currentColor"
+          stroke-width="1.33"
+          stroke-linejoin="round"
+        />
+      </svg>
 
-        <!-- Tous -->
-        <button type="button" aria-pressed="true"
-          class="flex h-9 shrink-0 items-center gap-1 rounded-full bg-teal-950 px-3 text-xs font-medium leading-4 text-green-50 shadow-sm">
-          <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path d="M2 2h4v4H2V2Zm8 0h4v4h-4V2ZM2 10h4v4H2v-4Zm8 0h4v4h-4v-4Z" stroke="currentColor"
-              stroke-width="1.33" stroke-linejoin="round" />
-          </svg>
-
-          <span>Tous</span>
-        </button>
-
-
-        <!-- Déchets -->
-        <button type="button" aria-pressed="false"
-          class="flex h-9 shrink-0 items-center gap-1 rounded-full bg-white/90 px-3 text-xs font-medium leading-4 text-zinc-900 shadow-[0_1px_3px_rgba(0,0,0,0.1)] backdrop-blur-[10px]">
-          <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path d="M5 5h6m-5-2h4m-5 2 1 8h4l1-8" stroke="currentColor" stroke-width="1.33" stroke-linecap="round" />
-          </svg>
-
-          <span>Déchets</span>
-        </button>
-
-
-        <!-- Canaux -->
-        <button type="button" aria-pressed="false"
-          class="flex h-9 shrink-0 items-center gap-1 rounded-full bg-white/90 px-3 text-xs font-medium leading-4 text-zinc-900 shadow-[0_1px_3px_rgba(0,0,0,0.1)] backdrop-blur-[10px]">
-          <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.33" stroke-linecap="round" />
-          </svg>
-
-          <span>Canaux</span>
-        </button>
+      <span>Tous</span>
+    </button>
 
 
-        <!-- Voirie -->
-        <button type="button" aria-pressed="false"
-          class="flex h-9 shrink-0 items-center gap-1 rounded-full bg-white/90 px-3 text-xs font-medium leading-4 text-zinc-900 shadow-[0_1px_3px_rgba(0,0,0,0.1)] backdrop-blur-[10px]">
-          <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path d="M2 5.5h12M4.5 5.5V3m7 2.5V3M4.5 5.5l1.5 5m5.5-5-1.5 5M7 5.5v5" stroke="currentColor"
-              stroke-width="1.33" stroke-linecap="round" />
-          </svg>
+    <!-- DECHETS -->
+    <button
+      type="button"
+      (click)="selectionnerFiltre('DECHETS')"
+      [attr.aria-pressed]="filtreActif === 'DECHETS'"
+      class="flex h-9 shrink-0 items-center gap-1 rounded-full px-3 text-xs font-medium leading-4 shadow-sm transition"
+      [class.bg-teal-950]="filtreActif === 'DECHETS'"
+      [class.text-green-50]="filtreActif === 'DECHETS'"
+      [class.bg-white]="filtreActif !== 'DECHETS'"
+      [class.text-zinc-900]="filtreActif !== 'DECHETS'"
+    >
+      <span>Déchets</span>
+    </button>
 
-          <span>Voirie</span>
-        </button>
+
+    <!-- CANAUX -->
+    <button
+      type="button"
+      (click)="selectionnerFiltre('CANAUX')"
+      [attr.aria-pressed]="filtreActif === 'CANAUX'"
+      class="flex h-9 shrink-0 items-center gap-1 rounded-full px-3 text-xs font-medium leading-4 shadow-sm transition"
+      [class.bg-teal-950]="filtreActif === 'CANAUX'"
+      [class.text-green-50]="filtreActif === 'CANAUX'"
+      [class.bg-white]="filtreActif !== 'CANAUX'"
+      [class.text-zinc-900]="filtreActif !== 'CANAUX'"
+    >
+      <span>Canaux</span>
+    </button>
 
 
-        <!-- Eau -->
-        <button type="button" aria-pressed="false"
-          class="flex h-9 shrink-0 items-center gap-1 rounded-full bg-white/90 px-3 text-xs font-medium leading-4 text-zinc-900 shadow-[0_1px_3px_rgba(0,0,0,0.1)] backdrop-blur-[10px]">
-          <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path d="M8 2s-4 4.3-4 7a4 4 0 0 0 8 0c0-2.7-4-7-4-7Z" stroke="currentColor" stroke-width="1.33"
-              stroke-linejoin="round" />
-          </svg>
+    <!-- VOIRIE -->
+    <button
+      type="button"
+      (click)="selectionnerFiltre('VOIRIE')"
+      [attr.aria-pressed]="filtreActif === 'VOIRIE'"
+      class="flex h-9 shrink-0 items-center gap-1 rounded-full px-3 text-xs font-medium leading-4 shadow-sm transition"
+      [class.bg-teal-950]="filtreActif === 'VOIRIE'"
+      [class.text-green-50]="filtreActif === 'VOIRIE'"
+      [class.bg-white]="filtreActif !== 'VOIRIE'"
+      [class.text-zinc-900]="filtreActif !== 'VOIRIE'"
+    >
+      <span>Voirie</span>
+    </button>
 
-          <span>Eau</span>
-        </button>
 
-      </div>
-    </nav>
+    <!-- ECLAIRAGE PUBLIC -->
+    <button
+      type="button"
+      (click)="selectionnerFiltre('ECLAIRAGE_PUBLIC')"
+      [attr.aria-pressed]="filtreActif === 'ECLAIRAGE_PUBLIC'"
+      class="flex h-9 shrink-0 items-center gap-1 rounded-full px-3 text-xs font-medium leading-4 shadow-sm transition"
+      [class.bg-teal-950]="filtreActif === 'ECLAIRAGE_PUBLIC'"
+      [class.text-green-50]="filtreActif === 'ECLAIRAGE_PUBLIC'"
+      [class.bg-white]="filtreActif !== 'ECLAIRAGE_PUBLIC'"
+      [class.text-zinc-900]="filtreActif !== 'ECLAIRAGE_PUBLIC'"
+    >
+      <span>Éclairage</span>
+    </button>
+
+
+    <!-- ARBRE -->
+    <button
+      type="button"
+      (click)="selectionnerFiltre('ARBRE')"
+      [attr.aria-pressed]="filtreActif === 'ARBRE'"
+      class="flex h-9 shrink-0 items-center gap-1 rounded-full px-3 text-xs font-medium leading-4 shadow-sm transition"
+      [class.bg-teal-950]="filtreActif === 'ARBRE'"
+      [class.text-green-50]="filtreActif === 'ARBRE'"
+      [class.bg-white]="filtreActif !== 'ARBRE'"
+      [class.text-zinc-900]="filtreActif !== 'ARBRE'"
+    >
+      <span>Arbre</span>
+    </button>
+
+
+    <!-- FUITE EAU -->
+    <button
+      type="button"
+      (click)="selectionnerFiltre('FUITE_EAU')"
+      [attr.aria-pressed]="filtreActif === 'FUITE_EAU'"
+      class="flex h-9 shrink-0 items-center gap-1 rounded-full px-3 text-xs font-medium leading-4 shadow-sm transition"
+      [class.bg-teal-950]="filtreActif === 'FUITE_EAU'"
+      [class.text-green-50]="filtreActif === 'FUITE_EAU'"
+      [class.bg-white]="filtreActif !== 'FUITE_EAU'"
+      [class.text-zinc-900]="filtreActif !== 'FUITE_EAU'"
+    >
+      <span>Fuite d'eau</span>
+    </button>
+
+  </div>
+</nav>
 
 
     <!-- =======================================================
