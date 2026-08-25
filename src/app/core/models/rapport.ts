@@ -1,36 +1,20 @@
 export interface Rapport {
   id: number;
-  interventionId: number;
-
-  titre: string;
-  adresse: string;
-
-  statut: 'soumis' | 'resolu' | 'archive';
-
-  evenements: RapportEvenement[];
-
-  documents: RapportDocument[];
+  intervention: number;
+  photo_avant: string | null;
+  photo_apres: string | null;
+  date_envoi: string;
+  statut: string;
 }
 
-export interface RapportEvenement {
-  type:
-  | 'resolution'
-  | 'photo'
-  | 'assignation'
-  | 'reception'
-  | 'soumission';
-
-  titre: string;
-  description: string;
-  heure: string;
+export interface RapportCreate {
+  photo_avant: File;
+  photo_apres: File;
+  statut: string;
 }
 
-export interface RapportDocument {
-  type: 'pdf' | 'photos';
-
-  nom: string;
-
-  taille?: string;
-
-  nombreFichiers?: number;
+export interface RapportUpdate {
+  photo_avant?: File | null;
+  photo_apres?: File | null;
+  statut?: string;
 }

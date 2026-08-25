@@ -1,125 +1,74 @@
-import { Injectable, computed, signal } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { Observable } from 'rxjs';
 
-import { Incident } from '../models/incident';
+import { Api } from './api';
+import {
+  Incident,
+  NiveauUrgenceIncident,
+  StatutIncident,
+  TypeIncident,
+} from '../models/incident';
+
+interface IncidentListResponse {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: Incident[];
+}
 
 @Injectable({
-    providedIn: 'root',
+  providedIn: 'root',
 })
 export class IncidentService {
+  private readonly api = inject(Api);
 
-    /**
-     * Source locale des incidents.
-     *
-     * Pour le moment les données sont statiques.
-     * Plus tard, cette source sera remplacée par les données
-     * provenant du backend via HttpClient.
-     */
-    private readonly incidentsSignal = signal<Incident[]>([
-        {
-            id: 1,
+  /**
+   * Récupère la liste des incidents.
+   *
+   * GET /incidents/
+   *
+   * Filtres disponibles selon Swagger :
+   * - niveau_urgence
+   * - statut
+   * - type
+   */
+  getIncidents(
+    niveau_urgence?: NiveauUrgenceIncident,
+    statut?: StatutIncident,
+    type?: TypeIncident
+  ): Observable<IncidentListResponse> {
 
-            titre: 'Dépôt Sauvage Illégal',
+    const params = new URLSearchParams();
 
-            description:
-                'Accumulation importante de déchets ménagers et de débris sur la voie publique. Présence de matières organiques et plastiques nécessitant une intervention rapide pour éviter la prolifération.',
+    if (niveau_urgence) {
+      params.set('niveau_urgence', niveau_urgence);
+    }
 
-            categorie: 'Dépôt sauvage',
+    if (statut) {
+      params.set('statut', statut);
+    }
 
-            adresse: 'Rue 10, Médina, Dakar',
+    if (type) {
+      params.set('type', type);
+    }
 
-            image: 'https://placehold.co/370x200',
+    const queryString = params.toString();
 
-            priorite: 'critique',
+    const endpoint = queryString
+      ? `/incidents/?${queryString}`
+      : '/incidents/';
 
-            confianceIA: 94,
+    return this.api.get<IncidentListResponse>(endpoint);
+  }
 
-            latitude: 14.6937,
-
-            longitude: -17.4441,
-
-            dateCreation: new Date().toISOString(),
-
-            iaAnalyse: true,
-        },
-    ]);
-
-
-    /**
-     * Liste complète des incidents.
-     */
-    readonly incidents =
-        this.incidentsSignal.asReadonly();
-
-
-    /**
-     * Incidents critiques.
-     */
-    readonly incidentsCritiques = computed(() =>
-        this.incidentsSignal().filter(
-            incident => incident.priorite === 'critique'
-        )
+  /**
+   * Récupère un incident par son identifiant.
+   *
+   * GET /incidents/{id}/
+   */
+  getById(id: number | string): Observable<Incident> {
+    return this.api.get<Incident>(
+      `/incidents/${id}/`
     );
-
-    /**
-     * Recherche un incident par son ID.
-     *
-     * Pour le moment :
-     * recherche dans la source locale.
-     *
-     * TODO BACKEND :
-     * Cette méthode pourra conserver la même responsabilité
-     * mais les données pourront provenir de l'API Django.
-     */
-    getById(
-        id: number | string
-    ): Incident | undefined {
-
-        return this.incidentsSignal().find(
-            incident =>
-                String(incident.id) === String(id)
-        );
-    }
-
-
-    /**
-     * Recherche les incidents d'une priorité donnée.
-     *
-     * Pour le moment :
-     * recherche dans la source locale.
-     *
-     * TODO BACKEND :
-     * Cette logique pourra être remplacée par une requête
-     * vers l'API Django avec un filtre de priorité.
-     */
-    getByPriorite(
-        priorite: Incident['priorite']
-    ): Incident[] {
-
-        return this.incidentsSignal().filter(
-            incident =>
-                incident.priorite === priorite
-        );
-    }
-
-
-    /**
-     * Recherche les incidents d'une catégorie donnée.
-     *
-     * Pour le moment :
-     * recherche dans la source locale.
-     *
-     * TODO BACKEND :
-     * Cette logique pourra être remplacée par une requête
-     * vers l'API Django avec un filtre de catégorie.
-     */
-    getByCategorie(
-        categorie: string
-    ): Incident[] {
-
-        return this.incidentsSignal().filter(
-            incident =>
-                incident.categorie === categorie
-        );
-    }
-
+  }
 }

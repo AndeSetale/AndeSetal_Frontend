@@ -1,109 +1,101 @@
-import { Injectable, computed, signal } from '@angular/core';
-import { Rapport } from '../models/rapport';
+import { Injectable, inject } from '@angular/core';
+import { Observable } from 'rxjs';
+
+import { Api } from './api';
+import {
+  Rapport,
+  RapportCreate,
+  RapportUpdate,
+} from '../models/rapport';
 
 @Injectable({
   providedIn: 'root',
 })
 export class RapportService {
+  private readonly api = inject(Api);
 
   /**
-   * Source locale des rapports.
+   * Récupère le rapport de clôture d'une intervention.
    *
-   * Pour le moment les données sont statiques.
-   * Plus tard, cette source sera remplacée par les données
-   * provenant du backend via HttpClient.
+   * GET /interventions/{intervention_id}/rapport/
+   *
+   * Le backend détermine l'intervention à partir de l'URL.
    */
-  private readonly rapportsSignal = signal<Rapport[]>([
-    {
-      id: 1,
-      interventionId: 1,
-
-      titre: 'Réfection Chaussée',
-      adresse: 'Avenue Lamine Guèye, Dakar',
-
-      statut: 'resolu',
-
-      evenements: [
-        {
-          type: 'resolution',
-          titre: 'Résolution confirmée',
-          description: 'par Superviseur Martin',
-          heure: '14:32',
-        },
-        {
-          type: 'photo',
-          titre: 'Photos après-travaux',
-          description: '3 photos ajoutées',
-          heure: '13:15',
-        },
-        {
-          type: 'assignation',
-          titre: 'Équipe B assignée',
-          description: 'Intervention sur site',
-          heure: '10:48',
-        },
-        {
-          type: 'reception',
-          titre: 'Rapport reçu',
-          description: 'par Agent Municipal',
-          heure: '09:25',
-        },
-        {
-          type: 'soumission',
-          titre: 'Rapport soumis',
-          description: 'par Agent Municipal',
-          heure: '09:24',
-        },
-      ],
-
-      documents: [
-        {
-          type: 'pdf',
-          nom: 'Rapport PDF',
-          taille: '2.4 MB',
-        },
-        {
-          type: 'photos',
-          nom: 'Photos',
-          nombreFichiers: 5,
-        },
-      ],
-    },
-  ]);
-
-  /**
-   * Liste complète des rapports.
-   */
-  readonly rapports = this.rapportsSignal.asReadonly();
-
-  /**
-   * Rapports résolus.
-   */
-  readonly rapportsResolus = computed(() =>
-    this.rapportsSignal().filter(
-      rapport => rapport.statut === 'resolu'
-    )
-  );
-
-  /**
-   * Recherche un rapport par son ID.
-   */
-  getById(id: number | string): Rapport | undefined {
-    return this.rapportsSignal().find(
-      rapport => String(rapport.id) === String(id)
+  getByIntervention(
+    interventionId: number | string
+  ): Observable<Rapport> {
+    return this.api.get<Rapport>(
+      `/interventions/${interventionId}/rapport/`
     );
   }
 
   /**
-   * Recherche un rapport à partir de l'ID
-   * de l'intervention correspondante.
+   * Crée un rapport de clôture.
+   *
+   * POST /interventions/{intervention_id}/rapport/
+   *
+   * Le backend attend :
+   * - photo_avant
+   * - photo_apres
+   * - statut
+   *
+   * L'intervention n'est PAS envoyée dans le body :
+   * elle est déterminée par l'URL.
+   *
+   * Les photos sont envoyées sous forme de fichiers
+   * via multipart/form-data.
    */
-  getByInterventionId(
-    interventionId: number | string
-  ): Rapport | undefined {
-    return this.rapportsSignal().find(
-      rapport =>
-        String(rapport.interventionId) === String(interventionId)
+  create(
+    interventionId: number | string,
+    data: RapportCreate
+  ): Observable<Rapport> {
+    const formData = new FormData();
+
+    formData.append('photo_avant', data.photo_avant);
+    formData.append('photo_apres', data.photo_apres);
+    formData.append('statut', data.statut);
+
+    return this.api.post<Rapport>(
+      `/interventions/${interventionId}/rapport/`,
+      formData
+    );
+  }
+
+  /**
+   * Modifie un rapport de clôture.
+   *
+   * PATCH /interventions/{intervention_id}/rapport/
+   *
+   * PATCH étant partiel, les champs sont ajoutés uniquement
+   * lorsqu'ils sont présents dans la requête.
+   *
+   * Les fichiers sont envoyés sous forme de multipart/form-data.
+   */
+  update(
+    interventionId: number | string,
+    data: RapportUpdate
+  ): Observable<Rapport> {
+    const formData = new FormData();
+
+    if (data.photo_avant !== undefined) {
+      if (data.photo_avant !== null) {
+        formData.append('photo_avant', data.photo_avant);
+      }
+    }
+
+    if (data.photo_apres !== undefined) {
+      if (data.photo_apres !== null) {
+        formData.append('photo_apres', data.photo_apres);
+      }
+    }
+
+    if (data.statut !== undefined) {
+      formData.append('statut', data.statut);
+    }
+
+    return this.api.patch<Rapport>(
+      `/interventions/${interventionId}/rapport/`,
+      formData
     );
   }
 }

@@ -1,4 +1,5 @@
 <app-header-agent titre="Profil" />
+
 <div class="flex min-h-full flex-col gap-7 bg-stone-50 pb-8">
 
   <!-- ========================================== -->
@@ -7,59 +8,91 @@
 
   <section class="px-6 pt-9">
 
-    <div class="relative flex min-h-72 flex-col items-center overflow-hidden
-             rounded-xl bg-teal-950 p-6 shadow-lg">
+    <div class="relative flex min-h-72 flex-col items-center
+             overflow-hidden rounded-xl bg-teal-950 p-6 shadow-lg">
 
       <!-- Background décoratif -->
-      <div class="absolute inset-0 bg-radial from-white/5 to-transparent" aria-hidden="true"></div>
+      <div class="absolute inset-0 bg-radial from-white/5 to-transparent" aria-hidden="true">
+      </div>
 
 
-      <!-- Avatar -->
+      <!-- ======================================== -->
+      <!-- AVATAR -->
+      <!-- ======================================== -->
+
       <div class="relative z-10">
 
-        <img [src]="agent.photo" [alt]="agent.nom"
+        <img src="images/agent.webp" [alt]="profil?.nom_complet || 'Agent municipal'"
           class="size-24 rounded-full border-4 border-green-300 object-cover" />
 
-        <!-- Indicateur disponibilité -->
+
+        <!-- Indicateur de disponibilité -->
+        <!--
+          Vert     = disponible
+          Gris     = indisponible
+
+          Cet indicateur utilise la variable locale
+          "disponible".
+        -->
         <span class="absolute bottom-0 right-0 size-5 rounded-full
-                 border-2 border-teal-950" [class.bg-green-500]="agent.disponible"
-          [class.bg-neutral-400]="!agent.disponible" aria-hidden="true"></span>
+                 border-2 border-teal-950" [class.bg-green-500]="disponible" [class.bg-neutral-400]="!disponible"
+          aria-hidden="true">
+        </span>
 
       </div>
 
 
-      <!-- Identité -->
+      <!-- ======================================== -->
+      <!-- IDENTITÉ -->
+      <!-- ======================================== -->
+
       <div class="relative z-10 mt-4 text-center">
 
         <h1 class="text-2xl font-bold leading-8 text-white">
-          {{ agent.nom }}
+
+          {{ profil?.nom_complet || 'Agent Municipal' }}
+
         </h1>
 
+
         <p class="text-xs font-medium leading-5 text-green-300/80">
-          {{ agent.role }}
+
+          {{ profil?.specialisation || 'Agent de terrain' }}
+
         </p>
 
       </div>
 
 
-      <!-- Disponibilité -->
+      <!-- ======================================== -->
+      <!-- DISPONIBILITÉ / TOGGLE -->
+      <!-- ======================================== -->
+
       <div class="relative z-10 mt-6 flex items-center gap-4
                rounded-full bg-stone-100/10 px-4 py-2
                backdrop-blur-[2px]">
 
+        <!-- Texte -->
         <span class="text-base font-semibold leading-4 text-white">
-          {{ agent.disponible ? 'Disponible' : 'Indisponible' }}
+
+          {{ disponible ? 'Disponible' : 'Indisponible' }}
+
         </span>
 
-        <button type="button" (click)="toggleDisponibilite()" [attr.aria-pressed]="agent.disponible" [attr.aria-label]="
-            agent.disponible
+
+        <!-- Bouton toggle -->
+        <button type="button" (click)="toggleDisponibilite()" [attr.aria-pressed]="disponible" [attr.aria-label]="
+            disponible
               ? 'Passer en indisponible'
               : 'Passer en disponible'
           " class="flex h-6 w-11 items-center rounded-full
-                 transition-colors" [class.justify-start]="!agent.disponible" [class.justify-end]="agent.disponible"
-          [class.bg-green-300]="agent.disponible" [class.bg-neutral-400]="!agent.disponible">
+                 transition-colors" [class.justify-end]="disponible" [class.justify-start]="!disponible"
+          [class.bg-green-300]="disponible" [class.bg-neutral-400]="!disponible">
 
-          <span class="mx-1 size-4 rounded-full bg-emerald-900"></span>
+          <!-- Curseur du toggle -->
+          <span class="mx-1 size-4 rounded-full transition-colors" [class.bg-emerald-900]="disponible"
+            [class.bg-neutral-700]="!disponible">
+          </span>
 
         </button>
 
@@ -77,11 +110,14 @@
   <section class="flex flex-col gap-4 px-6">
 
     <h2 class="text-xl font-bold leading-6 text-zinc-900">
+
       Performance Hebdomadaire
+
     </h2>
 
 
     <div class="flex flex-col gap-3">
+
 
       <!-- ====================================== -->
       <!-- TÂCHES RÉSOLUES -->
@@ -92,37 +128,49 @@
 
         <div class="flex items-center justify-between">
 
-          <!-- Icône Lucide -->
           <span class="flex size-5 items-center justify-center
                    text-emerald-900" aria-hidden="true">
-            <svg lucideCircleCheck class="size-5" [attr.stroke-width]="2"></svg>
+
+            <svg lucideCircleCheck class="size-5" [attr.stroke-width]="2">
+            </svg>
+
           </span>
 
+
           <strong class="text-xl font-bold leading-6 text-emerald-900">
-            {{ performance.tachesResolues }}
+
+            {{ profil?.taches_resolues_semaine ?? 0 }}
+
           </strong>
 
         </div>
 
 
         <h3 class="text-base font-semibold leading-5 text-zinc-900">
+
           Tâches résolues
+
         </h3>
 
 
         <!-- Progression -->
-        <div class="h-2 overflow-hidden rounded-full bg-stone-200" role="progressbar"
-          [attr.aria-valuenow]="performance.tachesResolues" [attr.aria-valuemin]="0"
-          [attr.aria-valuemax]="performance.objectifTaches" aria-label="Progression des tâches résolues">
+        <div class="h-2 overflow-hidden rounded-full bg-stone-200" role="progressbar" [attr.aria-valuenow]="
+            profil?.taches_resolues_semaine ?? 0
+          " aria-valuemin="0" [attr.aria-valuemax]="
+            profil?.objectif_hebdo ?? 0
+          " aria-label="Progression des tâches résolues">
 
-          <div class="h-full rounded-full bg-emerald-900 transition-all" [style.width.%]="pourcentageTachesResolues">
+          <div class="h-full rounded-full bg-emerald-900 transition-all" [style.width.%]="progressionHebdo">
           </div>
 
         </div>
 
 
         <p class="text-xs leading-5 text-neutral-500">
-          Objectif : {{ performance.objectifTaches }}
+
+          Objectif :
+          {{ profil?.objectif_hebdo ?? 0 }}
+
         </p>
 
       </article>
@@ -137,36 +185,46 @@
 
         <div class="flex items-center justify-between">
 
-          <!-- Icône Lucide -->
           <span class="flex size-5 items-center justify-center
                    text-amber-800" aria-hidden="true">
-            <svg lucideClock3 class="size-5" [attr.stroke-width]="2"></svg>
+
+            <svg lucideClock3 class="size-5" [attr.stroke-width]="2">
+            </svg>
+
           </span>
 
+
           <strong class="text-xl font-bold leading-6 text-amber-800">
-            {{ performance.ponctualite }}%
+
+            {{ profil?.ponctualite ?? 0 }}%
+
           </strong>
 
         </div>
 
 
         <h3 class="text-base font-semibold leading-5 text-zinc-900">
+
           Ponctualité
+
         </h3>
 
 
         <!-- Progression -->
         <div class="h-2 overflow-hidden rounded-full bg-stone-200" role="progressbar"
-          [attr.aria-valuenow]="performance.ponctualite" aria-valuemin="0" aria-valuemax="100"
+          [attr.aria-valuenow]="profil?.ponctualite ?? 0" aria-valuemin="0" aria-valuemax="100"
           aria-label="Taux de ponctualité">
 
-          <div class="h-full rounded-full bg-amber-800 transition-all" [style.width.%]="performance.ponctualite"></div>
+          <div class="h-full rounded-full bg-amber-800 transition-all" [style.width.%]="profil?.ponctualite ?? 0">
+          </div>
 
         </div>
 
 
         <p class="text-xs leading-5 text-neutral-500">
-          {{ performance.messagePonctualite }}
+
+          Excellent taux de ponctualité
+
         </p>
 
       </article>
@@ -185,11 +243,16 @@
     <div class="flex items-center justify-between gap-3">
 
       <h2 class="text-xl font-bold leading-6 text-zinc-900">
+
         Interventions Récentes
+
       </h2>
 
+
       <a routerLink="/agent/interventions" class="shrink-0 text-xs font-medium text-emerald-900">
+
         Voir tout
+
       </a>
 
     </div>
@@ -198,7 +261,7 @@
     <div class="flex flex-col gap-4">
 
       @for (
-      intervention of interventionsRecentes;
+      intervention of interventions;
       track intervention.id
       ) {
 
@@ -209,7 +272,9 @@
       <article class="flex gap-4 rounded-xl bg-white p-4
                  shadow-[0_2px_12px_rgba(0,0,0,0.08)]">
 
-        <img [src]="intervention.image" [alt]="intervention.titre" class="size-16 shrink-0 rounded-lg object-cover" />
+        <!-- Image -->
+        <img src="images/incident-1.webp" [alt]="intervention.incident?.type || 'Incident'"
+          class="size-16 shrink-0 rounded-lg object-cover" />
 
 
         <div class="min-w-0 flex-1">
@@ -218,62 +283,100 @@
 
             <h3 class="min-w-0 truncate text-base font-bold
                        leading-6 text-zinc-900">
-              {{ intervention.titre }}
+
+              {{ intervention.incident?.type || 'Incident' }}
+
             </h3>
 
 
             <!-- Statut -->
             <span class="shrink-0 rounded-sm px-2 py-1
                        text-xs font-bold leading-4" [class.bg-emerald-900/10]="
-                  intervention.statut === 'Terminé'
+                  intervention.statut === 'TERMINEE'
                 " [class.text-emerald-900]="
-                  intervention.statut === 'Terminé'
+                  intervention.statut === 'TERMINEE'
                 " [class.bg-orange-400/20]="
-                  intervention.statut === 'En cours'
+                  intervention.statut !== 'TERMINEE'
                 " [class.text-amber-900]="
-                  intervention.statut === 'En cours'
+                  intervention.statut !== 'TERMINEE'
                 ">
-              {{ intervention.statut }}
+
+              {{
+              intervention.statut === 'TERMINEE'
+              ? 'Terminé'
+              : intervention.statut === 'EN_COURS'
+              ? 'En cours'
+              : 'En attente'
+              }}
+
             </span>
 
           </div>
 
 
           <p class="mt-1 text-xs leading-5 text-neutral-500">
-            {{ intervention.description }}
+
+            {{
+            intervention.incident?.description ||
+            'Aucune description disponible.'
+            }}
+
           </p>
 
 
           <p class="mt-1 text-xs leading-4 text-stone-400">
-            {{ intervention.date }}
+
+            {{ intervention.date_debut | date:'dd/MM/yyyy, HH:mm' }}
+
           </p>
 
         </div>
 
       </article>
 
-      } @empty {
+      }
+
 
       <!-- ==================================== -->
       <!-- AUCUNE INTERVENTION -->
       <!-- ==================================== -->
 
-      <div class="rounded-xl bg-white px-6 py-8 text-center
+      @if (interventions.length === 0) {
+
+      <div class="rounded-xl bg-white p-6 text-center
                  text-sm text-neutral-500
                  shadow-[0_2px_12px_rgba(0,0,0,0.08)]">
+
         Aucune intervention récente.
+
       </div>
 
       }
 
     </div>
 
-    <!-- Déconnexion -->
+
+    <!-- ========================================== -->
+    <!-- DÉCONNEXION -->
+    <!-- ========================================== -->
+
     <div class="flex w-full justify-center py-8">
-      <button type="button" (click)="deconnecter()"
-        class="flex items-center gap-2 text-base font-semibold leading-4 text-red-700">
+
+      <button type="button" (click)="deconnecter()" class="flex items-center gap-2
+               text-base font-semibold leading-4 text-red-700">
+
         <svg lucideLogOut class="size-4"></svg>
 
-        <span>Se déconnecter</span>
+        <span>
+
+          Se déconnecter
+
+        </span>
+
       </button>
+
     </div>
+
+  </section>
+
+</div>

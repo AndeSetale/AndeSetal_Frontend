@@ -1,27 +1,57 @@
-import { PrioriteIntervention } from './intervention';
+import { AnalyseIA } from './analyse-ia';
+import { Preuve } from './preuve';
+
+export type TypeIncident =
+  | 'DECHETS'
+  | 'CANAUX'
+  | 'VOIRIE'
+  | 'ECLAIRAGE_PUBLIC'
+  | 'ARBRE'
+  | 'FUITE_EAU';
+
+export type StatutIncident =
+  | 'NOUVEAU'
+  | 'EN_COURS'
+  | 'RESOLU';
+
+export type NiveauUrgenceIncident =
+  | 'CRITIQUE'
+  | 'ELEVE'
+  | 'MODERE'
+  | 'ROUTINE';
 
 export interface Incident {
-  id: number | string;
+  id: number;
 
-  titre: string;
+  reference: string;
+
+  type: TypeIncident;
 
   description: string;
 
-  categorie: string;
+  statut: StatutIncident;
 
-  adresse: string;
+  niveau_urgence: NiveauUrgenceIncident;
 
-  image?: string;
+  quartier: string | null;
 
-  priorite: PrioriteIntervention;
+  adresse: string | null;
 
-  confianceIA?: number;
+  latitude: number | null;
 
-  latitude?: number;
+  longitude: number | null;
 
-  longitude?: number;
+  date_creation: string;
 
-  dateCreation?: string;
+  date_estimation_heures: number | null;
 
-  iaAnalyse?: boolean;
+  commentaire: string | null;
+
+  signale_par: number | null;
+
+  assigne_a: number | null;
+
+  preuves: Preuve[];
+
+  analyse_ia: AnalyseIA | null;
 }

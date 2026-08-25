@@ -6,13 +6,11 @@
 
     <app-header-agent titre="Incident" />
 
-
     <!-- ================================================== -->
     <!-- CONTENU MOBILE -->
     <!-- ================================================== -->
 
     <main class="mx-auto flex min-h-screen w-full flex-col bg-green-50">
-
 
         <!-- ================================================== -->
         <!-- IMAGE DE L'INCIDENT -->
@@ -22,26 +20,17 @@
 
             <div class="relative h-52 w-full overflow-hidden rounded-[20px] bg-zinc-100 shadow-lg">
 
-                @if (imageIncident()) {
-
-                <img [src]="imageIncident()" [alt]="'Photo de l’incident : ' + incident().titre"
-                    class="h-full w-full object-cover" />
-
-                } @else {
-
-                <div class="flex h-full w-full items-center justify-center bg-zinc-100 text-sm text-zinc-400">
-                    Aucune image disponible
-                </div>
-
-                }
-
+                <img
+                    class="h-full w-full object-cover"
+                    src="assets/images/incident.jpg"
+                    alt="Photo de l’incident"
+                />
 
                 <!-- Badge IA -->
                 <div
                     class="absolute right-3 top-3 flex items-center gap-1 rounded-full bg-white/90 px-3 py-1.5 text-xs font-bold text-slate-500 shadow-sm backdrop-blur-sm">
 
                     <svg lucideSparkles class="size-4"></svg>
-
 
                     <span>
                         IA Analysé
@@ -53,13 +42,11 @@
 
         </section>
 
-
         <!-- ================================================== -->
         <!-- INFORMATIONS DE L'INCIDENT -->
         <!-- ================================================== -->
 
         <section class="mx-4 mt-6 rounded-[20px] border border-orange-200 bg-green-50 p-5">
-
 
             <!-- ================================================== -->
             <!-- TITRE -->
@@ -71,16 +58,13 @@
 
                     <svg lucideTrash2 class="size-5 text-teal-950"></svg>
 
-
                 </div>
 
-
                 <h1 class="text-xl font-bold leading-6 text-teal-950">
-                    {{ incident().titre }}
+                    Incident
                 </h1>
 
             </div>
-
 
             <!-- ================================================== -->
             <!-- NIVEAU D'URGENCE -->
@@ -93,18 +77,15 @@
 
                     <svg lucideFlame class="size-3"></svg>
 
-
-                    {{ prioriteLabel() }}
+                    Urgent
 
                 </span>
-
 
                 <span class="text-xs text-slate-500">
                     Niveau d'urgence
                 </span>
 
             </div>
-
 
             <!-- ================================================== -->
             <!-- SCORE IA -->
@@ -118,29 +99,26 @@
                         Score de confiance IA
                     </span>
 
-
                     <span class="text-xs font-bold text-slate-500">
-                        {{ confianceIA() }}%
+                        95%
                     </span>
 
                 </div>
 
-
                 <!-- Barre de progression -->
                 <div class="h-2 w-full overflow-hidden rounded-full bg-stone-100">
 
-                    <div class="h-full rounded-full bg-gradient-to-r from-teal-950 to-slate-500"
-                        [style.width.%]="confianceIA()"></div>
+                    <div
+                        class="h-full w-[95%] rounded-full bg-gradient-to-r from-teal-950 to-slate-500">
+                    </div>
 
                 </div>
 
-
                 <p class="mt-1 text-xs leading-6 text-slate-500">
-                    {{ confianceIA() }}% de confiance
+                    95% de confiance
                 </p>
 
             </div>
-
 
             <!-- ================================================== -->
             <!-- GÉOLOCALISATION -->
@@ -150,23 +128,19 @@
 
                 <svg lucideMapPin class="mt-0.5 size-4 shrink-0 text-slate-500"></svg>
 
-
-
                 <div>
 
                     <p class="text-xs leading-6 text-slate-500">
                         Géolocalisation GPS
                     </p>
 
-
                     <p class="text-sm leading-5 text-teal-950">
-                        {{ incident().adresse }}
+                        Adresse de l'incident
                     </p>
 
                 </div>
 
             </div>
-
 
             <!-- ================================================== -->
             <!-- DESCRIPTION IA -->
@@ -185,22 +159,21 @@
                 </div>
 
                 <p class="mt-1 text-xs leading-5 text-neutral-700">
-                    {{ incident().description }}
+                    Description de l'incident générée par l'intelligence artificielle.
                 </p>
 
             </div>
 
         </section>
 
-
         <!-- ================================================== -->
         <!-- BOUTON INTERVENIR -->
         <!-- ================================================== -->
 
-
         <section class="flex w-full justify-center px-4 py-6">
 
-            <button type="button" (click)="intervenir()"
+            <button
+                type="button"
                 class="flex h-12 w-64 items-center justify-center gap-2 rounded-xl bg-teal-950 text-base font-normal leading-6 text-white shadow-sm hover:bg-teal-900">
 
                 Intervenir
@@ -208,7 +181,6 @@
             </button>
 
         </section>
-
 
     </main>
 

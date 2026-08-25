@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import {
@@ -11,7 +11,8 @@ import {
   LucideHouse,
 } from '@lucide/angular';
 
-import { RapportEnvoiService } from '../../../core/services/rapport-envoi';
+import { Rapport } from '../../../core/models/rapport';
+import { RapportService } from '../../../core/services/rapport';
 
 @Component({
   selector: 'app-rapport-envoye',
@@ -27,188 +28,143 @@ import { RapportEnvoiService } from '../../../core/services/rapport-envoi';
   templateUrl: './rapport-envoye.html',
   styleUrl: './rapport-envoye.css',
 })
-export class RapportEnvoye {
+export class RapportEnvoye implements OnInit {
 
-  private readonly rapportEnvoiService =
-    inject(RapportEnvoiService);
-
-  private readonly route =
-    inject(ActivatedRoute);
-
-  private readonly router =
-    inject(Router);
-
-
-  // ============================================================
-  // ID
-  // ============================================================
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly rapportService = inject(RapportService);
 
   /**
    * ID de l'intervention récupéré depuis l'URL.
+   */
+  readonly interventionId = signal<number | null>(null);
+
+  /**
+   * Rapport récupéré depuis le backend.
+   */
+  readonly rapport = signal<Rapport | null>(null);
+
+  /**
+   * État de chargement.
+   */
+  readonly isLoading = signal(false);
+
+  /**
+   * Message d'erreur.
+   */
+  readonly errorMessage = signal<string | null>(null);
+
+  /**
+   * Numéro de suivi.
    *
-   * Exemple :
-   * /agent/rapport-envoye/1
+   * Pour le moment le backend ne fournit pas encore
+   * de numéro de suivi.
    *
-   * TODO BACKEND :
-   * Selon la structure définitive de l'API Django,
-   * cette route pourra éventuellement utiliser directement
+   * Il est donc généré côté frontend à partir de
    * l'identifiant du rapport.
    */
-  readonly interventionId = this.route.snapshot.paramMap.get('id');
+  readonly numeroSuivi = signal<string>('');
 
+  ngOnInit(): void {
+    const id = this.route.snapshot.paramMap.get('id');
 
-  // ============================================================
-  // RAPPORT ENVOYÉ
-  // ============================================================
-
-  /**
-   * Rapport envoyé actuellement affiché.
-   *
-   * Pour le moment :
-   * les données sont récupérées depuis RapportEnvoiService.
-   *
-   * TODO BACKEND :
-   * RapportEnvoiService récupérera les données depuis
-   * l'API Django sans modifier le fonctionnement du composant.
-   */
-  readonly rapportEnvoye = computed(() => {
-
-    const interventionId = this.interventionId;
-
-    if (!interventionId) {
-      return null;
+    if (!id) {
+      this.errorMessage.set(
+        'Identifiant de l’intervention introuvable.'
+      );
+      return;
     }
 
-    return this.rapportEnvoiService.getByInterventionId(
-      interventionId
-    );
+    const interventionId = Number(id);
 
-  });
-
-
-  // ============================================================
-  // NUMÉRO DE SUIVI
-  // ============================================================
-
-  /**
-   * Numéro de suivi affiché sur la page.
-   */
-  readonly numeroSuivi = computed(() =>
-    this.rapportEnvoye()?.numeroSuivi ?? ''
-  );
-
-
-  // ============================================================
-  // DATE D'ENVOI
-  // ============================================================
-
-  /**
-   * Date et heure d'envoi formatées pour l'affichage.
-   *
-   * TODO BACKEND :
-   * La date sera fournie par Django après l'envoi réel
-   * du rapport.
-   */
-  readonly dateEnvoi = computed(() => {
-
-    const date = this.rapportEnvoye()?.dateEnvoi;
-
-    if (!date) {
-      return '';
+    if (Number.isNaN(interventionId)) {
+      this.errorMessage.set(
+        'Identifiant de l’intervention invalide.'
+      );
+      return;
     }
 
-    const dateObj = new Date(date);
+    this.interventionId.set(interventionId);
 
-    const heure = dateObj.toLocaleTimeString(
-      'fr-FR',
-      {
-        hour: '2-digit',
-        minute: '2-digit',
-      }
-    );
-
-    return `Aujourd'hui à ${heure}`;
-  });
-
-
-  // ============================================================
-  // ACTIONS
-  // ============================================================
-
-  /**
-   * Ferme la page de confirmation.
-   *
-   * Pour le moment :
-   * retour vers la liste des interventions.
-   *
-   * TODO NAVIGATION :
-   * Adapter la destination lorsque le parcours définitif
-   * après l'envoi du rapport sera validé.
-   */
-  fermer(): void {
-
-    this.router.navigate([
-      '/agent/interventions',
-    ]);
-
+    this.chargerRapport(interventionId);
   }
 
-
   /**
-   * Retour à l'accueil.
-   *
-   * Pour le moment :
-   * retour vers la liste des interventions.
-   *
-   * TODO NAVIGATION :
-   * Remplacer par la route réelle de l'accueil de l'agent
-   * lorsque la navigation définitive sera mise en place.
+   * Récupère le rapport envoyé depuis le backend.
    */
-  retourAccueil(): void {
+  private chargerRapport(interventionId: number): void {
+    this.isLoading.set(true);
+    this.errorMessage.set(null);
 
-    this.router.navigate([
-      '/agent/interventions',
-    ]);
+    this.rapportService
+      .getByIntervention(interventionId)
+      .subscribe({
+        next: (rapport) => {
+          this.rapport.set(rapport);
 
+          /*
+           * Le backend ne fournit pas encore de numéro
+           * de suivi.
+           *
+           * On utilise donc l'ID du rapport.
+           *
+           * Exemple :
+           * rapport.id = 4402
+           * => REP-2024-4402
+           */
+          this.numeroSuivi.set(
+            `REP-2024-${rapport.id}`
+          );
+
+          this.isLoading.set(false);
+        },
+
+        error: (error) => {
+          console.error(
+            'Erreur lors du chargement du rapport envoyé :',
+            error
+          );
+
+          this.isLoading.set(false);
+
+          this.errorMessage.set(
+            'Impossible de récupérer le rapport envoyé.'
+          );
+        },
+      });
   }
 
-
   /**
-   * Copie le numéro de suivi.
-   *
-   * Pour le moment :
-   * utilisation de l'API Clipboard du navigateur.
-   *
-   * TODO BACKEND :
-   * Le numéro de suivi devra provenir du backend
-   * après l'envoi réel du rapport.
+   * Copie le numéro de suivi dans le presse-papiers.
    */
-  async copierNumeroSuivi(): Promise<void> {
-
+  copierNumeroSuivi(): void {
     const numero = this.numeroSuivi();
 
     if (!numero) {
       return;
     }
 
-    try {
-
-      await navigator.clipboard.writeText(numero);
-
-      console.log(
-        'Numéro de suivi copié',
-        numero
-      );
-
-    } catch (error) {
-
-      console.error(
-        'Impossible de copier le numéro de suivi',
-        error
-      );
-
-    }
-
+    navigator.clipboard
+      .writeText(numero)
+      .catch((error) => {
+        console.error(
+          'Impossible de copier le numéro de suivi :',
+          error
+        );
+      });
   }
 
+  /**
+   * Retour à l'accueil de l'agent.
+   */
+  retourAccueil(): void {
+    this.router.navigate(['/agent']);
+  }
+
+  /**
+   * Ferme la page du rapport et retourne à l'accueil.
+   */
+  fermer(): void {
+    this.retourAccueil();
+  }
 }

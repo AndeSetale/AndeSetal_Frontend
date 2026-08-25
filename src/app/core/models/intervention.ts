@@ -1,38 +1,25 @@
-export type PrioriteIntervention =
-  | 'critique'
-  | 'urgent'
-  | 'modere'
-  | 'routine';
-
+import { Incident } from './incident';
+import { Rapport } from './rapport';
 
 export type StatutIntervention =
-  | 'disponible'
-  | 'assignee'
-  | 'en_cours'
-  | 'terminee'
-  | 'annulee';
-
+  | 'EN_ATTENTE'
+  | 'EN_COURS'
+  | 'TERMINEE';
 
 export interface Intervention {
-  id: number | string;
+  id: number;
 
-  titre: string;
+  numero_suivi: string;
 
-  description: string;
+  incident: Incident;
 
-  categorie: string;
-
-  adresse: string;
-
-  distance?: string;
-
-  priorite: PrioriteIntervention;
+  agent: number;
 
   statut: StatutIntervention;
 
-  image?: string;
+  date_debut: string;
 
-  dateCreation?: string;
+  date_fin: string;
 
-  sla?: string;
+  rapport: Rapport | null;
 }

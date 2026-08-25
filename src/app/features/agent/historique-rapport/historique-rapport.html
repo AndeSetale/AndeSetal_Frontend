@@ -4,15 +4,16 @@
   <!-- HEADER -->
   <!-- ================================================== -->
 
-  <app-header-agent titre="Historique du Rapport" [showAction]="true" actionLabel="Partager"
-    (actionClick)="partagerRapport()" />
+  <app-header-agent
+    titre="Historique du Rapport"
+    [showAction]="true"
+    actionLabel="Partager"
+  />
 
 
   <!-- ================================================== -->
   <!-- CONTENU -->
   <!-- ================================================== -->
-
-  @if (rapport(); as rapport) {
 
   <main class="flex w-full flex-col gap-4 px-4 py-3">
 
@@ -28,7 +29,7 @@
         <div class="flex flex-col items-start gap-1.5">
 
           <h2 class="text-sm font-bold leading-4 text-zinc-950">
-            {{ rapport.titre }}
+            Historique du rapport d'intervention
           </h2>
 
           <!-- Badge Résolu -->
@@ -37,12 +38,7 @@
 
             <svg lucideCircleCheck class="size-3"></svg>
 
-            {{ rapport.statut === 'resolu'
-            ? 'Résolu'
-            : rapport.statut === 'archive'
-            ? 'Archivé'
-            : 'Soumis'
-            }}
+            Résolu
 
           </span>
 
@@ -55,7 +51,7 @@
           <svg lucideMapPin class="size-3.5 shrink-0 text-teal-950"></svg>
 
           <span class="truncate">
-            {{ rapport.adresse }}
+            Adresse de l'intervention
           </span>
 
         </div>
@@ -79,7 +75,7 @@
         </h2>
 
         <span class="text-[9px] leading-4 text-zinc-500">
-          {{ nombreEvenements() }} événements
+          5 événements
         </span>
 
       </div>
@@ -90,98 +86,212 @@
 
         <ol class="flex flex-col">
 
-          @for (
-          evenement of rapport.evenements;
-          track $index;
-          let last = $last
-          ) {
+          <!-- ====================================== -->
+          <!-- RÉCEPTION -->
+          <!-- ====================================== -->
 
           <li class="flex gap-2.5">
 
-            <!-- ====================================== -->
-            <!-- ICÔNE + LIGNE -->
-            <!-- ====================================== -->
-
             <div class="flex w-4 shrink-0 flex-col items-center">
 
-              <!-- Cercle icône -->
               <div class="flex size-4 shrink-0 items-center justify-center rounded-full bg-emerald-50">
-
-                @switch (evenement.type) {
-
-                @case ('resolution') {
-
-                <svg lucideCircleCheck class="size-2.5 text-teal-950"></svg>
-
-                }
-
-                @case ('photo') {
-
-                <svg lucideCamera class="size-2.5 text-teal-950"></svg>
-
-                }
-
-                @case ('assignation') {
-
-                <svg lucideUsersRound class="size-2.5 text-teal-950"></svg>
-
-                }
-
-                @case ('reception') {
 
                 <svg lucideInbox class="size-2.5 text-teal-950"></svg>
 
-                }
-
-                @case ('soumission') {
-
-                <svg lucideSend class="size-2.5 text-teal-950"></svg>
-
-                }
-
-                }
-
               </div>
-
-
-              <!-- Ligne verticale -->
-              @if (!last) {
 
               <div class="mt-0.5 min-h-5 w-px flex-1 bg-zinc-200"></div>
 
-              }
-
             </div>
 
-
-            <!-- ====================================== -->
-            <!-- CONTENU ÉVÉNEMENT -->
-            <!-- ====================================== -->
 
             <div class="min-w-0 flex-1 pb-3">
 
               <div class="flex items-start justify-between gap-2">
 
                 <h3 class="min-w-0 text-[10px] font-semibold leading-4">
-                  {{ evenement.titre }}
+                  Réception du signalement
                 </h3>
 
                 <time class="shrink-0 text-[9px] leading-4 text-zinc-400">
-                  {{ evenement.heure }}
+                  08:30
                 </time>
 
               </div>
 
-
               <p class="text-[9px] leading-3.5 text-zinc-400">
-                {{ evenement.description }}
+                Signalement reçu par les services municipaux.
               </p>
 
             </div>
 
           </li>
 
-          }
+
+          <!-- ====================================== -->
+          <!-- SOUMISSION -->
+          <!-- ====================================== -->
+
+          <li class="flex gap-2.5">
+
+            <div class="flex w-4 shrink-0 flex-col items-center">
+
+              <div class="flex size-4 shrink-0 items-center justify-center rounded-full bg-emerald-50">
+
+                <svg lucideSend class="size-2.5 text-teal-950"></svg>
+
+              </div>
+
+              <div class="mt-0.5 min-h-5 w-px flex-1 bg-zinc-200"></div>
+
+            </div>
+
+
+            <div class="min-w-0 flex-1 pb-3">
+
+              <div class="flex items-start justify-between gap-2">
+
+                <h3 class="min-w-0 text-[10px] font-semibold leading-4">
+                  Signalement soumis
+                </h3>
+
+                <time class="shrink-0 text-[9px] leading-4 text-zinc-400">
+                  08:35
+                </time>
+
+              </div>
+
+              <p class="text-[9px] leading-3.5 text-zinc-400">
+                Le signalement a été transmis pour intervention.
+              </p>
+
+            </div>
+
+          </li>
+
+
+          <!-- ====================================== -->
+          <!-- ASSIGNATION -->
+          <!-- ====================================== -->
+
+          <li class="flex gap-2.5">
+
+            <div class="flex w-4 shrink-0 flex-col items-center">
+
+              <div class="flex size-4 shrink-0 items-center justify-center rounded-full bg-emerald-50">
+
+                <svg lucideUsersRound class="size-2.5 text-teal-950"></svg>
+
+              </div>
+
+              <div class="mt-0.5 min-h-5 w-px flex-1 bg-zinc-200"></div>
+
+            </div>
+
+
+            <div class="min-w-0 flex-1 pb-3">
+
+              <div class="flex items-start justify-between gap-2">
+
+                <h3 class="min-w-0 text-[10px] font-semibold leading-4">
+                  Intervention assignée
+                </h3>
+
+                <time class="shrink-0 text-[9px] leading-4 text-zinc-400">
+                  08:40
+                </time>
+
+              </div>
+
+              <p class="text-[9px] leading-3.5 text-zinc-400">
+                Intervention assignée à un agent municipal.
+              </p>
+
+            </div>
+
+          </li>
+
+
+          <!-- ====================================== -->
+          <!-- PHOTO -->
+          <!-- ====================================== -->
+
+          <li class="flex gap-2.5">
+
+            <div class="flex w-4 shrink-0 flex-col items-center">
+
+              <div class="flex size-4 shrink-0 items-center justify-center rounded-full bg-emerald-50">
+
+                <svg lucideCamera class="size-2.5 text-teal-950"></svg>
+
+              </div>
+
+              <div class="mt-0.5 min-h-5 w-px flex-1 bg-zinc-200"></div>
+
+            </div>
+
+
+            <div class="min-w-0 flex-1 pb-3">
+
+              <div class="flex items-start justify-between gap-2">
+
+                <h3 class="min-w-0 text-[10px] font-semibold leading-4">
+                  Rapport photo ajouté
+                </h3>
+
+                <time class="shrink-0 text-[9px] leading-4 text-zinc-400">
+                  09:15
+                </time>
+
+              </div>
+
+              <p class="text-[9px] leading-3.5 text-zinc-400">
+                Les photos avant et après intervention ont été ajoutées.
+              </p>
+
+            </div>
+
+          </li>
+
+
+          <!-- ====================================== -->
+          <!-- RÉSOLUTION -->
+          <!-- ====================================== -->
+
+          <li class="flex gap-2.5">
+
+            <div class="flex w-4 shrink-0 flex-col items-center">
+
+              <div class="flex size-4 shrink-0 items-center justify-center rounded-full bg-emerald-50">
+
+                <svg lucideCircleCheck class="size-2.5 text-teal-950"></svg>
+
+              </div>
+
+            </div>
+
+
+            <div class="min-w-0 flex-1 pb-3">
+
+              <div class="flex items-start justify-between gap-2">
+
+                <h3 class="min-w-0 text-[10px] font-semibold leading-4">
+                  Intervention résolue
+                </h3>
+
+                <time class="shrink-0 text-[9px] leading-4 text-zinc-400">
+                  09:20
+                </time>
+
+              </div>
+
+              <p class="text-[9px] leading-3.5 text-zinc-400">
+                L'intervention a été clôturée avec succès.
+              </p>
+
+            </div>
+
+          </li>
 
         </ol>
 
@@ -204,16 +314,9 @@
       <!-- Deux cartes côte à côte -->
       <div class="grid w-full grid-cols-2 gap-2">
 
-        @for (
-        document of rapport.documents;
-        track document.type
-        ) {
-
         <!-- ============================================ -->
         <!-- PDF -->
         <!-- ============================================ -->
-
-        @if (document.type === 'pdf') {
 
         <article class="flex min-w-0 flex-col rounded-xl border border-zinc-200 bg-white p-2.5 shadow-sm">
 
@@ -222,12 +325,20 @@
 
             <svg class="size-4 text-red-500" viewBox="0 0 20 20" fill="none">
 
-              <path d="M5 2.5h7.5L16.67 6v11.5H5V2.5Z" stroke="currentColor" stroke-width="1.67"
-                stroke-linejoin="round" />
+              <path
+                d="M5 2.5h7.5L16.67 6v11.5H5V2.5Z"
+                stroke="currentColor"
+                stroke-width="1.67"
+                stroke-linejoin="round"
+              />
 
               <path
                 d="M12.5 2.5V6h4.17M8.33 9v4.17M8.33 9h1.25a1.25 1.25 0 0 1 0 2.5H8.33M11.67 13.17V9h1.25a2.08 2.08 0 0 1 0 4.17h-1.25"
-                stroke="currentColor" stroke-width="1.33" stroke-linecap="round" stroke-linejoin="round" />
+                stroke="currentColor"
+                stroke-width="1.33"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
 
             </svg>
 
@@ -238,22 +349,19 @@
           <div class="mt-2 min-w-0">
 
             <h3 class="truncate text-[10px] font-semibold leading-4">
-              {{ document.nom }}
+              Rapport intervention.pdf
             </h3>
 
-            @if (document.taille) {
-
             <p class="text-[9px] leading-3 text-zinc-400">
-              {{ document.taille }}
+              2.4 MB
             </p>
-
-            }
 
           </div>
 
 
           <!-- Bouton -->
-          <button type="button" (click)="telechargerPdf()"
+          <button
+            type="button"
             class="mt-3 flex h-7 w-full items-center justify-center gap-1 rounded-md bg-teal-950 px-1.5 text-[9px] font-medium text-white">
 
             <svg lucideDownload class="size-3"></svg>
@@ -264,14 +372,10 @@
 
         </article>
 
-        }
-
 
         <!-- ============================================ -->
         <!-- PHOTOS -->
         <!-- ============================================ -->
-
-        @if (document.type === 'photos') {
 
         <article class="flex min-w-0 flex-col rounded-xl border border-zinc-200 bg-white p-2.5 shadow-sm">
 
@@ -287,22 +391,19 @@
           <div class="mt-2 min-w-0">
 
             <h3 class="truncate text-[10px] font-semibold leading-4">
-              {{ document.nom }}
+              Photos intervention
             </h3>
 
-            @if (document.nombreFichiers) {
-
             <p class="text-[9px] leading-3 text-zinc-400">
-              {{ document.nombreFichiers }} fichiers
+              2 fichiers
             </p>
-
-            }
 
           </div>
 
 
           <!-- Bouton -->
-          <button type="button" (click)="voirPhotos()"
+          <button
+            type="button"
             class="mt-3 flex h-7 w-full items-center justify-center gap-1 rounded-md bg-white px-1.5 text-[9px] font-medium text-teal-950 ring-1 ring-zinc-200">
 
             <svg lucideEye class="size-3"></svg>
@@ -312,10 +413,6 @@
           </button>
 
         </article>
-
-        }
-
-        }
 
       </div>
 
@@ -329,7 +426,8 @@
     <section class="flex w-full flex-col gap-1.5 pt-1">
 
       <!-- Archiver -->
-      <button type="button" (click)="archiver()"
+      <button
+        type="button"
         class="flex h-9 w-full items-center justify-center gap-2 rounded-md bg-teal-950 px-3 text-[10px] font-medium text-white">
 
         <svg lucideArchive class="size-3.5"></svg>
@@ -340,7 +438,8 @@
 
 
       <!-- Partager -->
-      <button type="button" (click)="partager()"
+      <button
+        type="button"
         class="flex h-9 w-full items-center justify-center gap-2 rounded-md px-3 text-[10px] font-medium text-teal-950">
 
         <svg lucideShare2 class="size-3.5"></svg>
@@ -352,29 +451,5 @@
     </section>
 
   </main>
-
-  } @else {
-
-  <!-- ================================================ -->
-  <!-- RAPPORT INTROUVABLE -->
-  <!-- ================================================ -->
-
-  <main class="flex min-h-[500px] w-full flex-col items-center justify-center gap-4 px-4">
-
-    <h2 class="text-lg font-semibold text-zinc-900">
-      Rapport introuvable
-    </h2>
-
-    <p class="text-sm text-zinc-500">
-      Le rapport demandé n'existe pas.
-    </p>
-
-    <button type="button" (click)="retour()" class="rounded-lg bg-teal-950 px-4 py-2 text-sm font-medium text-white">
-      Retour aux interventions
-    </button>
-
-  </main>
-
-  }
 
 </div>

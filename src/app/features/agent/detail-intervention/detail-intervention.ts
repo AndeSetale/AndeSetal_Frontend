@@ -1,4 +1,12 @@
-import { Component, computed, inject } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  OnDestroy,
+  OnInit,
+  signal,
+} from '@angular/core';
+
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { HeaderAgent } from '../components/header-agent/header-agent';
@@ -9,21 +17,26 @@ import {
   LucideSend,
 } from '@lucide/angular';
 
+import { Intervention } from '../../../core/models/intervention';
+import { Rapport } from '../../../core/models/rapport';
+
 import { InterventionService } from '../../../core/services/intervention';
-import { RapportEnvoiService } from '../../../core/services/rapport-envoi';
+import { RapportService } from '../../../core/services/rapport';
 
 @Component({
   selector: 'app-detail-intervention',
+
   imports: [
     HeaderAgent,
     LucideMapPin,
     LucidePencil,
     LucideSend,
   ],
+
   templateUrl: './detail-intervention.html',
   styleUrl: './detail-intervention.css',
 })
-export class DetailIntervention {
+export class DetailIntervention implements OnInit, OnDestroy {
 
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -31,199 +44,632 @@ export class DetailIntervention {
   private readonly interventionService =
     inject(InterventionService);
 
-  private readonly rapportEnvoiService =
-    inject(RapportEnvoiService);
+  private readonly rapportService =
+    inject(RapportService);
 
 
-  // ============================================================
-  // ID
-  // ============================================================
-
-  readonly interventionId = computed(() =>
-    this.route.snapshot.paramMap.get('id')
-  );
+  /**
+   * ID de l'intervention récupéré depuis l'URL.
+   */
+  readonly id = signal(0);
 
 
-  // ============================================================
-  // INTERVENTION
-  // ============================================================
+  /**
+   * Intervention récupérée depuis le backend.
+   */
+  readonly intervention =
+    signal<Intervention | null>(null);
 
-  readonly intervention = computed(() => {
 
-    const id = this.interventionId();
+  /**
+   * Rapport associé à l'intervention.
+   */
+  readonly rapport =
+    signal<Rapport | null>(null);
 
-    if (!id) {
-      return this.interventionService.interventions()[0];
+
+  /**
+   * Fichier sélectionné pour la photo avant.
+   */
+  readonly photoAvant =
+    signal<File | null>(null);
+
+
+  /**
+   * Fichier sélectionné pour la photo après.
+   */
+  readonly photoApres =
+    signal<File | null>(null);
+
+
+  /**
+   * Aperçu de la photo avant.
+   */
+  readonly photoAvantPreview =
+    signal<string | null>(null);
+
+
+  /**
+   * Aperçu de la photo après.
+   */
+  readonly photoApresPreview =
+    signal<string | null>(null);
+
+
+  /**
+   * État de chargement.
+   */
+  readonly isLoading =
+    signal(false);
+
+
+  /**
+   * État d'envoi ou de modification du rapport.
+   */
+  readonly envoiEnCours =
+    signal(false);
+
+
+  /**
+   * Message d'erreur.
+   */
+  readonly errorMessage =
+    signal<string | null>(null);
+
+
+  /**
+   * Photo principale de l'incident.
+   *
+   * Le modèle Incident ne possède pas directement
+   * de propriété "photo".
+   *
+   * Les photos sont stockées dans "preuves".
+   *
+   * Priorité :
+   * 1. PHOTO_INITIALE
+   * 2. PHOTO_AVANT
+   * 3. première preuve disponible
+   */
+  readonly photoIncident = computed(() => {
+
+    const incident =
+      this.intervention()?.incident;
+
+    if (!incident) {
+      return null;
     }
 
-    return (
-      this.interventionService.getById(id)
-      ?? this.interventionService.interventions()[0]
-    );
+    const preuveInitiale =
+      incident.preuves.find(
+        (preuve) =>
+          preuve.type === 'PHOTO_INITIALE'
+      );
 
+    if (preuveInitiale) {
+      return preuveInitiale.image_url;
+    }
+
+    const preuveAvant =
+      incident.preuves.find(
+        (preuve) =>
+          preuve.type === 'PHOTO_AVANT'
+      );
+
+    if (preuveAvant) {
+      return preuveAvant.image_url;
+    }
+
+    return incident.preuves[0]?.image_url ?? null;
   });
 
 
-  // ============================================================
-  // PRIORITÉ
-  // ============================================================
+  /**
+   * Libellé lisible du type d'incident.
+   */
+  readonly titreIncident = computed(() => {
 
-  readonly prioriteLabel = computed(() => {
+    const type =
+      this.intervention()?.incident.type;
 
-    const labels = {
-      critique: 'Critique',
-      urgent: 'Urgent',
-      modere: 'Modérée',
-      routine: 'Routine',
-    } as const;
+    if (!type) {
+      return 'Intervention';
+    }
 
-    return labels[this.intervention().priorite];
+    const libelles: Record<string, string> = {
+      DECHETS: 'Déchets',
+      CANAUX: 'Canaux',
+      VOIRIE: 'Voirie',
+      ECLAIRAGE_PUBLIC: 'Éclairage public',
+      ARBRE: 'Arbre',
+      FUITE_EAU: 'Fuite d’eau',
+    };
 
+    return libelles[type] ?? type;
   });
 
 
-  // ============================================================
-  // STATUT
-  // ============================================================
+  /**
+   * Statut de l'intervention sous forme lisible.
+   */
+  readonly statutIntervention = computed(() => {
 
-  readonly statutLabel = computed(() => {
+    const statut =
+      this.intervention()?.statut;
 
-    const labels = {
-      disponible: 'Disponible',
-      assignee: 'Assignée',
-      en_cours: 'En cours',
-      terminee: 'Terminée',
-      annulee: 'Annulée',
-    } as const;
+    switch (statut) {
 
-    return labels[this.intervention().statut];
+      case 'EN_ATTENTE':
+        return 'En attente';
 
-  });
+      case 'EN_COURS':
+        return 'En cours';
 
-
-  // ============================================================
-  // PROGRESSION
-  // ============================================================
-
-  readonly etapeProgression = computed(() => {
-
-    switch (this.intervention().statut) {
-
-      case 'disponible':
-        return 0;
-
-      case 'assignee':
-        return 1;
-
-      case 'en_cours':
-        return 2;
-
-      case 'terminee':
-        return 3;
-
-      case 'annulee':
-        return 0;
+      case 'TERMINEE':
+        return 'Terminée';
 
       default:
-        return 0;
+        return 'En cours';
     }
-
   });
 
 
-  // ============================================================
-  // PHOTOS
-  // ============================================================
+  /**
+   * Indique si un rapport existe déjà.
+   */
+  readonly rapportExiste = computed(() => {
+    return this.rapport() !== null;
+  });
 
-  readonly photoAvant = computed(() =>
-    this.intervention().image ?? null
-  );
-
-  readonly photoApres = computed(() =>
-    null
-  );
-
-
-  // ============================================================
-  // ACTIONS
-  // ============================================================
 
   /**
-   * Envoie le rapport associé à l'intervention.
-   *
-   * Pour le moment :
-   * l'envoi utilise RapportEnvoiService avec les données locales.
-   *
-   * TODO BACKEND :
-   * RapportEnvoiService devra remplacer la logique locale
-   * par un appel HttpClient vers l'API Django.
-   *
-   * Une fois l'envoi terminé, on navigue vers la page
-   * de confirmation du rapport envoyé.
+   * Libellé du bouton principal.
    */
-  async envoyerRapport(): Promise<void> {
+  readonly libelleBoutonRapport = computed(() => {
 
-    const interventionId = this.interventionId();
+    if (this.envoiEnCours()) {
+      return this.rapportExiste()
+        ? 'Modification en cours...'
+        : 'Envoi en cours...';
+    }
 
-    if (!interventionId) {
-      console.error(
-        "Impossible d'envoyer le rapport : ID de l'intervention manquant."
+    return this.rapportExiste()
+      ? 'Modifier le rapport'
+      : 'Envoyer le rapport';
+  });
+
+
+  /**
+   * Initialisation du composant.
+   */
+  ngOnInit(): void {
+
+    const id =
+      this.route.snapshot.paramMap.get('id');
+
+    if (!id) {
+
+      this.errorMessage.set(
+        'Identifiant de l’intervention introuvable.'
       );
 
       return;
     }
 
-    /**
-     * Pour le moment :
-     * on utilise l'ID de l'intervention comme ID du rapport,
-     * car les données locales du RapportService associent
-     * le rapport à une intervention.
-     *
-     * TODO BACKEND :
-     * Lors du branchement Django, utiliser l'identifiant
-     * réel du rapport retourné par le backend.
-     */
-    const rapport = await this.rapportEnvoiService.envoyerRapport(
-      interventionId
-    );
 
-    if (!rapport) {
-      console.error(
-        "Impossible d'envoyer le rapport : rapport introuvable."
+    const interventionId =
+      Number(id);
+
+    if (Number.isNaN(interventionId)) {
+
+      this.errorMessage.set(
+        'Identifiant de l’intervention invalide.'
       );
 
       return;
     }
 
-    /**
-     * Navigation vers la page de confirmation.
-     *
-     * TODO NAVIGATION :
-     * La route pourra être adaptée si le parcours final
-     * après l'envoi du rapport évolue.
-     */
-    await this.router.navigate([
-      '/agent/rapport-envoye',
-      rapport.id,
-    ]);
 
+    this.id.set(interventionId);
+
+    this.chargerIntervention();
   }
 
 
   /**
-   * Modifie les détails de l'intervention.
+   * Récupère l'intervention depuis le backend.
    *
-   * Pour le moment :
-   * action temporaire en attendant le branchement
-   * avec le backend.
+   * GET /interventions/{id}/
    */
-  modifierDetails(): void {
+  private chargerIntervention(): void {
 
-    console.log(
-      "Modification de l'intervention :",
-      this.intervention()
-    );
+    this.isLoading.set(true);
+    this.errorMessage.set(null);
 
+
+    this.interventionService
+      .getById(this.id())
+      .subscribe({
+
+        next: (intervention) => {
+
+          this.intervention.set(intervention);
+
+          /*
+           * Le backend peut déjà renvoyer
+           * le rapport directement.
+           */
+          this.rapport.set(
+            intervention.rapport
+          );
+
+          this.isLoading.set(false);
+
+
+          /*
+           * Si aucun rapport n'est inclus,
+           * on vérifie avec l'endpoint dédié.
+           */
+          if (!intervention.rapport) {
+            this.chargerRapport();
+          }
+        },
+
+
+        error: (error) => {
+
+          console.error(
+            'Erreur lors du chargement de l’intervention :',
+            error
+          );
+
+          this.isLoading.set(false);
+
+          this.errorMessage.set(
+            'Impossible de récupérer l’intervention.'
+          );
+        },
+      });
   }
 
+
+  /**
+   * Récupère le rapport associé à l'intervention.
+   *
+   * GET /interventions/{id}/rapport/
+   */
+  private chargerRapport(): void {
+
+    this.rapportService
+      .getByIntervention(this.id())
+      .subscribe({
+
+        next: (rapport) => {
+
+          this.rapport.set(rapport);
+        },
+
+
+        error: (error) => {
+
+          /*
+           * 404 = aucun rapport existant.
+           */
+          if (error.status === 404) {
+
+            this.rapport.set(null);
+
+            return;
+          }
+
+
+          console.error(
+            'Erreur lors du chargement du rapport :',
+            error
+          );
+        },
+      });
+  }
+
+
+  /**
+   * Sélection de la photo avant.
+   */
+  selectionnerPhotoAvant(event: Event): void {
+
+    const input =
+      event.target as HTMLInputElement;
+
+    const file =
+      input.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+
+    if (!file.type.startsWith('image/')) {
+
+      this.errorMessage.set(
+        'Veuillez sélectionner une image valide pour la photo avant.'
+      );
+
+      return;
+    }
+
+
+    const anciennePreview =
+      this.photoAvantPreview();
+
+    if (anciennePreview) {
+      URL.revokeObjectURL(anciennePreview);
+    }
+
+
+    this.photoAvant.set(file);
+
+    this.photoAvantPreview.set(
+      URL.createObjectURL(file)
+    );
+
+    this.errorMessage.set(null);
+  }
+
+
+  /**
+   * Sélection de la photo après.
+   */
+  selectionnerPhotoApres(event: Event): void {
+
+    const input =
+      event.target as HTMLInputElement;
+
+    const file =
+      input.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+
+    if (!file.type.startsWith('image/')) {
+
+      this.errorMessage.set(
+        'Veuillez sélectionner une image valide pour la photo après.'
+      );
+
+      return;
+    }
+
+
+    const anciennePreview =
+      this.photoApresPreview();
+
+    if (anciennePreview) {
+      URL.revokeObjectURL(anciennePreview);
+    }
+
+
+    this.photoApres.set(file);
+
+    this.photoApresPreview.set(
+      URL.createObjectURL(file)
+    );
+
+    this.errorMessage.set(null);
+  }
+
+
+  /**
+   * Envoie ou modifie le rapport.
+   *
+   * Aucun rapport :
+   * POST /interventions/{id}/rapport/
+   *
+   * Rapport existant :
+   * PATCH /interventions/{id}/rapport/
+   */
+  envoyerRapport(): void {
+
+    const photoAvant =
+      this.photoAvant();
+
+    const photoApres =
+      this.photoApres();
+
+    const rapportExistant =
+      this.rapport();
+
+
+    /*
+     * Pour une création, les deux photos sont obligatoires.
+     */
+    if (!rapportExistant && (!photoAvant || !photoApres)) {
+
+      this.errorMessage.set(
+        'Veuillez sélectionner les deux photos avant d’envoyer le rapport.'
+      );
+
+      return;
+    }
+
+
+    /*
+     * Pour une modification, on peut modifier
+     * une seule photo ou les deux.
+     */
+    if (rapportExistant && !photoAvant && !photoApres) {
+
+      this.errorMessage.set(
+        'Veuillez sélectionner au moins une photo à modifier.'
+      );
+
+      return;
+    }
+
+
+    this.envoiEnCours.set(true);
+    this.errorMessage.set(null);
+
+
+    /*
+     * =====================================================
+     * MODIFICATION
+     * =====================================================
+     */
+    if (rapportExistant) {
+
+      this.rapportService
+        .update(this.id(), {
+
+          photo_avant:
+            photoAvant ?? undefined,
+
+          photo_apres:
+            photoApres ?? undefined,
+
+          statut:
+            rapportExistant.statut,
+        })
+
+        .subscribe({
+
+          next: (rapport) => {
+
+            this.rapport.set(rapport);
+
+            this.envoiEnCours.set(false);
+
+            this.router.navigate([
+              '/agent/rapport-envoye',
+              this.id(),
+            ]);
+          },
+
+
+          error: (error) => {
+
+            console.error(
+              'Erreur lors de la modification du rapport :',
+              error
+            );
+
+            this.envoiEnCours.set(false);
+
+            this.errorMessage.set(
+              this.getMessageErreurRapport(error)
+            );
+          },
+        });
+
+      return;
+    }
+
+
+    /*
+     * =====================================================
+     * CRÉATION
+     * =====================================================
+     */
+    this.rapportService
+      .create(this.id(), {
+
+        photo_avant: photoAvant!,
+        photo_apres: photoApres!,
+
+        /*
+         * À adapter si le backend utilise
+         * une autre valeur.
+         */
+        statut: 'termine',
+      })
+
+      .subscribe({
+
+        next: (rapport) => {
+
+          this.rapport.set(rapport);
+
+          this.envoiEnCours.set(false);
+
+          this.router.navigate([
+            '/agent/rapport-envoye',
+            this.id(),
+          ]);
+        },
+
+
+        error: (error) => {
+
+          console.error(
+            'Erreur lors de la création du rapport :',
+            error
+          );
+
+          this.envoiEnCours.set(false);
+
+          this.errorMessage.set(
+            this.getMessageErreurRapport(error)
+          );
+        },
+      });
+  }
+
+
+  /**
+   * Transforme les erreurs backend en message lisible.
+   */
+  private getMessageErreurRapport(error: any): string {
+
+    if (error?.error?.detail) {
+      return error.error.detail;
+    }
+
+    if (error?.error?.message) {
+      return error.error.message;
+    }
+
+    if (typeof error?.error === 'string') {
+      return error.error;
+    }
+
+    if (error?.status === 400) {
+      return 'Les données du rapport sont invalides.';
+    }
+
+    if (error?.status === 401) {
+      return 'Votre session a expiré. Veuillez vous reconnecter.';
+    }
+
+    if (error?.status === 403) {
+      return 'Vous n’avez pas les droits pour modifier ce rapport.';
+    }
+
+    if (error?.status === 404) {
+      return 'Le rapport ou l’intervention est introuvable.';
+    }
+
+    return 'Impossible d’enregistrer le rapport.';
+  }
+
+
+  /**
+   * Nettoyage des ObjectURL.
+   */
+  ngOnDestroy(): void {
+
+    const photoAvantPreview =
+      this.photoAvantPreview();
+
+    const photoApresPreview =
+      this.photoApresPreview();
+
+
+    if (photoAvantPreview) {
+      URL.revokeObjectURL(photoAvantPreview);
+    }
+
+    if (photoApresPreview) {
+      URL.revokeObjectURL(photoApresPreview);
+    }
+  }
 }
