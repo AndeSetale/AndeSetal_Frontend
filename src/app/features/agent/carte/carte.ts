@@ -11,12 +11,12 @@ import { RouterLink } from '@angular/router';
 
 import { HeaderAgent } from '../components/header-agent/header-agent';
 
-import { AgentIncidentService } from '../../../core/services/agent-incident';
+import { IncidentService } from '../../../core/services/incident';
 
 import {
-  AgentIncident,
-  AgentIncidentUrgence,
-} from '../../../core/models/agent-incident';
+  Incident,
+  NiveauUrgenceIncident,
+} from '../../../core/models/incident';
 
 
 // ============================================================
@@ -54,7 +54,7 @@ export class Carte implements AfterViewInit, OnDestroy {
   // ============================================================
 
   private readonly incidentService =
-    inject(AgentIncidentService);
+    inject(IncidentService);
 
 
   // ============================================================
@@ -66,14 +66,17 @@ export class Carte implements AfterViewInit, OnDestroy {
   private readonly marqueurs =
     L.layerGroup();
 
+  private marqueurPosition: L.Marker | null = null;
 
   // ============================================================
   // DONNÉES
   // ============================================================
 
-  private incidents: AgentIncident[] = [];
+  private incidents: Incident[] = [];
 
   filtreActif: FiltreIncident = 'TOUS';
+
+  incidentSelectionne: Incident | null = null;
 
 
   // ============================================================
@@ -128,6 +131,111 @@ export class Carte implements AfterViewInit, OnDestroy {
     this.marqueurs.addTo(this.map);
   }
 
+  // ============================================================
+  // CENTRAGE SUR LA POSITION DE L'AGENT
+  // ============================================================
+
+  centrerSurMaPosition(): void {
+
+    if (!navigator.geolocation) {
+
+      console.error(
+        'La géolocalisation n\'est pas disponible sur ce navigateur.'
+      );
+
+      return;
+    }
+
+
+    navigator.geolocation.getCurrentPosition(
+
+      (position: GeolocationPosition) => {
+
+        const latitude =
+          position.coords.latitude;
+
+        const longitude =
+          position.coords.longitude;
+
+
+        console.log(
+          'POSITION DE L\'AGENT :',
+          {
+            latitude,
+            longitude,
+          }
+        );
+
+
+        // --------------------------------------------------------
+        // Création ou déplacement du marqueur bleu
+        // --------------------------------------------------------
+
+        if (this.marqueurPosition === null) {
+
+          const iconePosition =
+            this.creerIconePosition();
+
+
+          this.marqueurPosition =
+            L.marker(
+              [
+                latitude,
+                longitude,
+              ],
+              {
+                icon: iconePosition,
+              }
+            );
+
+
+          this.marqueurPosition.addTo(
+            this.map
+          );
+
+        } else {
+
+          this.marqueurPosition.setLatLng(
+            [
+              latitude,
+              longitude,
+            ]
+          );
+        }
+
+
+        // --------------------------------------------------------
+        // Centrage de la carte
+        // --------------------------------------------------------
+
+        this.map.setView(
+          [
+            latitude,
+            longitude,
+          ],
+          16
+        );
+      },
+
+
+      (error: GeolocationPositionError) => {
+
+        console.error(
+          'Impossible de récupérer la position de l\'agent :',
+          error
+        );
+      },
+
+
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0,
+      }
+    );
+  }
+
+
 
   // ============================================================
   // CHARGEMENT DES INCIDENTS
@@ -137,15 +245,18 @@ export class Carte implements AfterViewInit, OnDestroy {
 
     this.incidentService.getIncidents().subscribe({
 
-      next: (incidents: AgentIncident[]) => {
+      next: (response) => {
 
         console.log(
-          'INCIDENTS AGENT POUR LA CARTE :',
-          incidents
+          'INCIDENTS POUR LA CARTE :',
+          response
         );
 
 
-        this.incidents = incidents;
+        // Le backend retourne une réponse paginée.
+        // Les incidents se trouvent dans `results`.
+
+        this.incidents = response.results;
 
 
         this.afficherIncidents();
@@ -155,7 +266,7 @@ export class Carte implements AfterViewInit, OnDestroy {
       error: (error: unknown) => {
 
         console.error(
-          'Erreur lors du chargement des incidents agent :',
+          'Erreur lors du chargement des incidents :',
           error
         );
       },
@@ -191,13 +302,14 @@ export class Carte implements AfterViewInit, OnDestroy {
 
   private afficherIncidents(): void {
 
-    // Supprime les marqueurs actuellement affichés
+    // Supprime les marqueurs actuellement affichés.
+
     this.marqueurs.clearLayers();
 
 
     const incidentsFiltres =
       this.incidents.filter(
-        (incident: AgentIncident) => {
+        (incident: Incident) => {
 
           // ----------------------------------------------------
           // Un incident sans coordonnées ne peut pas être
@@ -246,7 +358,7 @@ export class Carte implements AfterViewInit, OnDestroy {
     // ----------------------------------------------------------
 
     incidentsFiltres.forEach(
-      (incident: AgentIncident) => {
+      (incident: Incident) => {
 
         this.ajouterMarqueurIncident(
           incident
@@ -261,7 +373,7 @@ export class Carte implements AfterViewInit, OnDestroy {
   // ============================================================
 
   private ajouterMarqueurIncident(
-    incident: AgentIncident
+    incident: Incident
   ): void {
 
     if (
@@ -303,6 +415,11 @@ export class Carte implements AfterViewInit, OnDestroy {
         }
       );
 
+    marqueur.on('click', () => {
+      this.incidentSelectionne = incident;
+    });
+
+
 
     // ----------------------------------------------------------
     // Popup
@@ -314,8 +431,8 @@ export class Carte implements AfterViewInit, OnDestroy {
 
         <strong>
           ${this.echapperHtml(
-            incident.reference
-          )}
+      incident.reference
+    )}
         </strong>
 
         <br>
@@ -323,16 +440,16 @@ export class Carte implements AfterViewInit, OnDestroy {
         <span>
           Type :
           ${this.echapperHtml(
-            incident.type
-          )}
+      incident.type
+    )}
         </span>
 
         <br>
 
         <span>
           ${this.echapperHtml(
-            incident.description
-          )}
+      incident.description
+    )}
         </span>
 
         <br>
@@ -340,8 +457,8 @@ export class Carte implements AfterViewInit, OnDestroy {
         <strong>
           Urgence :
           ${this.echapperHtml(
-            incident.niveau_urgence
-          )}
+      incident.niveau_urgence
+    )}
         </strong>
 
       </div>
@@ -364,7 +481,7 @@ export class Carte implements AfterViewInit, OnDestroy {
   // ============================================================
 
   private couleurSelonUrgence(
-    urgence: AgentIncidentUrgence
+    urgence: NiveauUrgenceIncident
   ): string {
 
     switch (urgence) {
@@ -388,6 +505,48 @@ export class Carte implements AfterViewInit, OnDestroy {
       default:
         return '#6b7280';
     }
+  }
+
+  // ============================================================
+  // ICÔNE DE POSITION DE L'AGENT
+  // ============================================================
+
+  private creerIconePosition(): L.DivIcon {
+
+    return L.divIcon({
+
+      className: '',
+
+      html: `
+
+      <div
+        style="
+          width: 20px;
+          height: 20px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: #2563eb;
+          border: 3px solid white;
+          border-radius: 50%;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.30);
+          box-sizing: border-box;
+        "
+      >
+      </div>
+
+    `,
+
+      iconSize: [
+        20,
+        20,
+      ],
+
+      iconAnchor: [
+        10,
+        10,
+      ],
+    });
   }
 
 

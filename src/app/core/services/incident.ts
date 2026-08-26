@@ -22,50 +22,38 @@ interface IncidentListResponse {
 export class IncidentService {
   private readonly api = inject(Api);
 
-  /**
-   * Récupère la liste des incidents.
-   *
-   * GET /incidents/
-   *
-   * Filtres disponibles selon Swagger :
-   * - niveau_urgence
-   * - statut
-   * - type
-   */
+  // Récupère la liste des incidents.
   getIncidents(
     niveau_urgence?: NiveauUrgenceIncident,
     statut?: StatutIncident,
     type?: TypeIncident
   ): Observable<IncidentListResponse> {
 
-    const params = new URLSearchParams();
+  const params = new URLSearchParams();
 
-    if (niveau_urgence) {
+  if (niveau_urgence) {
       params.set('niveau_urgence', niveau_urgence);
     }
 
-    if (statut) {
-      params.set('statut', statut);
-    }
-
-    if (type) {
-      params.set('type', type);
-    }
-
-    const queryString = params.toString();
-
-    const endpoint = queryString
-      ? `/incidents/?${queryString}`
-      : '/incidents/';
-
-    return this.api.get<IncidentListResponse>(endpoint);
+  if (statut) {
+    params.set('statut', statut);
   }
 
-  /**
-   * Récupère un incident par son identifiant.
-   *
-   * GET /incidents/{id}/
-   */
+  if (type) {
+    params.set('type', type);
+  }
+
+  const queryString = params.toString();
+
+  const endpoint = queryString
+    ? `/incidents/?${queryString}`
+    : '/incidents/';
+
+  return this.api.get<IncidentListResponse>(endpoint);
+  }
+
+
+  // Récupère un incident par son identifiant.
   getById(id: number | string): Observable<Incident> {
     return this.api.get<Incident>(
       `/incidents/${id}/`

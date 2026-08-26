@@ -123,7 +123,7 @@ export class Auth {
         code
       }
     );
-  }
+  } 
 
 
   renvoyerCode(email: string) {

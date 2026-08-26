@@ -14,12 +14,14 @@ export interface Intervention {
   incident: Incident;
 
   agent: number;
+  
+  agent_nom: string | null;
 
   statut: StatutIntervention;
 
-  date_debut: string;
+  date_debut: string | null;
 
-  date_fin: string;
+  date_fin: string | null;
 
   rapport: Rapport | null;
 }

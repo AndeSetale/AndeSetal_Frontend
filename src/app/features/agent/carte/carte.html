@@ -1,4 +1,5 @@
 <div class="relative mx-auto h-screen w-full max-w-[384px] overflow-hidden bg-green-50">
+
   <!-- =========================================================
        CARTE
   ========================================================== -->
@@ -9,147 +10,171 @@
          LEAFLET
     ======================================================== -->
 
-    <div id="map" class="absolute inset-0 z-0 h-full w-full bg-red-200" aria-label="Carte des signalements"></div>
+    <div
+      id="map"
+      class="absolute inset-0 z-0 h-full w-full bg-red-200"
+      aria-label="Carte des signalements">
+    </div>
 
 
     <!-- =======================================================
          HEADER
-         Le header est fourni par app-header-agent.
-         Pas de doublon titre/flèche ici.
     ======================================================== -->
 
-    <app-header-agent titre="Carte" class="absolute inset-x-0 top-0 z-40 block"></app-header-agent>
+    <app-header-agent
+      titre="Carte"
+      class="absolute inset-x-0 top-0 z-40 block">
+    </app-header-agent>
 
 
     <!-- =======================================================
          FILTRES
     ======================================================== -->
+
     <nav
-  class="absolute inset-x-0 top-20 z-30 overflow-x-auto px-3 pb-2 pt-3"
-  aria-label="Filtres de carte"
->
-  <div class="flex w-max gap-2">
-
-    <!-- TOUS -->
-    <button
-      type="button"
-      (click)="selectionnerFiltre('TOUS')"
-      [attr.aria-pressed]="filtreActif === 'TOUS'"
-      class="flex h-9 shrink-0 items-center gap-1 rounded-full px-3 text-xs font-medium leading-4 shadow-sm transition"
-      [class.bg-teal-950]="filtreActif === 'TOUS'"
-      [class.text-green-50]="filtreActif === 'TOUS'"
-      [class.bg-white]="filtreActif !== 'TOUS'"
-      [class.text-zinc-900]="filtreActif !== 'TOUS'"
+      class="absolute inset-x-0 top-20 z-30 overflow-x-auto px-3 pb-2 pt-3"
+      aria-label="Filtres de carte"
     >
-      <svg
-        class="size-4"
-        viewBox="0 0 16 16"
-        fill="none"
-        aria-hidden="true"
-      >
-        <path
-          d="M2 2h4v4H2V2Zm8 0h4v4h-4V2ZM2 10h4v4H2v-4Zm8 0h4v4h-4v-4Z"
-          stroke="currentColor"
-          stroke-width="1.33"
-          stroke-linejoin="round"
-        />
-      </svg>
 
-      <span>Tous</span>
-    </button>
+      <div class="flex w-max gap-2">
 
+        <!-- TOUS -->
+        <button
+          type="button"
+          (click)="selectionnerFiltre('TOUS')"
+          [attr.aria-pressed]="filtreActif === 'TOUS'"
+          class="flex h-9 shrink-0 items-center gap-1 rounded-full px-3 text-xs font-medium leading-4 shadow-sm transition"
+          [class.bg-teal-950]="filtreActif === 'TOUS'"
+          [class.text-green-50]="filtreActif === 'TOUS'"
+          [class.bg-white]="filtreActif !== 'TOUS'"
+          [class.text-zinc-900]="filtreActif !== 'TOUS'"
+        >
 
-    <!-- DECHETS -->
-    <button
-      type="button"
-      (click)="selectionnerFiltre('DECHETS')"
-      [attr.aria-pressed]="filtreActif === 'DECHETS'"
-      class="flex h-9 shrink-0 items-center gap-1 rounded-full px-3 text-xs font-medium leading-4 shadow-sm transition"
-      [class.bg-teal-950]="filtreActif === 'DECHETS'"
-      [class.text-green-50]="filtreActif === 'DECHETS'"
-      [class.bg-white]="filtreActif !== 'DECHETS'"
-      [class.text-zinc-900]="filtreActif !== 'DECHETS'"
-    >
-      <span>Déchets</span>
-    </button>
+          <svg
+            class="size-4"
+            viewBox="0 0 16 16"
+            fill="none"
+            aria-hidden="true"
+          >
 
+            <path
+              d="M2 2h4v4H2V2Zm8 0h4v4h-4V2ZM2 10h4v4H2v-4Zm8 0h4v4h-4v-4Z"
+              stroke="currentColor"
+              stroke-width="1.33"
+              stroke-linejoin="round"
+            />
 
-    <!-- CANAUX -->
-    <button
-      type="button"
-      (click)="selectionnerFiltre('CANAUX')"
-      [attr.aria-pressed]="filtreActif === 'CANAUX'"
-      class="flex h-9 shrink-0 items-center gap-1 rounded-full px-3 text-xs font-medium leading-4 shadow-sm transition"
-      [class.bg-teal-950]="filtreActif === 'CANAUX'"
-      [class.text-green-50]="filtreActif === 'CANAUX'"
-      [class.bg-white]="filtreActif !== 'CANAUX'"
-      [class.text-zinc-900]="filtreActif !== 'CANAUX'"
-    >
-      <span>Canaux</span>
-    </button>
+          </svg>
+
+          <span>Tous</span>
+
+        </button>
 
 
-    <!-- VOIRIE -->
-    <button
-      type="button"
-      (click)="selectionnerFiltre('VOIRIE')"
-      [attr.aria-pressed]="filtreActif === 'VOIRIE'"
-      class="flex h-9 shrink-0 items-center gap-1 rounded-full px-3 text-xs font-medium leading-4 shadow-sm transition"
-      [class.bg-teal-950]="filtreActif === 'VOIRIE'"
-      [class.text-green-50]="filtreActif === 'VOIRIE'"
-      [class.bg-white]="filtreActif !== 'VOIRIE'"
-      [class.text-zinc-900]="filtreActif !== 'VOIRIE'"
-    >
-      <span>Voirie</span>
-    </button>
+        <!-- DECHETS -->
+        <button
+          type="button"
+          (click)="selectionnerFiltre('DECHETS')"
+          [attr.aria-pressed]="filtreActif === 'DECHETS'"
+          class="flex h-9 shrink-0 items-center gap-1 rounded-full px-3 text-xs font-medium leading-4 shadow-sm transition"
+          [class.bg-teal-950]="filtreActif === 'DECHETS'"
+          [class.text-green-50]="filtreActif === 'DECHETS'"
+          [class.bg-white]="filtreActif !== 'DECHETS'"
+          [class.text-zinc-900]="filtreActif !== 'DECHETS'"
+        >
+
+          <span>Déchets</span>
+
+        </button>
 
 
-    <!-- ECLAIRAGE PUBLIC -->
-    <button
-      type="button"
-      (click)="selectionnerFiltre('ECLAIRAGE_PUBLIC')"
-      [attr.aria-pressed]="filtreActif === 'ECLAIRAGE_PUBLIC'"
-      class="flex h-9 shrink-0 items-center gap-1 rounded-full px-3 text-xs font-medium leading-4 shadow-sm transition"
-      [class.bg-teal-950]="filtreActif === 'ECLAIRAGE_PUBLIC'"
-      [class.text-green-50]="filtreActif === 'ECLAIRAGE_PUBLIC'"
-      [class.bg-white]="filtreActif !== 'ECLAIRAGE_PUBLIC'"
-      [class.text-zinc-900]="filtreActif !== 'ECLAIRAGE_PUBLIC'"
-    >
-      <span>Éclairage</span>
-    </button>
+        <!-- CANAUX -->
+        <button
+          type="button"
+          (click)="selectionnerFiltre('CANAUX')"
+          [attr.aria-pressed]="filtreActif === 'CANAUX'"
+          class="flex h-9 shrink-0 items-center gap-1 rounded-full px-3 text-xs font-medium leading-4 shadow-sm transition"
+          [class.bg-teal-950]="filtreActif === 'CANAUX'"
+          [class.text-green-50]="filtreActif === 'CANAUX'"
+          [class.bg-white]="filtreActif !== 'CANAUX'"
+          [class.text-zinc-900]="filtreActif !== 'CANAUX'"
+        >
+
+          <span>Canaux</span>
+
+        </button>
 
 
-    <!-- ARBRE -->
-    <button
-      type="button"
-      (click)="selectionnerFiltre('ARBRE')"
-      [attr.aria-pressed]="filtreActif === 'ARBRE'"
-      class="flex h-9 shrink-0 items-center gap-1 rounded-full px-3 text-xs font-medium leading-4 shadow-sm transition"
-      [class.bg-teal-950]="filtreActif === 'ARBRE'"
-      [class.text-green-50]="filtreActif === 'ARBRE'"
-      [class.bg-white]="filtreActif !== 'ARBRE'"
-      [class.text-zinc-900]="filtreActif !== 'ARBRE'"
-    >
-      <span>Arbre</span>
-    </button>
+        <!-- VOIRIE -->
+        <button
+          type="button"
+          (click)="selectionnerFiltre('VOIRIE')"
+          [attr.aria-pressed]="filtreActif === 'VOIRIE'"
+          class="flex h-9 shrink-0 items-center gap-1 rounded-full px-3 text-xs font-medium leading-4 shadow-sm transition"
+          [class.bg-teal-950]="filtreActif === 'VOIRIE'"
+          [class.text-green-50]="filtreActif === 'VOIRIE'"
+          [class.bg-white]="filtreActif !== 'VOIRIE'"
+          [class.text-zinc-900]="filtreActif !== 'VOIRIE'"
+        >
+
+          <span>Voirie</span>
+
+        </button>
 
 
-    <!-- FUITE EAU -->
-    <button
-      type="button"
-      (click)="selectionnerFiltre('FUITE_EAU')"
-      [attr.aria-pressed]="filtreActif === 'FUITE_EAU'"
-      class="flex h-9 shrink-0 items-center gap-1 rounded-full px-3 text-xs font-medium leading-4 shadow-sm transition"
-      [class.bg-teal-950]="filtreActif === 'FUITE_EAU'"
-      [class.text-green-50]="filtreActif === 'FUITE_EAU'"
-      [class.bg-white]="filtreActif !== 'FUITE_EAU'"
-      [class.text-zinc-900]="filtreActif !== 'FUITE_EAU'"
-    >
-      <span>Fuite d'eau</span>
-    </button>
+        <!-- ECLAIRAGE PUBLIC -->
+        <button
+          type="button"
+          (click)="selectionnerFiltre('ECLAIRAGE_PUBLIC')"
+          [attr.aria-pressed]="filtreActif === 'ECLAIRAGE_PUBLIC'"
+          class="flex h-9 shrink-0 items-center gap-1 rounded-full px-3 text-xs font-medium leading-4 shadow-sm transition"
+          [class.bg-teal-950]="filtreActif === 'ECLAIRAGE_PUBLIC'"
+          [class.text-green-50]="filtreActif === 'ECLAIRAGE_PUBLIC'"
+          [class.bg-white]="filtreActif !== 'ECLAIRAGE_PUBLIC'"
+          [class.text-zinc-900]="filtreActif !== 'ECLAIRAGE_PUBLIC'"
+        >
 
-  </div>
-</nav>
+          <span>Éclairage</span>
+
+        </button>
+
+
+        <!-- ARBRE -->
+        <button
+          type="button"
+          (click)="selectionnerFiltre('ARBRE')"
+          [attr.aria-pressed]="filtreActif === 'ARBRE'"
+          class="flex h-9 shrink-0 items-center gap-1 rounded-full px-3 text-xs font-medium leading-4 shadow-sm transition"
+          [class.bg-teal-950]="filtreActif === 'ARBRE'"
+          [class.text-green-50]="filtreActif === 'ARBRE'"
+          [class.bg-white]="filtreActif !== 'ARBRE'"
+          [class.text-zinc-900]="filtreActif !== 'ARBRE'"
+        >
+
+          <span>Arbre</span>
+
+        </button>
+
+
+        <!-- FUITE EAU -->
+        <button
+          type="button"
+          (click)="selectionnerFiltre('FUITE_EAU')"
+          [attr.aria-pressed]="filtreActif === 'FUITE_EAU'"
+          class="flex h-9 shrink-0 items-center gap-1 rounded-full px-3 text-xs font-medium leading-4 shadow-sm transition"
+          [class.bg-teal-950]="filtreActif === 'FUITE_EAU'"
+          [class.text-green-50]="filtreActif === 'FUITE_EAU'"
+          [class.bg-white]="filtreActif !== 'FUITE_EAU'"
+          [class.text-zinc-900]="filtreActif !== 'FUITE_EAU'"
+        >
+
+          <span>Fuite d'eau</span>
+
+        </button>
+
+      </div>
+
+    </nav>
 
 
     <!-- =======================================================
@@ -159,27 +184,64 @@
     <div class="absolute bottom-[159px] right-3 z-20 flex flex-col gap-3">
 
       <!-- Ma position -->
-      <button type="button"
-        class="flex size-12 items-center justify-center rounded-full bg-white text-stone-500 shadow-lg"
-        aria-label="Ma position">
-        <svg class="size-5" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-          <path d="M10 1.67v2.5m0 11.66v2.5M1.67 10h2.5m11.66 0h2.5" stroke="currentColor" stroke-width="1.67"
-            stroke-linecap="round" />
+<button
+  type="button"
+  (click)="centrerSurMaPosition()"
+  class="flex size-12 items-center justify-center rounded-full bg-white text-stone-500 shadow-lg"
+  aria-label="Ma position"
+>
+  <svg class="size-5" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+    <path
+      d="M10 1.67v2.5m0 11.66v2.5M1.67 10h2.5m11.66 0h2.5"
+      stroke="currentColor"
+      stroke-width="1.67"
+      stroke-linecap="round"
+    />
 
-          <circle cx="10" cy="10" r="5.83" stroke="currentColor" stroke-width="1.67" />
+    <circle
+      cx="10"
+      cy="10"
+      r="5.83"
+      stroke="currentColor"
+      stroke-width="1.67"
+    />
 
-          <circle cx="10" cy="10" r="2.5" stroke="currentColor" stroke-width="1.67" />
-        </svg>
-      </button>
+    <circle
+      cx="10"
+      cy="10"
+      r="2.5"
+      stroke="currentColor"
+      stroke-width="1.67"
+    />
+  </svg>
+</button>
+
 
 
       <!-- Calques -->
-      <button type="button"
+      <button
+        type="button"
         class="flex size-12 items-center justify-center rounded-full bg-white text-orange-600 shadow-lg"
-        aria-label="Calques">
-        <svg class="size-5" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-          <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.67" />
+        aria-label="Calques"
+      >
+
+        <svg
+          class="size-5"
+          viewBox="0 0 20 20"
+          fill="none"
+          aria-hidden="true"
+        >
+
+          <circle
+            cx="10"
+            cy="10"
+            r="8"
+            stroke="currentColor"
+            stroke-width="1.67"
+          />
+
         </svg>
+
       </button>
 
     </div>
@@ -189,96 +251,221 @@
          BOTTOM SHEET
     ======================================================== -->
 
-    <footer
-      class="absolute inset-x-0 bottom-0 z-40 w-full rounded-t-3xl bg-white/95 shadow-[0_-8px_30px_rgba(0,0,0,0.12)] backdrop-blur-lg">
+    @if (incidentSelectionne) {
 
-      <!-- Handle -->
-      <div class="flex justify-center pt-2">
-        <div class="h-1 w-10 rounded-full bg-zinc-200"></div>
-      </div>
+      <footer
+        class="absolute inset-x-0 bottom-0 z-40 w-full rounded-t-3xl bg-white/95 shadow-[0_-8px_30px_rgba(0,0,0,0.12)] backdrop-blur-lg"
+      >
 
+        <!-- Handle -->
+        <div class="flex justify-center pt-2">
 
-      <!-- Contenu -->
-      <div class="flex flex-col gap-3 px-4 pb-4 pt-3">
+          <div class="h-1 w-10 rounded-full bg-zinc-200"></div>
 
-        <article class="flex items-center gap-2 rounded-xl bg-white px-2 pb-2 pt-3">
-
-          <!-- =================================================
-               IMAGE
-          ================================================== -->
-
-          <div class="size-16 shrink-0 overflow-hidden rounded-xl">
-            <img src="https://placehold.co/64x64" alt="Dépôt sauvage" class="size-full object-cover" />
-          </div>
+        </div>
 
 
-          <!-- =================================================
-               INFORMATIONS
-          ================================================== -->
+        <!-- Contenu -->
+        <div class="flex flex-col gap-3 px-4 pb-4 pt-3">
 
-          <div class="min-w-0 flex-1">
+          <article
+            class="flex items-center gap-2 rounded-xl bg-white px-2 pb-2 pt-3"
+          >
 
-            <!-- Titre -->
-            <div class="flex items-center gap-1">
+            <!-- =================================================
+                 IMAGE
+            ================================================== -->
 
-              <!-- Icône localisation -->
-              <svg class="size-3 shrink-0 text-red-600" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                <path d="M8 1.5a4 4 0 0 0-4 4c0 2.8 4 7 4 7s4-4.2 4-7a4 4 0 0 0-4-4Z" stroke="currentColor"
-                  stroke-width="1" />
-              </svg>
+            <div class="size-16 shrink-0 overflow-hidden rounded-xl">
 
-              <h3 class="truncate text-xs font-semibold leading-4 text-zinc-950">
-                Dépôt sauvage
-              </h3>
+              @if (incidentSelectionne.preuves.length > 0) {
+
+                <img
+                  [src]="incidentSelectionne.preuves[0].image_url"
+                  [alt]="incidentSelectionne.reference"
+                  class="size-full object-cover"
+                />
+
+              } @else {
+
+                <div
+                  class="flex size-full items-center justify-center bg-zinc-100 text-zinc-400"
+                  aria-label="Aucune photo disponible"
+                >
+
+                  <svg
+                    class="size-6"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    aria-hidden="true"
+                  >
+
+                    <path
+                      d="M4 5h16v14H4V5Z"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                    />
+
+                    <circle
+                      cx="9"
+                      cy="10"
+                      r="1.5"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                    />
+
+                    <path
+                      d="m6 17 4-4 3 3 2-2 3 3"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+
+                  </svg>
+
+                </div>
+
+              }
 
             </div>
 
 
-            <!-- Localisation / date -->
-            <p class="truncate text-xs font-normal leading-4 text-zinc-500">
-              Médina · il y a 2h
-            </p>
+            <!-- =================================================
+                 INFORMATIONS
+            ================================================== -->
+
+            <div class="min-w-0 flex-1">
+
+              <!-- Titre -->
+              <div class="flex items-center gap-1">
+
+                <svg
+                  class="size-3 shrink-0 text-red-600"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  aria-hidden="true"
+                >
+
+                  <path
+                    d="M8 1.5a4 4 0 0 0-4 4c0 2.8 4 7 4 7s4-4.2 4-7a4 4 0 0 0-4-4Z"
+                    stroke="currentColor"
+                    stroke-width="1"
+                  />
+
+                </svg>
+
+                <h3
+                  class="truncate text-xs font-semibold leading-4 text-zinc-950"
+                >
+                  {{ incidentSelectionne.reference }}
+                </h3>
+
+              </div>
 
 
-            <!-- Statut -->
-            <div class="flex items-center gap-1 pt-0.5">
+              <!-- Localisation -->
+              <p
+                class="truncate text-xs font-normal leading-4 text-zinc-500"
+              >
 
-              <span class="size-1.5 shrink-0 rounded-full bg-red-600"></span>
+                {{ incidentSelectionne.quartier || 'Quartier non renseigné' }}
 
-              <span class="text-xs font-medium leading-4 text-red-600">
-                Critique
+                @if (incidentSelectionne.adresse) {
+                  <span> · {{ incidentSelectionne.adresse }}</span>
+                }
+
+              </p>
+
+
+              <!-- Statut / urgence -->
+              <div class="flex items-center gap-1 pt-0.5">
+
+                <span
+                  class="size-1.5 shrink-0 rounded-full"
+                  [class.bg-red-600]="incidentSelectionne.niveau_urgence === 'CRITIQUE'"
+                  [class.bg-orange-500]="incidentSelectionne.niveau_urgence === 'ELEVE'"
+                  [class.bg-yellow-500]="incidentSelectionne.niveau_urgence === 'MODERE'"
+                  [class.bg-teal-950]="incidentSelectionne.niveau_urgence === 'ROUTINE'"
+                >
+                </span>
+
+
+                <span
+                  class="text-xs font-medium leading-4"
+                  [class.text-red-600]="incidentSelectionne.niveau_urgence === 'CRITIQUE'"
+                  [class.text-orange-500]="incidentSelectionne.niveau_urgence === 'ELEVE'"
+                  [class.text-yellow-600]="incidentSelectionne.niveau_urgence === 'MODERE'"
+                  [class.text-teal-950]="incidentSelectionne.niveau_urgence === 'ROUTINE'"
+                >
+
+                  @switch (incidentSelectionne.niveau_urgence) {
+
+                    @case ('CRITIQUE') {
+                      Critique
+                    }
+
+                    @case ('ELEVE') {
+                      Élevé
+                    }
+
+                    @case ('MODERE') {
+                      Modéré
+                    }
+
+                    @case ('ROUTINE') {
+                      Routine
+                    }
+
+                  }
+
+                </span>
+
+              </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 BOUTON DÉTAIL
+            ================================================== -->
+
+            <button
+              type="button"
+              [routerLink]="['/agent/incidents', incidentSelectionne.id]"
+              class="flex h-8 shrink-0 items-center gap-2 rounded-full bg-teal-950 px-3 py-2 shadow-[0_1px_2px_rgba(0,0,0,0.05)]"
+            >
+
+              <span class="text-xs font-medium leading-4 text-green-50">
+                Détail
               </span>
 
-            </div>
+              <svg
+                class="size-3 text-green-50"
+                viewBox="0 0 12 12"
+                fill="none"
+                aria-hidden="true"
+              >
 
-          </div>
+                <path
+                  d="M4.5 3 7.5 6l-3 3"
+                  stroke="currentColor"
+                  stroke-width="1"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
 
+              </svg>
 
-          <!-- =================================================
-               BOUTON DÉTAIL
-          ================================================== -->
+            </button>
 
-          <button type="button" routerLink="/agent/incidents/1"
-            class="flex h-8 shrink-0 items-center gap-2 rounded-full bg-teal-950 px-3 py-2 shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
+          </article>
 
-            <span class="text-xs font-medium leading-4 text-green-50">
-              Détail
-            </span>
+        </div>
 
-            <!-- Chevron -->
-            <svg class="size-3 text-green-50" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-              <path d="M4.5 3 7.5 6l-3 3" stroke="currentColor" stroke-width="1" stroke-linecap="round"
-                stroke-linejoin="round" />
-            </svg>
+      </footer>
 
-          </button>
-
-
-        </article>
-
-      </div>
-
-    </footer>
+    }
 
   </section>
 
