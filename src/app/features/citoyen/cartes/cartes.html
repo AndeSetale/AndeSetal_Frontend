@@ -127,11 +127,13 @@
     <div class="flex items-center gap-3.5">
       <!-- Vignette Photo -->
       <div class="size-16 rounded-2xl overflow-hidden bg-slate-100 shrink-0 border border-slate-200/60 shadow-sm">
+        @if (selectedIncident.photoUrl) {
         <img
-          [src]="selectedIncident.photoUrl || 'https://images.unsplash.com/photo-1530587191325-3db32d826c18?q=80&w=300'"
+          [src]="selectedIncident.photoUrl"
           alt="Aperçu incident"
           class="w-full h-full object-cover"
         />
+        }
       </div>
 
       <!-- Informations -->

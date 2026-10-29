@@ -8,6 +8,7 @@ import { PerformanceAgents } from '../../components/performance-agents/performan
 
 import { DashboardStats, IncidentService } from '../../core/services/incident.service';
 import type { Incident } from '../../core/services/incident.service';
+import { COULEURS_TYPE } from '../../core/utils/libelles';
 
 @Component({
   selector: 'app-accueil',
@@ -101,62 +102,21 @@ export class Accueil {
   // (calculée côté client depuis la liste complète)
   // =========================
 
+  /** Donut : répartition calculée par le backend sur tous les incidents */
   incidentTypes = computed(() => {
-
-    const incidents = this.incidents();
-
-    const total = incidents.length;
+    const repartition = this.stats()?.repartition_par_type ?? [];
+    const total = repartition.reduce((somme, t) => somme + t.count, 0);
 
     if (total === 0) {
       return [];
     }
 
-    const types = new Map<string, number>();
-
-    incidents.forEach(incident => {
-
-      const type = incident.type;
-
-      types.set(
-        type,
-        (types.get(type) ?? 0) + 1
-      );
-
-    });
-
-
-    const couleurs: Record<string, string> = {
-
-      'DECHETS': '#1F2937',
-
-      'CANAUX': '#F97316',
-
-      'VOIRIE': '#9CA3AF',
-
-      'ECLAIRAGE_PUBLIC': '#EAB308',
-
-      'ARBRE': '#16A34A',
-
-      'FUITE_EAU': '#3B82F6',
-
-    };
-
-
-    return Array.from(types.entries())
-      .map(([type, value]) => ({
-
-        label: this.getTypeLabel(type),
-
-        value: Math.round(
-          (value / total) * 100
-        ),
-
-        color: couleurs[type] ?? '#9CA3AF',
-
-      }));
-
+    return repartition.map(t => ({
+      label: this.getTypeLabel(t.type),
+      value: Math.round((t.count / total) * 100),
+      color: COULEURS_TYPE[t.type] ?? '#9CA3AF',
+    }));
   });
-
 
   private getTypeLabel(type: string): string {
 

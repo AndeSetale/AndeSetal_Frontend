@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import {
@@ -11,7 +11,8 @@ import {
   LucideHouse,
 } from '@lucide/angular';
 
-import { RapportEnvoiService } from '../../../core/services/rapport-envoi';
+import { RapportService } from '../../../core/services/rapport';
+import { Rapport } from '../../../core/models/rapport';
 
 @Component({
   selector: 'app-rapport-envoye',
@@ -29,88 +30,20 @@ import { RapportEnvoiService } from '../../../core/services/rapport-envoi';
 })
 export class RapportEnvoye {
 
-  private readonly rapportEnvoiService =
-    inject(RapportEnvoiService);
-
-  private readonly route =
-    inject(ActivatedRoute);
-
-  private readonly router =
-    inject(Router);
-
-
-  // ============================================================
-  // ID
-  // ============================================================
+  private readonly rapportService = inject(RapportService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
 
   /**
-   * ID de l'intervention récupéré depuis l'URL.
-   *
-   * Exemple :
-   * /agent/rapport-envoye/1
-   *
-   * TODO BACKEND :
-   * Selon la structure définitive de l'API Django,
-   * cette route pourra éventuellement utiliser directement
-   * l'identifiant du rapport.
+   * /agent/rapport-envoye/:id — id de l'intervention dont le rapport vient d'être envoyé
    */
-  readonly interventionId = this.route.snapshot.paramMap.get('id');
+  readonly rapportEnvoye = signal<Rapport | null>(null);
 
-
-  // ============================================================
-  // RAPPORT ENVOYÉ
-  // ============================================================
-
-  /**
-   * Rapport envoyé actuellement affiché.
-   *
-   * Pour le moment :
-   * les données sont récupérées depuis RapportEnvoiService.
-   *
-   * TODO BACKEND :
-   * RapportEnvoiService récupérera les données depuis
-   * l'API Django sans modifier le fonctionnement du composant.
-   */
-  readonly rapportEnvoye = computed(() => {
-
-    const interventionId = this.interventionId;
-
-    if (!interventionId) {
-      return null;
-    }
-
-    return this.rapportEnvoiService.getByInterventionId(
-      interventionId
-    );
-
-  });
-
-
-  // ============================================================
-  // NUMÉRO DE SUIVI
-  // ============================================================
-
-  /**
-   * Numéro de suivi affiché sur la page.
-   */
   readonly numeroSuivi = computed(() =>
     this.rapportEnvoye()?.numeroSuivi ?? ''
   );
 
-
-  // ============================================================
-  // DATE D'ENVOI
-  // ============================================================
-
-  /**
-   * Date et heure d'envoi formatées pour l'affichage.
-   *
-   * TODO BACKEND :
-   * La date sera fournie par Django après l'envoi réel
-   * du rapport.
-   */
   readonly dateEnvoi = computed(() => {
-
     const date = this.rapportEnvoye()?.dateEnvoi;
 
     if (!date) {
@@ -118,22 +51,22 @@ export class RapportEnvoye {
     }
 
     const dateObj = new Date(date);
+    const heure = dateObj.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
 
-    const heure = dateObj.toLocaleTimeString(
-      'fr-FR',
-      {
-        hour: '2-digit',
-        minute: '2-digit',
-      }
-    );
-
-    return `Aujourd'hui à ${heure}`;
+    return dateObj.toDateString() === new Date().toDateString()
+      ? `Aujourd'hui à ${heure}`
+      : `${dateObj.toLocaleDateString('fr-FR')} à ${heure}`;
   });
 
+  constructor() {
+    const id = this.route.snapshot.paramMap.get('id');
 
-  // ============================================================
-  // ACTIONS
-  // ============================================================
+    if (id) {
+      this.rapportService.getByInterventionId(id).subscribe(rapport =>
+        this.rapportEnvoye.set(rapport)
+      );
+    }
+  }
 
   /**
    * Ferme la page de confirmation.

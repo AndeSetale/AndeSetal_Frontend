@@ -1,8 +1,6 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-
 import { HeaderAgent } from '../components/header-agent/header-agent';
-
 import {
   LucideSparkles,
   LucideTrash2,
@@ -10,8 +8,9 @@ import {
   LucideMapPin,
 } from '@lucide/angular';
 
-
 import { IncidentService } from '../../../core/services/incident';
+import { InterventionService } from '../../../core/services/intervention';
+import { Incident } from '../../../core/models/incident';
 
 @Component({
   selector: 'app-detail-incident',
@@ -22,7 +21,6 @@ import { IncidentService } from '../../../core/services/incident';
   LucideFlame,
   LucideMapPin,
 ],
-
   templateUrl: './detail-incident.html',
   styleUrl: './detail-incident.css',
 })
@@ -31,43 +29,16 @@ export class DetailIncident {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly incidentService = inject(IncidentService);
+  private readonly interventionService = inject(InterventionService);
 
+  /**
+   * Incident chargé depuis GET /api/incidents/:id/
+   */
+  readonly incident = signal<Incident | null>(null);
 
-  // ============================================================
-  // ID DE L'INCIDENT
-  // ============================================================
-
-  readonly incidentId = computed(() =>
-    this.route.snapshot.paramMap.get('id')
-  );
-
-
-  // ============================================================
-  // INCIDENT
-  // ============================================================
-
-  readonly incident = computed(() => {
-
-    const id = this.incidentId();
-
-    if (!id) {
-      return this.incidentService.incidents()[0];
-    }
-
-    return (
-      this.incidentService.getById(id)
-      ?? this.incidentService.incidents()[0]
-    );
-
-  });
-
-
-  // ============================================================
-  // PRIORITÉ
-  // ============================================================
+  readonly erreur = signal<string | null>(null);
 
   readonly prioriteLabel = computed(() => {
-
     const labels = {
       critique: 'CRITIQUE',
       urgent: 'URGENT',
@@ -75,77 +46,52 @@ export class DetailIncident {
       routine: 'ROUTINE',
     } as const;
 
-    return labels[this.incident().priorite];
-
+    const incident = this.incident();
+    return incident ? labels[incident.priorite] : '';
   });
 
-
-  // ============================================================
-  // SCORE DE CONFIANCE IA
-  // ============================================================
-
   readonly confianceIA = computed(() =>
-    this.incident().confianceIA ?? 0
+    this.incident()?.confianceIA ?? 0
   );
-
-
-  // ============================================================
-  // IMAGE
-  // ============================================================
 
   readonly imageIncident = computed(() =>
-    this.incident().image ?? null
+    this.incident()?.image ?? null
   );
 
+  constructor() {
+    const id = this.route.snapshot.paramMap.get('id');
 
-  // ============================================================
-  // ACTIONS
-  // ============================================================
+    if (!id) {
+      this.erreur.set('Incident introuvable.');
+      return;
+    }
 
-  /**
-   * Lance le parcours d'intervention pour l'incident
-   * actuellement affiché.
-   *
-   * Pour le moment :
-   * navigation vers la page de détail de l'intervention
-   * en utilisant l'ID de l'incident.
-   *
-   * TODO BACKEND :
-   * Lors du branchement Django, cette action devra
-   * probablement créer ou récupérer l'intervention
-   * associée à cet incident avant de naviguer vers
-   * son détail.
-   */
-  intervenir(): void {
-
-    const incident = this.incident();
-
-    console.log(
-      'Intervention sur l’incident :',
-      incident
-    );
-
-    /*
-     * TODO BACKEND :
-     *
-     * Une fois l'API Django branchée :
-     *
-     * 1. Envoyer l'ID de l'incident au backend.
-     * 2. Créer ou récupérer l'intervention associée.
-     * 3. Récupérer l'ID de l'intervention.
-     * 4. Naviguer vers :
-     *
-     * /agent/interventions/:id
-     *
-     * Pour le moment, cette navigation sera faite
-     * directement avec l'ID de l'incident.
-     */
-
-    this.router.navigate([
-      '/agent/interventions',
-      incident.id,
-    ]);
-
+    this.incidentService.getById(id).subscribe({
+      next: incident => this.incident.set(incident),
+      error: () => this.erreur.set("Impossible de charger l'incident."),
+    });
   }
 
+  /**
+   * Ouvre l'intervention de l'agent liée à cet incident.
+   */
+  intervenir(): void {
+    const incident = this.incident();
+
+    if (!incident) {
+      return;
+    }
+
+    this.interventionService.charger().subscribe(interventions => {
+      const intervention = interventions.find(
+        item => String(item.incidentId) === String(incident.id)
+      );
+
+      this.router.navigate(
+        intervention
+          ? ['/agent/interventions', intervention.id]
+          : ['/agent/interventions']
+      );
+    });
+  }
 }

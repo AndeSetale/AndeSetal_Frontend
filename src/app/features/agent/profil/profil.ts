@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { HeaderAgent } from '../components/header-agent/header-agent';
 
@@ -8,6 +8,10 @@ import {
   LucideLogOut,
 } from '@lucide/angular';
 
+import { AgentDetail, AgentService } from '../../../core/services/agent.service';
+import { Auth } from '../../../core/services/auth';
+import { InterventionService } from '../../../core/services/intervention';
+import { urlMedia } from '../../../core/utils/media';
 
 @Component({
   selector: 'app-profil',
@@ -23,38 +27,67 @@ import {
 })
 export class Profil {
 
-  agent = {
-    nom: 'Moussa Diop',
-    role: 'Agent de terrain Senior',
-    photo: 'https://placehold.co/96x96',
-    disponible: true,
-  };
+  private readonly agentService = inject(AgentService);
+  private readonly interventionService = inject(InterventionService);
+  private readonly auth = inject(Auth);
 
-  performance = {
-    tachesResolues: 24,
-    objectifTaches: 30,
-    ponctualite: 98,
-    messagePonctualite: 'Excellent travail',
-  };
+  /** Profil + indicateurs de l'agent connecté (GET /api/agents/me/) */
+  private readonly profil = signal<AgentDetail | null>(null);
 
-  interventionsRecentes = [
-    {
-      id: 1,
-      titre: 'Zone Marché Sandaga',
-      description: 'Collecte de déchets volumineux',
-      statut: 'Terminé',
-      date: "Aujourd'hui, 09:15",
-      image: 'https://placehold.co/64x64',
-    },
-    {
-      id: 2,
-      titre: "Place de l'Indépendance",
-      description: 'Entretien des espaces verts',
-      statut: 'En cours',
-      date: 'Il y a 2 heures',
-      image: 'https://placehold.co/64x64',
-    },
-  ];
+  constructor() {
+    this.agentService.getMonProfil().subscribe(profil => this.profil.set(profil));
+    this.interventionService.charger().subscribe();
+  }
+
+  get agent() {
+    const profil = this.profil();
+    const nom = profil?.nom_complet ?? '';
+
+    return {
+      nom: nom || 'Agent',
+      initiale: (nom.charAt(0) || 'A').toUpperCase(),
+      role: profil?.departement || 'Agent de terrain',
+      photo: urlMedia(profil?.photo_profil),
+      disponible: profil?.disponible ?? false,
+    };
+  }
+
+  get performance() {
+    const profil = this.profil();
+    const ponctualite = profil?.ponctualite ?? 0;
+
+    return {
+      tachesResolues: profil?.taches_resolues_semaine ?? 0,
+      // Objectif défini par l'admin ; à défaut, le nombre d'interventions assignées
+      objectifTaches: profil?.objectif_hebdo || profil?.interventions_total || 0,
+      ponctualite,
+      messagePonctualite:
+        !profil?.interventions_terminees ? 'Pas encore d’intervention terminée'
+          : ponctualite >= 90 ? 'Excellent travail'
+          : ponctualite >= 70 ? 'Bon rythme'
+          : 'Des délais à améliorer',
+    };
+  }
+
+  get interventionsRecentes() {
+    return [...this.interventionService.interventions()]
+      .sort((a, b) => (b.dateAssignation ?? '').localeCompare(a.dateAssignation ?? ''))
+      .slice(0, 3)
+      .map(intervention => ({
+        id: intervention.id,
+        titre: intervention.adresse,
+        description: intervention.titre,
+        image: intervention.image,
+        statut: intervention.statut === 'terminee' ? 'Terminé'
+          : intervention.statut === 'en_cours' ? 'En cours'
+          : 'À démarrer',
+        date: intervention.dateAssignation
+          ? new Date(intervention.dateAssignation).toLocaleString('fr-FR', {
+              day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit',
+            })
+          : '',
+      }));
+  }
 
   get pourcentageTachesResolues(): number {
     if (this.performance.objectifTaches <= 0) {
@@ -68,6 +101,12 @@ export class Profil {
   }
 
   toggleDisponibilite(): void {
-    this.agent.disponible = !this.agent.disponible;
+    this.agentService
+      .changerDisponibilite(!this.agent.disponible)
+      .subscribe(profil => this.profil.set(profil));
+  }
+
+  deconnecter(): void {
+    this.auth.deconnecter();
   }
 }

@@ -13,8 +13,14 @@ import { IncidentApiService, IncidentResponse } from '../../../core/services/inc
   styleUrl: './enregistrement.css',
 })
 export class EnregistrementComponent implements OnInit {
-  photoUrl: string = 'https://images.unsplash.com/photo-1530587191325-3db32d826c18?q=80&w=800&auto=format&fit=crop';
-  locationAddress: string = 'Rue 10, Médina, Dakar';
+  photoUrl: string = '';
+  locationAddress: string = '';
+  /** true si la position vient du GPS (sinon le citoyen saisit l'adresse) */
+  gpsDisponible: boolean = false;
+  localisationEnCours: boolean = true;
+  erreur: string | null = null;
+  /** Coordonnées réellement envoyées au backend, affichées pour contrôle */
+  coordonnees: string = '';
   description: string = '';
   isSubmitting: boolean = false;
 
@@ -26,9 +32,12 @@ export class EnregistrementComponent implements OnInit {
 
   ngOnInit(): void {
     const draftPhoto = this.incidentService.getDraftPhoto();
-    if (draftPhoto) {
-      this.photoUrl = draftPhoto;
+    if (!draftPhoto) {
+      // Pas de photo prise : retour à l'écran de capture
+      this.router.navigate(['/mobile/scan']);
+      return;
     }
+    this.photoUrl = draftPhoto;
 
     const draftLocation = this.incidentService.getDraftLocation();
     if (draftLocation && draftLocation.address) {
@@ -36,20 +45,32 @@ export class EnregistrementComponent implements OnInit {
     }
 
     // Récupérer et mettre à jour l'adresse exacte en temps réel via GPS + Reverse Geocoding
-    this.incidentService.fetchCurrentLocation().then((loc: { address: string; lat: number; lng: number }) => {
-      this.locationAddress = loc.address;
+    this.localiser();
+  }
+
+  /** Lit la position GPS actuelle (relançable si la position a changé) */
+  localiser(): void {
+    this.localisationEnCours = true;
+    this.incidentService.fetchCurrentLocation().then(loc => {
+      this.gpsDisponible = loc.lat !== null;
+      this.locationAddress = loc.address || this.locationAddress;
+      this.coordonnees = loc.lat !== null && loc.lng !== null
+        ? `${loc.lat.toFixed(5)}, ${loc.lng.toFixed(5)}`
+        : '';
+      this.localisationEnCours = false;
     });
   }
 
   submitIncident(): void {
     this.isSubmitting = true;
+    this.erreur = null;
     const draftLocation = this.incidentService.getDraftLocation();
 
     this.incidentApiService.createIncident({
       description: this.description || "Signalement d'incident citoyen avec photo",
       adresse: this.locationAddress,
-      latitude: draftLocation.lat,
-      longitude: draftLocation.lng,
+      latitude: draftLocation.lat ?? undefined,
+      longitude: draftLocation.lng ?? undefined,
       photoUrl: this.photoUrl,
     }).subscribe({
       next: (res: IncidentResponse) => {
@@ -60,9 +81,16 @@ export class EnregistrementComponent implements OnInit {
         this.router.navigate(['/mobile/confirmation']);
       },
       error: (err) => {
-        console.warn('Backend Django hors ligne ou indisponible, fallback local activé:', err);
+        // Le signalement n'est PAS enregistré : on reste sur la page avec le motif
         this.isSubmitting = false;
-        this.router.navigate(['/mobile/confirmation']);
+        const detail = err?.error;
+        this.erreur =
+          detail?.non_field_errors?.[0]
+          ?? detail?.image?.[0]
+          ?? detail?.detail
+          ?? (err?.status === 0
+            ? 'Serveur injoignable. Vérifiez votre connexion puis réessayez.'
+            : "L'envoi du signalement a échoué, veuillez réessayer.");
       }
     });
   }

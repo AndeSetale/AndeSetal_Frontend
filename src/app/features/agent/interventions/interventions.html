@@ -174,11 +174,19 @@
           >
 
             <!-- Image -->
-            <img
-              [src]="intervention.image"
-              [alt]="intervention.titre"
-              class="size-20 shrink-0 rounded-lg object-cover"
-            />
+            <a [routerLink]="['/agent/interventions', intervention.id]" class="shrink-0">
+              @if (intervention.image) {
+                <img
+                  [src]="intervention.image"
+                  [alt]="intervention.titre"
+                  class="size-20 rounded-lg object-cover"
+                />
+              } @else {
+                <div class="flex size-20 items-center justify-center rounded-lg bg-stone-100 text-[10px] text-neutral-400">
+                  Pas de photo
+                </div>
+              }
+            </a>
 
 
             <!-- Informations -->
@@ -188,11 +196,13 @@
 
                 <div class="min-w-0">
 
-                  <h3
-                    class="truncate text-base font-bold leading-6 text-zinc-900"
-                  >
-                    {{ intervention.titre }}
-                  </h3>
+                  <a [routerLink]="['/agent/interventions', intervention.id]">
+                    <h3
+                      class="truncate text-base font-bold leading-6 text-zinc-900"
+                    >
+                      {{ intervention.titre }}
+                    </h3>
+                  </a>
 
                   <p class="text-[10px] font-medium uppercase tracking-wide text-teal-700">
                     {{ intervention.categorie }}
@@ -228,41 +238,38 @@
 
 
               <!-- Action -->
-              @if (intervention.statut === 'disponible') {
+              @if (intervention.statut === 'assignee') {
 
                 <button
                   type="button"
-                  (click)="assigner(intervention)"
+                  (click)="demarrer(intervention)"
+                  [disabled]="enCours() === intervention.id"
                   class="h-10 rounded-lg border border-emerald-900
                          text-xs text-emerald-900
-                         transition hover:bg-emerald-50"
+                         transition hover:bg-emerald-50 disabled:opacity-50"
                 >
-                  S'assigner
+                  Démarrer l'intervention
                 </button>
 
-              } @else if (intervention.statut === 'assignee') {
+              } @else if (intervention.statut === 'en_cours') {
 
-                <button
-                  type="button"
-                  disabled
-                  class="h-10 cursor-default rounded-lg
-                         bg-emerald-50 text-xs font-medium
-                         text-emerald-900"
+                <a
+                  [routerLink]="['/agent/interventions', intervention.id]"
+                  class="flex h-10 items-center justify-center rounded-lg
+                         bg-emerald-900 text-xs font-medium text-white"
                 >
-                  Intervention assignée
-                </button>
+                  Envoyer le rapport
+                </a>
 
               } @else {
 
-                <button
-                  type="button"
-                  disabled
-                  class="h-10 cursor-default rounded-lg
-                         bg-neutral-100 text-xs
-                         text-neutral-500"
+                <a
+                  [routerLink]="['/agent/historique', intervention.id]"
+                  class="flex h-10 items-center justify-center rounded-lg
+                         bg-neutral-100 text-xs text-neutral-600"
                 >
-                  {{ intervention.statut }}
-                </button>
+                  Terminée — voir le rapport
+                </a>
 
               }
 
@@ -319,7 +326,13 @@
             </h3>
 
             <p class="mt-1 text-xs leading-5 text-neutral-500">
-              Aucune intervention ne correspond au filtre sélectionné.
+              @if (chargement()) {
+                Chargement…
+              } @else if (erreur()) {
+                {{ erreur() }}
+              } @else {
+                Aucune intervention ne correspond au filtre sélectionné.
+              }
             </p>
 
           </div>

@@ -12,7 +12,13 @@
             <button type="button" aria-label="Profil"
                 class="h-10 w-10 overflow-hidden rounded-full ring-2 ring-zinc-100 shadow-sm">
 
+                @if (agent.photo) {
                 <img [src]="agent.photo" alt="Profil" class="h-full w-full object-cover" />
+                } @else {
+                <span class="flex h-full w-full items-center justify-center bg-teal-950 text-sm font-bold text-white">
+                    {{ agent.initiale }}
+                </span>
+                }
 
             </button>
         </header>
@@ -145,6 +151,7 @@
             <!-- ========================= -->
             <!-- INTERVENTION PRIORITAIRE -->
             <!-- ========================= -->
+            @if (interventionPrioritaire) {
             <section class="flex flex-col gap-4">
 
                 <div class="flex items-center justify-between gap-3">
@@ -171,8 +178,12 @@
                     <!-- image -->
                     <div class="relative h-40">
 
+                        @if (interventionPrioritaire.image) {
                         <img [src]="interventionPrioritaire.image" [alt]="interventionPrioritaire.titre"
                             class="h-full w-full object-cover" />
+                        } @else {
+                        <div class="h-full w-full bg-stone-200"></div>
+                        }
 
                         <div class="absolute inset-0 bg-gradient-to-b from-transparent to-teal-950/90">
                         </div>
@@ -273,7 +284,7 @@
 
 
                         <!-- Action -->
-                        <button type="button"
+                        <button type="button" (click)="ouvrir(interventionPrioritaire.id)"
                             class="flex h-12 w-full items-center justify-center gap-2 rounded-2xl bg-teal-950 px-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-teal-900">
 
                             <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -284,7 +295,7 @@
                             </svg>
 
                             <span>
-                                Démarrer l'intervention
+                                {{ interventionPrioritaire.action }}
                             </span>
 
                             <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -302,6 +313,11 @@
                 </article>
 
             </section>
+            } @else {
+            <section class="rounded-3xl bg-white p-6 text-center text-sm text-slate-500 shadow-sm">
+                {{ chargement() ? 'Chargement de vos interventions…' : 'Aucune intervention en attente. Bon travail !' }}
+            </section>
+            }
 
             <!-- ========================= -->
             <!-- INTERVENTIONS RÉCENTES -->
@@ -314,7 +330,7 @@
                         Interventions récentes
                     </h2>
 
-                    <button type="button" class="text-xs text-teal-950">
+                    <button type="button" routerLink="/agent/interventions" class="text-xs text-teal-950">
 
                         Voir tout
 
@@ -325,16 +341,18 @@
 
                 <div class="flex flex-col gap-4">
 
-                    @for (intervention of interventionsRecentes; track intervention.titre) {
+                    @for (intervention of interventionsRecentes; track intervention.id) {
 
-                    <article
-                        class="flex items-start gap-4 rounded-xl bg-white p-4 shadow-[0_2px_12px_0_rgba(0,0,0,0.08)]">
+                    <article (click)="ouvrir(intervention.id)"
+                        class="flex cursor-pointer items-start gap-4 rounded-xl bg-white p-4 shadow-[0_2px_12px_0_rgba(0,0,0,0.08)]">
 
                         <!-- Image -->
                         <div class="h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-gray-200">
 
+                            @if (intervention.image) {
                             <img [src]="intervention.image" [alt]="intervention.titre"
                                 class="h-full w-full object-cover" />
+                            }
 
                         </div>
 
@@ -375,6 +393,8 @@
 
                     </article>
 
+                    } @empty {
+                    <p class="text-sm text-slate-500">Aucune intervention pour le moment.</p>
                     }
 
                 </div>
@@ -409,7 +429,7 @@
                             Historique
                         </span>
 
-                        <button type="button" routerLink="/agent/historique" (click)="fermerMenu()"
+                        <button type="button" routerLink="/agent/interventions" (click)="fermerMenu()"
                             aria-label="Historique des rapports" class="flex h-10 w-10 items-center justify-center rounded-full
                  bg-teal-950 text-white shadow-lg">
 

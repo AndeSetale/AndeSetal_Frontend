@@ -1,7 +1,17 @@
-import { AfterViewInit, Component, OnDestroy } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, computed, inject, signal } from '@angular/core';
+import { Router } from '@angular/router';
 import * as L from 'leaflet';
 
 import { HeaderAgent } from '../components/header-agent/header-agent';
+import { InterventionService } from '../../../core/services/intervention';
+import { Intervention } from '../../../core/models/intervention';
+
+const COULEURS_PRIORITE = {
+  critique: '#ef4444',
+  urgent: '#f97316',
+  modere: '#7c3aed',
+  routine: '#004030',
+} as const;
 
 @Component({
   selector: 'app-carte',
@@ -11,6 +21,25 @@ import { HeaderAgent } from '../components/header-agent/header-agent';
   styleUrl: './carte.css',
 })
 export class Carte implements AfterViewInit, OnDestroy {
+
+  private readonly interventionService = inject(InterventionService);
+  private readonly router = inject(Router);
+
+  /** Intervention affichée dans la fiche du bas (la plus urgente par défaut) */
+  readonly selection = signal<Intervention | null>(null);
+
+  readonly libellePriorite = computed(() => {
+    const libelles = { critique: 'Critique', urgent: 'Urgent', modere: 'Modéré', routine: 'Routine' } as const;
+    const selection = this.selection();
+    return selection ? libelles[selection.priorite] : '';
+  });
+
+  ouvrirSelection(): void {
+    const selection = this.selection();
+    if (selection) {
+      this.router.navigate(['/agent/interventions', selection.id]);
+    }
+  }
 
   private map!: L.Map;
 
@@ -43,7 +72,7 @@ export class Carte implements AfterViewInit, OnDestroy {
   private initialiserCarte(): void {
 
     this.map = L.map('map', {
-      center: [14.7167, -17.4677],
+      center: [14.668, -17.437], // Dakar Plateau
       zoom: 14,
       zoomControl: false,
       attributionControl: true,
@@ -65,36 +94,38 @@ export class Carte implements AfterViewInit, OnDestroy {
   // ============================================================
 
   private ajouterMarqueurs(): void {
+    this.interventionService.charger().subscribe(interventions => {
+      const aTraiter = interventions.filter(
+        (i): i is Intervention & { latitude: number; longitude: number } =>
+          i.statut !== 'terminee' && i.latitude != null && i.longitude != null
+      );
 
-    // Dépôt sauvage — rouge
-    this.ajouterMarqueur(
-      [14.7167, -17.4677],
-      '#ef4444'
-    );
+      aTraiter.forEach(intervention =>
+        this.ajouterMarqueur(
+          [intervention.latitude, intervention.longitude],
+          COULEURS_PRIORITE[intervention.priorite],
+          intervention,
+        )
+      );
 
+      const ordre = { critique: 0, urgent: 1, modere: 2, routine: 3 } as const;
+      this.selection.set(
+        [...aTraiter].sort((a, b) => ordre[a.priorite] - ordre[b.priorite])[0] ?? null
+      );
 
-    // Déchet — violet
-    this.ajouterMarqueur(
-      [14.7205, -17.4625],
-      '#7c3aed'
-    );
-
-
-    // Voirie / autre — vert foncé
-    this.ajouterMarqueur(
-      [14.7135, -17.4705],
-      '#004030'
-    );
+      if (aTraiter.length) {
+        this.map.fitBounds(
+          L.latLngBounds(aTraiter.map(i => [i.latitude, i.longitude] as L.LatLngTuple)),
+          { padding: [40, 40], maxZoom: 16 },
+        );
+      }
+    });
   }
-
-
-  // ============================================================
-  // CRÉATION D'UN MARQUEUR
-  // ============================================================
 
   private ajouterMarqueur(
     position: L.LatLngExpression,
-    couleur: string
+    couleur: string,
+    intervention: Intervention,
   ): void {
 
     const icone = L.divIcon({
@@ -149,6 +180,9 @@ export class Carte implements AfterViewInit, OnDestroy {
 
     L.marker(position, {
       icon: icone,
-    }).addTo(this.map);
+      title: `${intervention.titre} — ${intervention.adresse}`,
+    })
+      .on('click', () => this.selection.set(intervention))
+      .addTo(this.map);
   }
 }

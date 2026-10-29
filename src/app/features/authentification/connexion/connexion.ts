@@ -80,8 +80,8 @@ export class Connexion {
 
         this.chargement.set(false);
 
-        // Rediriger vers l'espace citoyen
-        this.router.navigate(['/mobile']);
+        // Rediriger vers l'espace correspondant au rôle
+        this.router.navigateByUrl(this.auth.accueilDuRole(reponse.user.role));
       },
 
       error: (erreur) => {

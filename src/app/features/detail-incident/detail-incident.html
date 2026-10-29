@@ -181,7 +181,7 @@
        @if (incident()?.assigne_a) {
 
   <p class="text-sm text-green-600 font-medium">
-    Agent assigné
+    Assigné à {{ incident()?.assigneNom ?? 'un agent' }}
   </p>
 
 } @else {
@@ -327,9 +327,10 @@
 
   @for (agent of agents(); track agent.id) {
 
-    <option [value]="agent.id">
+    <option [value]="agent.utilisateur_id" [selected]="agent.utilisateur_id === agentSelectionne()">
       {{ agent.nom_complet }}
       - {{ agent.matricule }}
+      {{ agent.disponible ? '' : '(indisponible)' }}
     </option>
 
   }
@@ -341,20 +342,14 @@
               Niveau de priorité
             </label>
 
-            <div class="grid grid-cols-3 gap-3">
-
-              <button class="px-4 py-2.5 bg-red-50 text-red-700 rounded-xl border-2 border-red-500">
-                Critique
+            <div class="grid grid-cols-2 gap-3">
+              @for (niveau of niveaux; track niveau.valeur) {
+              <button type="button" (click)="urgence.set(niveau.valeur)"
+                class="px-4 py-2.5 rounded-xl border-2"
+                [class]="urgence() === niveau.valeur ? niveau.actif : 'text-gray-600 border-gray-200'">
+                {{ niveau.libelle }}
               </button>
-
-              <button class="px-4 py-2.5 text-gray-600 rounded-xl border-2 border-gray-200">
-                Modéré
-              </button>
-
-              <button class="px-4 py-2.5 text-gray-600 rounded-xl border-2 border-gray-200">
-                Léger
-              </button>
-
+              }
             </div>
           </div>
 
@@ -365,6 +360,8 @@
 
             <textarea
               rows="5"
+              [value]="notes()"
+              (input)="notes.set($any($event.target).value)"
               placeholder="Ajouter des notes ou instructions pour l'équipe..."
               class="w-full px-4 py-3 rounded-xl border border-gray-300 resize-none"
             ></textarea>
@@ -373,12 +370,15 @@
           <button
   type="button"
   (click)="assignerAgent()"
-  [disabled]="!agentSelectionne()"
+  [disabled]="enregistrement()"
   class="w-full py-3 bg-gray-800 text-white rounded-xl font-medium
          disabled:opacity-50 disabled:cursor-not-allowed"
 >
-  Valider l'intervention
+  {{ enregistrement() ? 'Enregistrement…' : "Valider l'intervention" }}
 </button>
+@if (message(); as m) {
+  <p class="text-sm" [class.text-green-700]="m.ok" [class.text-red-700]="!m.ok">{{ m.texte }}</p>
+}
 
         </div>
 

@@ -146,11 +146,25 @@ export class Auth {
     this.tokenStorage.enregistrerAccessToken(token);
   }
 
-  // Déconnexion
+  // Page d'accueil de chaque rôle après connexion
+  accueilDuRole(role?: Utilisateur['role']): string {
+    switch (role) {
+      case 'admin':
+        return '/dashboard';
+      case 'agent':
+        return '/agent';
+      default:
+        return '/mobile';
+    }
+  }
+
+  // Déconnexion : retour à la page de connexion du parcours de l'utilisateur
   deconnecter(): void {
+    const role = this.utilisateurConnecte()?.role;
+
     this.tokenStorage.supprimerTokens();
     localStorage.removeItem('utilisateur');
     this.utilisateurConnecte.set(null);
-    this.router.navigate(['/dash/connexion']);
+    this.router.navigate([role === 'admin' ? '/dash/connexion' : '/connexion']);
   }
 }

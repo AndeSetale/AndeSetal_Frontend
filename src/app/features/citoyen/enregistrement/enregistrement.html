@@ -43,11 +43,23 @@
       </div>
       <div class="flex-1 min-w-0">
         <span class="text-[11px] uppercase tracking-wider font-semibold text-emerald-800 block mb-0.5">
-          Géolocalisé par GPS
+          {{ localisationEnCours ? 'Localisation en cours…' : gpsDisponible ? 'Géolocalisé par GPS' : 'GPS indisponible — précisez l’adresse' }}
         </span>
-        <p class="text-sm font-medium text-slate-800 truncate">
-          {{ locationAddress }}
-        </p>
+        <input
+          type="text"
+          [(ngModel)]="locationAddress"
+          placeholder="Rue, repère, quartier…"
+          class="w-full bg-transparent text-sm font-medium text-slate-800 focus:outline-none"
+        />
+        <div class="mt-1 flex items-center justify-between gap-2">
+          <span class="text-[11px] text-slate-500">
+            {{ coordonnees ? 'GPS : ' + coordonnees : 'Aucune coordonnée GPS' }}
+          </span>
+          <button type="button" (click)="localiser()" [disabled]="localisationEnCours"
+            class="text-[11px] font-semibold text-emerald-800 disabled:opacity-50">
+            Relocaliser
+          </button>
+        </div>
       </div>
     </div>
 
@@ -74,6 +86,10 @@
       </svg>
       <span>Votre signalement sera automatiquement transmis aux services techniques de la Mairie de Dakar Plateau.</span>
     </div>
+
+    @if (erreur) {
+      <p class="rounded-xl bg-red-50 p-3 text-sm text-red-700">{{ erreur }}</p>
+    }
 
     <!-- Bouton Soumettre -->
     <div class="mt-auto pt-4">

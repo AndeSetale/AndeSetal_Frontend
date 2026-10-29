@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import {
@@ -8,7 +8,6 @@ import {
   LucideUsersRound,
   LucideInbox,
   LucideSend,
-  LucideDownload,
   LucideImage,
   LucideEye,
   LucideArchive,
@@ -16,6 +15,7 @@ import {
 } from '@lucide/angular';
 
 import { RapportService } from '../../../core/services/rapport';
+import { Rapport } from '../../../core/models/rapport';
 import { HeaderAgent } from '../components/header-agent/header-agent';
 
 @Component({
@@ -28,7 +28,6 @@ import { HeaderAgent } from '../components/header-agent/header-agent';
     LucideUsersRound,
     LucideInbox,
     LucideSend,
-    LucideDownload,
     LucideImage,
     LucideEye,
     LucideArchive,
@@ -44,102 +43,69 @@ export class HistoriqueRapport {
   private readonly router = inject(Router);
 
   /**
-   * ID du rapport récupéré depuis l'URL.
+   * Rapport de l'intervention /agent/historique/:id (id = intervention)
    */
-  readonly rapportId = computed(() =>
-    this.route.snapshot.paramMap.get('id')
-  );
+  readonly rapport = signal<Rapport | null>(null);
 
-  /**
-   * Rapport actuellement affiché.
-   */
-  readonly rapport = computed(() => {
-    const id = this.rapportId();
+  readonly chargement = signal(true);
 
-    return this.rapportService.getById(id ?? '');
-  });
-
-  /**
-   * Nombre d'événements du rapport.
-   */
   readonly nombreEvenements = computed(() =>
     this.rapport()?.evenements.length ?? 0
   );
 
-  /**
-   * Retour à la page précédente.
-   */
+  constructor() {
+    const id = this.route.snapshot.paramMap.get('id');
+
+    if (!id) {
+      this.chargement.set(false);
+      return;
+    }
+
+    this.rapportService.getByInterventionId(id).subscribe({
+      next: rapport => {
+        this.rapport.set(rapport);
+        this.chargement.set(false);
+      },
+      error: () => this.chargement.set(false),
+    });
+  }
+
   retour(): void {
     this.router.navigate(['/agent/interventions']);
   }
 
-  /**
-   * Archive le rapport.
-   *
-   * Pour le moment :
-   * action temporaire en attendant le backend.
-   *
-   * TODO BACKEND :
-   * Remplacer cette logique par l'appel au service/API
-   * permettant d'archiver réellement le rapport.
-   */
+  /** Le rapport est déjà archivé côté serveur : retour à la liste */
   archiver(): void {
-    console.log('Archivage du rapport', this.rapport());
+    this.retour();
   }
 
-  /**
-   * Partage le rapport.
-   *
-   * Pour le moment :
-   * action temporaire en attendant le backend.
-   *
-   * TODO BACKEND :
-   * Remplacer cette logique par la logique de partage
-   * lorsque le backend sera branché.
-   */
   partager(): void {
-    console.log('Partage du rapport', this.rapport());
+    this.partagerRapport();
   }
 
-  /**
-   * Téléchargement du PDF.
-   *
-   * Pour le moment :
-   * action temporaire en attendant le backend.
-   *
-   * TODO BACKEND :
-   * Remplacer cette logique par la récupération/téléchargement
-   * réel du fichier PDF depuis le backend.
-   */
-  telechargerPdf(): void {
-    console.log('Téléchargement du PDF', this.rapport());
-  }
-
-  /**
-   * Affichage des photos.
-   *
-   * Pour le moment :
-   * action temporaire en attendant le backend.
-   *
-   * TODO BACKEND :
-   * Remplacer cette logique par la récupération des photos
-   * depuis le backend / stockage distant.
-   */
+  /** Ouvre les photos avant / après dans un nouvel onglet */
   voirPhotos(): void {
-    console.log('Affichage des photos', this.rapport());
+    this.rapport()?.photos.forEach(url => window.open(url, '_blank'));
   }
 
-  /**
-   * Partage du rapport depuis le header.
-   *
-   * Pour le moment :
-   * action temporaire en attendant le backend.
-   *
-   * TODO BACKEND :
-   * Brancher cette action sur la vraie fonctionnalité
-   * de partage lorsque le backend sera disponible.
-   */
-  partagerRapport(): void {
-    console.log('Partage du rapport');
+  /** Partage natif du téléphone, sinon copie du numéro de suivi */
+  async partagerRapport(): Promise<void> {
+    const rapport = this.rapport();
+
+    if (!rapport) {
+      return;
+    }
+
+    const texte = `Rapport ${rapport.numeroSuivi} — ${rapport.titre}, ${rapport.adresse}`;
+
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: 'Rapport d’intervention', text: texte });
+      } else {
+        await navigator.clipboard.writeText(texte);
+      }
+    } catch {
+      // Partage annulé par l'utilisateur
+    }
   }
 }

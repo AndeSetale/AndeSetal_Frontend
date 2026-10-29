@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, AfterViewInit, ElementRef, ViewChild, effect, input } from '@angular/core';
 import {
   Chart,
   LineController,
@@ -30,70 +30,59 @@ Chart.register(
 })
 export class GraphiqueIncidents implements AfterViewInit {
 
+  /** Série jour par jour fournie par /dashboard/stats/ (evolution_30_jours) */
+  readonly points = input<{ date: string; nouveaux: number; resolus: number }[]>([]);
+
   @ViewChild('incidentsChart')
   chartRef!: ElementRef<HTMLCanvasElement>;
 
-  ngAfterViewInit(): void {
-    this.createChart();
+  private chart?: Chart;
+
+  constructor() {
+    effect(() => {
+      const points = this.points();
+      if (this.chartRef) {
+        this.createChart(points);
+      }
+    });
   }
 
-  private createChart(): void {
+  ngAfterViewInit(): void {
+    this.createChart(this.points());
+  }
+
+  private createChart(points: { date: string; nouveaux: number; resolus: number }[]): void {
+    this.chart?.destroy();
+
     const canvas = this.chartRef.nativeElement;
 
-    new Chart(canvas, {
+    this.chart = new Chart(canvas, {
       type: 'line',
-
       data: {
-        labels: [
-          '01', '03', '05', '07',
-          '09', '11', '13', '15',
-          '17', '19', '21', '23',
-          '25', '27', '29', '30'
-        ],
-
+        labels: points.map(p => p.date.slice(8, 10)),
         datasets: [
           {
             label: 'Nouveaux',
-
-            data: [
-              10, 8, 12, 7,
-              11, 9, 13, 10,
-              14, 11, 15, 12,
-              13, 10, 14, 12
-            ],
-
+            data: points.map(p => p.nouveaux),
             borderColor: '#00A878',
             backgroundColor: 'transparent',
-
             borderWidth: 2,
             pointRadius: 0,
             pointHoverRadius: 4,
-
             tension: 0.35
           },
-
           {
             label: 'Résolus',
-
-            data: [
-              6, 7, 5, 8,
-              7, 9, 6, 10,
-              8, 11, 9, 12,
-              10, 13, 11, 9
-            ],
-
+            data: points.map(p => p.resolus),
             borderColor: '#2563EB',
             backgroundColor: 'transparent',
-
             borderWidth: 2,
             pointRadius: 0,
             pointHoverRadius: 4,
-
             tension: 0.35
           }
         ]
       },
-
       options: {
         responsive: true,
         maintainAspectRatio: false,

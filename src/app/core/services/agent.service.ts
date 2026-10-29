@@ -4,6 +4,9 @@ import { Api } from './api';
 
 export interface Agent {
   id: number;
+  /** Id du compte utilisateur : c'est cette valeur qu'attend incident.assigne_a */
+  utilisateur_id: number;
+  photo_profil: string | null;
   matricule: string;
   nom_complet: string;
   email: string;
@@ -17,6 +20,29 @@ export interface Agent {
   ponctualite: number;
   taches_resolues_semaine: number;
   objectif_hebdo: number;
+  // Indicateurs calculés par le backend à partir des interventions réelles
+  interventions_total: number;
+  interventions_terminees: number;
+  interventions_en_cours: number;
+  interventions_en_attente: number;
+  temps_moyen_heures: number;
+}
+
+/** Fiche agent détaillée (GET /agents/:id/ et /agents/me/) */
+export interface AgentDetail extends Agent {
+  activite_semaine: { jour: string; assignes: number; resolus: number }[];
+  repartition_types: { type: string; label: string; total: number }[];
+  activites_recentes: {
+    intervention_id: number;
+    numero_suivi: string;
+    incident_id: number;
+    reference: string;
+    type: string;
+    quartier: string;
+    date: string | null;
+    statut: string;
+    statut_display: string;
+  }[];
 }
 
 // ==========================================================
@@ -105,13 +131,22 @@ export class AgentService {
   private readonly endpoint = '/agents/';
 
   getAgents(): Observable<Agent[]> {
-  return this.api.get<AgentsResponse>(this.endpoint).pipe(
-    map(response => response.results)
+  return this.api.get<AgentsResponse | Agent[]>(this.endpoint).pipe(
+    map(response => (Array.isArray(response) ? response : response.results))
   );
 }
 
-  getAgent(id: number): Observable<Agent> {
-    return this.api.get<Agent>(`${this.endpoint}${id}/`);
+  getAgent(id: number): Observable<AgentDetail> {
+    return this.api.get<AgentDetail>(`${this.endpoint}${id}/`);
+  }
+
+  /** Profil + indicateurs de l'agent connecté */
+  getMonProfil(): Observable<AgentDetail> {
+    return this.api.get<AgentDetail>(`${this.endpoint}me/`);
+  }
+
+  changerDisponibilite(disponible: boolean): Observable<AgentDetail> {
+    return this.api.patch<AgentDetail>(`${this.endpoint}me/`, { disponible });
   }
   
   // ============================================================

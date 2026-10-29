@@ -31,6 +31,8 @@ import { RapportEnvoye } from './features/agent/rapport-envoye/rapport-envoye';
 import { Profil } from './features/agent/profil/profil';
 import { guestGuard } from './core/guards/guestGuard';
 import { authDashGuard } from './core/guards/auth_dash.guard';
+import { authGuard } from './core/guards/auth-guard';
+import { roleGuard } from './core/guards/role.guard';
 import { AccueilParent } from './features/citoyen/acceuil-parent/accueil-parent';
 
 
@@ -167,12 +169,14 @@ export const routes: Routes = [
       // routes concernant le profil du citoyen  et le signalement
       {
         path: 'signalements',
+        canActivate: [authGuard],
         loadComponent: () =>
           import('./features/citoyen/signalements/historique/historique')
             .then(m=> m.Historique)
       },
       {
         path: 'signalements/:id',
+        canActivate: [authGuard],
         loadComponent: () =>
           import('./features/citoyen/signalements/detail/detail')
             .then(m => m.DetailSignalement) 
@@ -180,6 +184,7 @@ export const routes: Routes = [
 
       {
         path: 'profil',
+        canActivate: [authGuard],
         loadComponent: () =>
           import('./features/citoyen/profil/profil')
             .then(m => m.ProfilCitoyen)
@@ -204,6 +209,7 @@ export const routes: Routes = [
 {
   path: 'agent',
   component: Agent,
+  canActivate: [roleGuard('agent')],
   children: [
 
     {

@@ -68,7 +68,7 @@
 
         <input
           type="password"
-          placeholder="************"
+          placeholder="8 caractères min., lettres et chiffres"
           name="password"
   [(ngModel)]="form.password"
           class="w-full h-11 px-4 rounded-[10px] border border-gray-300
@@ -126,6 +126,8 @@
         </label>
 
         <select
+          name="departement"
+          [(ngModel)]="form.departement"
           class="w-full h-11 px-4 rounded-[10px] border border-gray-300
                  bg-white text-sm text-gray-500 outline-none
                  focus:border-teal-700"
@@ -138,22 +140,14 @@
         </select>
       </div>
 
-      <!-- Rôle -->
-      <div>
-        <label class="block mb-2 text-sm font-semibold text-gray-700">
-          Sélection du rôle
-        </label>
-
-        <select
-          class="w-full h-11 px-4 rounded-[10px] border border-gray-300
-                 bg-white text-sm text-gray-500 outline-none
-                 focus:border-teal-700"
-        >
-          <option value="">Sélectionner le rôle</option>
-          <option value="agent">Agent</option>
-          <option value="admin">Administrateur</option>
-        </select>
+      @if (error) {
+      <div class="rounded-[10px] bg-red-50 px-4 py-3 text-sm text-red-700">
+        @for (ligne of error.split('
+'); track $index) {
+        <p>{{ ligne }}</p>
+        }
       </div>
+      }
 
       <!-- Actions -->
       <div class="flex gap-3 pt-2">
@@ -168,10 +162,12 @@
 
         <button
           type="submit"
+          [disabled]="loading"
           class="flex-1 h-11 rounded-[10px] bg-gray-800
-                 text-white text-sm font-semibold hover:bg-gray-700"
+                 text-white text-sm font-semibold hover:bg-gray-700
+                 disabled:opacity-60 disabled:cursor-not-allowed"
         >
-          Inscrire
+          {{ loading ? 'Création…' : 'Inscrire' }}
         </button>
       </div>
 

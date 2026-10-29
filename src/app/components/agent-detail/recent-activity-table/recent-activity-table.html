@@ -46,7 +46,7 @@
 
       <!-- Body -->
       <tbody>
-  @for (activity of activities; track activity.id) {
+  @for (activity of activities(); track activity.id) {
     <tr class="border-b border-gray-200">
 
       <td class="px-6 py-5 text-base font-semibold text-gray-900">
@@ -68,9 +68,9 @@
       <td class="px-6 py-5">
         <span
           class="px-3 py-1 rounded-full text-xs font-semibold"
-          [class.bg-green-100]="activity.statut === 'Validé'"
-          [class.text-green-700]="activity.statut === 'Validé'"
-          [class.border-green-200]="activity.statut === 'Validé'"
+          [class.bg-green-100]="activity.statut === 'En cours'"
+          [class.text-green-700]="activity.statut === 'En cours'"
+          [class.border-green-200]="activity.statut === 'En cours'"
           [class.bg-blue-100]="activity.statut === 'Résolu'"
           [class.text-blue-700]="activity.statut === 'Résolu'"
           [class.border-blue-200]="activity.statut === 'Résolu'"
@@ -85,12 +85,18 @@
 
       <td class="px-6 py-5 text-right">
         <button
+          type="button"
+          (click)="voirIncident(activity)"
           class="px-3 py-1.5 rounded-[10px] text-sm font-semibold text-gray-800 hover:bg-gray-100"
         >
-          Voir la preuve
+          Voir l'incident
         </button>
       </td>
 
+    </tr>
+  } @empty {
+    <tr>
+      <td colspan="6" class="px-6 py-8 text-center text-sm text-gray-500">Aucune intervention pour cet agent.</td>
     </tr>
   }
 </tbody>

@@ -44,13 +44,13 @@
     <app-repartition-incidents
   title="Spécialisation"
   subtitle="Types d'incidents traités"
-  [totalIncidents]="127"
-  [incidentTypes]="specialisationTypes"
+  [totalIncidents]="agent()!.interventions_total"
+  [incidentTypes]="specialisationTypes()"
 />
   </div>
   </div>
 <div class="mt-6">
-<app-recent-activity-table/>
+<app-recent-activity-table [recentes]="agent()!.activites_recentes" />
 </div>
   
 </div>

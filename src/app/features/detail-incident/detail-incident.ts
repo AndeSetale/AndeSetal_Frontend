@@ -31,7 +31,23 @@ export class DetailIncident {
   private agentService = inject(AgentService);
 
   agents = signal<Agent[]>([]);
+  /** Id du compte utilisateur de l'agent (attendu par incident.assigne_a) */
   agentSelectionne = signal<number | null>(null);
+
+  urgence = signal<Incident['urgence']>('ROUTINE');
+
+  notes = signal('');
+
+  enregistrement = signal(false);
+
+  message = signal<{ ok: boolean; texte: string } | null>(null);
+
+  readonly niveaux: { valeur: Incident['urgence']; libelle: string; actif: string }[] = [
+    { valeur: 'CRITIQUE', libelle: 'Critique', actif: 'bg-red-50 text-red-700 border-red-500' },
+    { valeur: 'ELEVE', libelle: 'Élevé', actif: 'bg-orange-50 text-orange-700 border-orange-500' },
+    { valeur: 'MODERE', libelle: 'Modéré', actif: 'bg-amber-50 text-amber-700 border-amber-500' },
+    { valeur: 'ROUTINE', libelle: 'Routine', actif: 'bg-green-50 text-green-700 border-green-600' },
+  ];
 
   incident = signal<Incident | null>(null);
 
@@ -58,24 +74,20 @@ export class DetailIncident {
 
     // Charger l'incident
     this.incidentService
-      .getIncidents()
-      .subscribe((incidents) => {
-
-        const trouve =
-          incidents.find(i => i.numericId === id) || null;
-
-        this.incident.set(trouve);
-
-        if (trouve) {
-          setTimeout(() => {
-            this.initMap(trouve);
-          });
-        }
+      .getIncidentById(id)
+      .subscribe((incident) => {
+        this.afficher(incident);
+        setTimeout(() => this.initMap(incident));
       });
   }
 
+  private afficher(incident: Incident): void {
+    this.incident.set(incident);
+    this.agentSelectionne.set(incident.assigne_a ?? null);
+    this.urgence.set(incident.urgence);
+    this.notes.set(incident.commentaire);
+  }
 
-  // Quand on sélectionne un agent
   selectionnerAgent(event: Event): void {
 
     const select = event.target as HTMLSelectElement;
@@ -89,46 +101,47 @@ export class DetailIncident {
 
 
   // Assigner l'agent à l'incident
+  /**
+   * Enregistre priorité, notes et assignation. L'assignation crée
+   * l'intervention dans l'application de l'agent.
+   */
   assignerAgent(): void {
-
     const incident = this.incident();
-    const agentId = this.agentSelectionne();
 
-    if (!incident || !agentId) {
+    if (!incident) {
       return;
     }
 
+    const agentId = this.agentSelectionne();
+    this.enregistrement.set(true);
+    this.message.set(null);
+
     this.incidentService
-      .assignerAgent(
-        incident.numericId,
-        agentId
-      )
+      .mettreAJour(incident.numericId, {
+        niveau_urgence: this.urgence(),
+        commentaire: this.notes(),
+        ...(agentId ? { assigne_a: agentId } : {}),
+      })
       .subscribe({
-        next: (response) => {
-
-          console.log(
-            'Agent assigné avec succès',
-            response
-          );
-
-          // Optionnel : recharger l'incident
-          this.incidentService
-            .getIncidentById(incident.numericId)
-            .subscribe((incidentMisAJour) => {
-              this.incident.set(incidentMisAJour);
-            });
-
+        next: (incidentMisAJour) => {
+          this.afficher(incidentMisAJour);
+          this.enregistrement.set(false);
+          this.message.set({
+            ok: true,
+            texte: agentId
+              ? `Intervention assignée à ${incidentMisAJour.assigneNom ?? "l'agent"}.`
+              : 'Modifications enregistrées.',
+          });
         },
-
         error: (error) => {
-          console.error(
-            'Erreur lors de l’assignation',
-            error
-          );
+          this.enregistrement.set(false);
+          this.message.set({
+            ok: false,
+            texte: error?.error?.assigne_a?.[0] ?? "L'enregistrement a échoué.",
+          });
         }
       });
   }
-
 
   private initMap(incident: Incident): void {
     

@@ -238,6 +238,7 @@
          BOTTOM SHEET
     ======================================================== -->
 
+    @if (selection()) {
     <footer
       class="absolute inset-x-0 bottom-0 z-40 w-full rounded-t-3xl bg-white/95 shadow-[0_-8px_30px_rgba(0,0,0,0.12)] backdrop-blur-lg"
     >
@@ -262,11 +263,15 @@
           <div
             class="size-16 shrink-0 overflow-hidden rounded-xl"
           >
+            @if (selection()!.image) {
             <img
-              src="https://placehold.co/64x64"
-              alt="Dépôt sauvage"
+              [src]="selection()!.image"
+              [alt]="selection()!.titre"
               class="size-full object-cover"
             />
+            } @else {
+            <div class="size-full bg-stone-200"></div>
+            }
           </div>
 
 
@@ -296,7 +301,7 @@
               <h3
                 class="truncate text-xs font-semibold leading-4 text-zinc-950"
               >
-                Dépôt sauvage
+                {{ selection()!.titre }}
               </h3>
 
             </div>
@@ -306,7 +311,7 @@
             <p
               class="truncate text-xs font-normal leading-4 text-zinc-500"
             >
-              Médina · il y a 2h
+              {{ selection()!.adresse }}{{ selection()!.distance ? ' · ' + selection()!.distance : '' }}
             </p>
 
 
@@ -320,7 +325,7 @@
               <span
                 class="text-xs font-medium leading-4 text-red-600"
               >
-                Critique
+                {{ libellePriorite() }}
               </span>
 
             </div>
@@ -333,6 +338,7 @@
           ================================================== -->
 
           <button
+            (click)="ouvrirSelection()"
             type="button"
             class="flex h-8 shrink-0 items-center gap-2 rounded-full bg-teal-950 px-3 py-2 shadow-[0_1px_2px_rgba(0,0,0,0.05)]"
           >
@@ -366,6 +372,7 @@
       </div>
 
     </footer>
+    }
 
   </section>
 

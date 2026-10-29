@@ -1,12 +1,22 @@
-import { Component } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
+import { Router } from '@angular/router';
+
+import { AgentDetail } from '../../../core/services/agent.service';
 
 interface Activity {
   id: string;
+  incidentId: number;
   type: string;
   quartier: string;
   date: string;
-  statut: 'Validé' | 'Résolu' | 'En attente';
+  statut: 'Résolu' | 'En cours' | 'En attente';
 }
+
+const STATUTS: Record<string, Activity['statut']> = {
+  TERMINEE: 'Résolu',
+  EN_COURS: 'En cours',
+  EN_ATTENTE: 'En attente',
+};
 
 @Component({
   selector: 'app-recent-activity-table',
@@ -16,48 +26,27 @@ interface Activity {
 })
 export class RecentActivityTable {
 
-  activities: Activity[] = [
-    {
-      id: '#4092',
-      type: 'Dépôt sauvage',
-      quartier: 'Médina',
-      date: '06 Mai 2026, 14:30',
-      statut: 'Validé',
-    },
-    {
-      id: '#4089',
-      type: 'Canal bouché',
-      quartier: 'Plateau',
-      date: '06 Mai 2026, 11:15',
-      statut: 'Validé',
-    },
-    {
-      id: '#4085',
-      type: 'Éclairage défectueux',
-      quartier: 'Médina',
-      date: '05 Mai 2026, 16:45',
-      statut: 'Résolu',
-    },
-    {
-      id: '#4082',
-      type: 'Canal bouché',
-      quartier: 'Fass',
-      date: '05 Mai 2026, 09:20',
-      statut: 'Validé',
-    },
-    {
-      id: '#4078',
-      type: 'Dépôt sauvage',
-      quartier: 'Médina',
-      date: '04 Mai 2026, 15:30',
-      statut: 'En attente',
-    },
-    {
-      id: '#4074',
-      type: 'Graffiti',
-      quartier: 'Point E',
-      date: '04 Mai 2026, 10:10',
-      statut: 'Validé',
-    },
-  ];
+  private readonly router = inject(Router);
+
+  /** Dernières interventions de l'agent (GET /agents/:id/ → activites_recentes) */
+  readonly recentes = input<AgentDetail['activites_recentes']>([]);
+
+  readonly activities = computed<Activity[]>(() =>
+    this.recentes().map(a => ({
+      id: a.reference,
+      incidentId: a.incident_id,
+      type: a.type,
+      quartier: a.quartier,
+      date: a.date
+        ? new Date(a.date).toLocaleString('fr-FR', {
+            day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit',
+          })
+        : '—',
+      statut: STATUTS[a.statut] ?? 'En attente',
+    }))
+  );
+
+  voirIncident(activity: Activity): void {
+    this.router.navigate(['/dashboard/map/incidents', activity.incidentId]);
+  }
 }

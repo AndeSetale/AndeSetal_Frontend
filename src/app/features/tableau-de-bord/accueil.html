@@ -35,7 +35,7 @@
 </div>
 <div class="grid grid-cols-1 xl:grid-cols-[65fr_35fr] gap-4 p-6">
 
-  <app-graphique-incidents />
+  <app-graphique-incidents [points]="stats()?.evolution_30_jours ?? []" />
 
   <app-repartition-incidents
   title="Répartition par type"
@@ -52,7 +52,7 @@
   </div>
 
   <div class="min-w-0">
-    <app-performance-agents />
+    <app-performance-agents [performances]="stats()?.performance_agents ?? []" />
   </div>
 
 </div>

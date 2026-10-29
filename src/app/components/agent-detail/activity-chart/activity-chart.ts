@@ -16,7 +16,7 @@ import {
   Legend,
 } from 'chart.js';
 
-import { Agent } from '../../../core/services/agent.service';
+import { AgentDetail } from '../../../core/services/agent.service';
 
 Chart.register(
   BarController,
@@ -36,7 +36,7 @@ Chart.register(
 })
 export class ActivityChart {
 
-  agent = input<Agent | null>(null);
+  agent = input<AgentDetail | null>(null);
 
   @ViewChild('activityChart')
   chartRef!: ElementRef<HTMLCanvasElement>;
@@ -55,7 +55,7 @@ export class ActivityChart {
     });
   }
 
-  private createChart(agent: Agent): void {
+  private createChart(agent: AgentDetail): void {
 
     // Évite de créer plusieurs graphiques
     this.chart?.destroy();
@@ -66,29 +66,13 @@ export class ActivityChart {
       type: 'bar',
 
       data: {
-        labels: [
-          'Lun',
-          'Mar',
-          'Mer',
-          'Jeu',
-          'Ven',
-          'Sam',
-          'Dim',
-        ],
+        labels: agent.activite_semaine.map(j => j.jour),
 
         datasets: [
           {
             label: 'Assignés',
 
-            data: [
-              8,
-              10,
-              7,
-              12,
-              9,
-              5,
-              3,
-            ],
+            data: agent.activite_semaine.map(j => j.assignes),
 
             backgroundColor: '#D1D5DB',
             borderRadius: 3,
@@ -99,15 +83,7 @@ export class ActivityChart {
           {
             label: 'Résolus',
 
-            data: [
-              agent.taches_resolues_semaine,
-              agent.taches_resolues_semaine,
-              agent.taches_resolues_semaine,
-              agent.taches_resolues_semaine,
-              agent.taches_resolues_semaine,
-              agent.taches_resolues_semaine,
-              agent.taches_resolues_semaine,
-            ],
+            data: agent.activite_semaine.map(j => j.resolus),
 
             backgroundColor: '#1F2937',
             borderRadius: 3,
@@ -154,7 +130,7 @@ export class ActivityChart {
             min: 0,
 
             ticks: {
-              stepSize: 3,
+              precision: 0,
               color: '#6B7280',
 
               font: {

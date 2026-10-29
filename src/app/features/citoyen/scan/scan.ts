@@ -77,7 +77,8 @@ export class ScanComponent implements OnInit, OnDestroy {
         this.stopCamera();
       }
     } else {
-      this.useDemoPhoto();
+      // Caméra indisponible : le citoyen choisit une photo dans sa galerie
+      this.triggerFileInput();
     }
   }
 
@@ -92,11 +93,6 @@ export class ScanComponent implements OnInit, OnDestroy {
       };
       reader.readAsDataURL(file);
     }
-  }
-
-  useDemoPhoto(): void {
-    this.capturedPhoto = 'https://images.unsplash.com/photo-1530587191325-3db32d826c18?q=80&w=800&auto=format&fit=crop';
-    this.stopCamera();
   }
 
   retakePhoto(): void {

@@ -12,6 +12,7 @@ import { Observable, map } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
 import { Api } from './api';
+import { urlMedia } from '../utils/media';
 import {
   Signalement,
   SignalementApi,
@@ -60,7 +61,7 @@ export class SignalementService {
    * Convertit un incident API (snake_case, UPPERCASE) en Signalement frontend.
    */
   private mapper(inc: SignalementApi): Signalement {
-    const premierePhoto = inc.preuves?.[0]?.url ?? undefined;
+    const premierePhoto = urlMedia(inc.preuves?.[0]?.url);
 
     return {
       id:           inc.id,

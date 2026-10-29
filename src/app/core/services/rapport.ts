@@ -1,109 +1,68 @@
-import { Injectable, computed, signal } from '@angular/core';
-import { Rapport } from '../models/rapport';
+import { Injectable, inject } from '@angular/core';
+import { Observable, map } from 'rxjs';
 
+import { Rapport, RapportEvenement } from '../models/rapport';
+import { Intervention } from '../models/intervention';
+import { InterventionService } from './intervention';
+
+/**
+ * Rapport de clôture d'une intervention, reconstruit à partir de
+ * GET /api/interventions/:id/ (dates de l'intervention + photos du rapport).
+ */
 @Injectable({
   providedIn: 'root',
 })
 export class RapportService {
 
-  /**
-   * Source locale des rapports.
-   *
-   * Pour le moment les données sont statiques.
-   * Plus tard, cette source sera remplacée par les données
-   * provenant du backend via HttpClient.
-   */
-  private readonly rapportsSignal = signal<Rapport[]>([
-    {
-      id: 1,
-      interventionId: 1,
+  private readonly interventionService = inject(InterventionService);
 
-      titre: 'Réfection Chaussée',
-      adresse: 'Avenue Lamine Guèye, Dakar',
-
-      statut: 'resolu',
-
-      evenements: [
-        {
-          type: 'resolution',
-          titre: 'Résolution confirmée',
-          description: 'par Superviseur Martin',
-          heure: '14:32',
-        },
-        {
-          type: 'photo',
-          titre: 'Photos après-travaux',
-          description: '3 photos ajoutées',
-          heure: '13:15',
-        },
-        {
-          type: 'assignation',
-          titre: 'Équipe B assignée',
-          description: 'Intervention sur site',
-          heure: '10:48',
-        },
-        {
-          type: 'reception',
-          titre: 'Rapport reçu',
-          description: 'par Agent Municipal',
-          heure: '09:25',
-        },
-        {
-          type: 'soumission',
-          titre: 'Rapport soumis',
-          description: 'par Agent Municipal',
-          heure: '09:24',
-        },
-      ],
-
-      documents: [
-        {
-          type: 'pdf',
-          nom: 'Rapport PDF',
-          taille: '2.4 MB',
-        },
-        {
-          type: 'photos',
-          nom: 'Photos',
-          nombreFichiers: 5,
-        },
-      ],
-    },
-  ]);
-
-  /**
-   * Liste complète des rapports.
-   */
-  readonly rapports = this.rapportsSignal.asReadonly();
-
-  /**
-   * Rapports résolus.
-   */
-  readonly rapportsResolus = computed(() =>
-    this.rapportsSignal().filter(
-      rapport => rapport.statut === 'resolu'
-    )
-  );
-
-  /**
-   * Recherche un rapport par son ID.
-   */
-  getById(id: number | string): Rapport | undefined {
-    return this.rapportsSignal().find(
-      rapport => String(rapport.id) === String(id)
+  getByInterventionId(interventionId: number | string): Observable<Rapport> {
+    return this.interventionService.getById(interventionId).pipe(
+      map(intervention => this.construire(intervention)),
     );
   }
 
-  /**
-   * Recherche un rapport à partir de l'ID
-   * de l'intervention correspondante.
-   */
-  getByInterventionId(
-    interventionId: number | string
-  ): Rapport | undefined {
-    return this.rapportsSignal().find(
-      rapport =>
-        String(rapport.interventionId) === String(interventionId)
-    );
+  private construire(intervention: Intervention): Rapport {
+    const photos = [intervention.photoAvant, intervention.photoApres]
+      .filter((url): url is string => !!url);
+
+    // Chronologie, de l'événement le plus récent au plus ancien
+    const evenements: (RapportEvenement & { date: string })[] = [];
+    const ajouter = (type: RapportEvenement['type'], titre: string, description: string, date?: string) => {
+      if (date) {
+        evenements.push({ type, titre, description, heure: formaterHeure(date), date });
+      }
+    };
+
+    ajouter('resolution', 'Intervention terminée', 'Incident marqué comme résolu', intervention.dateFin);
+    ajouter('photo', 'Photos avant / après', `${photos.length} photo(s) ajoutée(s)`, intervention.dateRapport);
+    ajouter('soumission', 'Rapport soumis', `Suivi ${intervention.numeroSuivi}`, intervention.dateRapport);
+    ajouter('assignation', 'Intervention démarrée', 'Arrivée sur site confirmée', intervention.dateDebut);
+    ajouter('assignation', 'Intervention assignée', 'Par le superviseur', intervention.dateAssignation);
+    ajouter('reception', 'Signalement reçu', `Référence ${intervention.reference}`, intervention.dateCreation);
+
+    evenements.sort((a, b) => b.date.localeCompare(a.date));
+
+    return {
+      id: intervention.id,
+      interventionId: intervention.id,
+      numeroSuivi: intervention.numeroSuivi,
+      titre: intervention.titre,
+      adresse: intervention.adresse,
+      statut: intervention.statut === 'terminee' ? 'resolu' : 'soumis',
+      dateEnvoi: intervention.dateRapport,
+      photos,
+      evenements: evenements.map(({ date, ...evenement }) => evenement),
+      documents: photos.length
+        ? [{ type: 'photos', nom: 'Photos avant / après', nombreFichiers: photos.length }]
+        : [],
+    };
   }
+}
+
+function formaterHeure(date: string): string {
+  const d = new Date(date);
+  const aujourdHui = new Date().toDateString() === d.toDateString();
+  const heure = d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+  return aujourdHui ? heure : `${d.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' })} ${heure}`;
 }

@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { BreadcrumbAgent } from '../../components/agent-detail/breadcrumb-agent/breadcrumb-agent';
@@ -9,7 +9,8 @@ import { RepartitionIncidents } from '../../components/repartition-incidents/rep
 import { ActivityChart } from '../../components/agent-detail/activity-chart/activity-chart';
 import { RecentActivityTable } from '../../components/agent-detail/recent-activity-table/recent-activity-table';
 
-import { AgentService, Agent } from '../../core/services/agent.service';
+import { AgentService, AgentDetail as FicheAgent } from '../../core/services/agent.service';
+import { COULEURS_TYPE } from '../../core/utils/libelles';
 
 @Component({
   selector: 'app-agent-detail',
@@ -29,34 +30,27 @@ export class AgentDetail {
   private readonly route = inject(ActivatedRoute);
   private readonly agentService = inject(AgentService);
 
-  agent = signal<Agent | null>(null);
+  agent = signal<FicheAgent | null>(null);
 
   loading = signal(false);
 
   error = signal<string | null>(null);
 
-  readonly specialisationTypes = [
-    {
-      label: 'Canal bouché',
-      value: 60,
-      color: '#1F2937',
-    },
-    {
-      label: 'Dépôt sauvage',
-      value: 25,
-      color: '#F97316',
-    },
-    {
-      label: 'Graffiti',
-      value: 10,
-      color: '#9CA3AF',
-    },
-    {
-      label: 'Éclairage',
-      value: 5,
-      color: '#EAB308',
-    },
-  ];
+  /** Part (%) de chaque type d'incident dans les interventions de l'agent */
+  readonly specialisationTypes = computed(() => {
+    const agent = this.agent();
+    const total = agent?.interventions_total ?? 0;
+
+    if (!agent || total === 0) {
+      return [];
+    }
+
+    return agent.repartition_types.map(t => ({
+      label: t.label,
+      value: Math.round((t.total / total) * 100),
+      color: COULEURS_TYPE[t.type] ?? '#9CA3AF',
+    }));
+  });
 
   constructor() {
     this.chargerAgent();
@@ -77,7 +71,6 @@ export class AgentDetail {
 
       next: (agent) => {
 
-        console.log('Agent récupéré :', agent);
 
         this.agent.set(agent);
 

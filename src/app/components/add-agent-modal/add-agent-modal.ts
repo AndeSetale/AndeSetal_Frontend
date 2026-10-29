@@ -50,15 +50,38 @@ export class AddAgentModal {
       },
 
       error: (error) => {
-        console.error('Erreur création agent :', error);
-
         this.loading = false;
 
-        this.error =
-          error?.error?.detail ||
-          'Impossible de créer l’agent.';
+        this.error = this.messageErreur(error?.error);
       }
 
     });
+  }
+
+  /**
+   * Transforme les erreurs de validation DRF ({ champ: [messages] })
+   * en texte lisible, ex. « Mot de passe : Ce mot de passe est trop courant. »
+   */
+  private messageErreur(corps: unknown): string {
+    if (!corps || typeof corps !== 'object') {
+      return 'Impossible de créer l’agent (serveur injoignable).';
+    }
+
+    const libelles: Record<string, string> = {
+      nom_complet: 'Nom complet',
+      email: 'Email',
+      password: 'Mot de passe',
+      telephone: 'Téléphone',
+      matricule: 'Matricule',
+      departement: 'Département',
+      specialisation: 'Spécialisation',
+    };
+
+    return Object.entries(corps as Record<string, string[] | string>)
+      .map(([champ, messages]) => {
+        const texte = Array.isArray(messages) ? messages.join(' ') : messages;
+        return libelles[champ] ? `${libelles[champ]} : ${texte}` : texte;
+      })
+      .join('\n');
   }
 }

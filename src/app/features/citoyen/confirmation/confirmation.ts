@@ -12,7 +12,7 @@ import { IncidentService } from '../../../core/services/incident.service';
   styleUrl: './confirmation.css',
 })
 export class ConfirmationComponent implements OnInit {
-  ticketId: string = '#AS-2024-047';
+  ticketId: string = '';
   copied: boolean = false;
   showAccountModal: boolean = false;
 
@@ -25,6 +25,9 @@ export class ConfirmationComponent implements OnInit {
     const realRef = this.incidentService.getLastTicketReference();
     if (realRef) {
       this.ticketId = realRef.startsWith('#') ? realRef : `#${realRef}`;
+    } else {
+      // Aucun signalement envoyé dans cette session : rien à confirmer
+      this.router.navigate(['/mobile']);
     }
   }
 

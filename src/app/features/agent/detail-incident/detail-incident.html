@@ -13,6 +13,12 @@
 
     <main class="mx-auto flex min-h-screen w-full flex-col bg-green-50">
 
+        @if (erreur()) {
+        <p class="px-4 pt-10 text-center text-sm text-red-700">{{ erreur() }}</p>
+        } @else if (!incident()) {
+        <p class="px-4 pt-10 text-center text-sm text-slate-500">Chargement de l'incident…</p>
+        } @else {
+
 
         <!-- ================================================== -->
         <!-- IMAGE DE L'INCIDENT -->
@@ -24,7 +30,7 @@
 
                 @if (imageIncident()) {
 
-                <img [src]="imageIncident()" [alt]="'Photo de l’incident : ' + incident().titre"
+                <img [src]="imageIncident()" [alt]="'Photo de l’incident : ' + incident()!.titre"
                     class="h-full w-full object-cover" />
 
                 } @else {
@@ -76,7 +82,7 @@
 
 
                 <h1 class="text-xl font-bold leading-6 text-teal-950">
-                    {{ incident().titre }}
+                    {{ incident()!.titre }}
                 </h1>
 
             </div>
@@ -160,7 +166,7 @@
 
 
                     <p class="text-sm leading-5 text-teal-950">
-                        {{ incident().adresse }}
+                        {{ incident()!.adresse }}
                     </p>
 
                 </div>
@@ -185,7 +191,7 @@
                 </div>
 
                 <p class="mt-1 text-xs leading-5 text-neutral-700">
-                    {{ incident().description }}
+                    {{ incident()!.description }}
                 </p>
 
             </div>
@@ -209,6 +215,8 @@
 
         </section>
 
+
+        }
 
     </main>
 

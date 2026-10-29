@@ -1,4 +1,4 @@
-import { Observable, of, delay,map } from 'rxjs';
+import { Observable, of, delay, map, expand, EMPTY, reduce } from 'rxjs';
 import { Injectable, inject } from '@angular/core';
 import { Api } from './api';
 import { environment } from '../../../environments/environment';
@@ -12,12 +12,16 @@ export interface DashboardStats {
   };
   incidents_par_statut: { statut: string; count: number }[];
   agents_disponibles: number;
+  repartition_par_type: { type: string; label: string; count: number }[];
+  evolution_30_jours: { date: string; nouveaux: number; resolus: number }[];
+  performance_agents: { id: number; nom_complet: string; resolus: number; taux_completion: number }[];
 }
 
 export interface Incident {
   id: string; // reference Django, ex "INC-4F2A9B10"
   numericId: number; // pk numérique, utile pour PATCH /incidents/<id>/
   type: string; // libellé du type (ex "Dépôt sauvage de déchets")
+  typeCode: string; // valeur backend (ex "DECHETS")
   titre: string; // alias de type, pour compat avec detail/popup
   quartier: string;
   adresse: string;
@@ -29,8 +33,19 @@ export interface Incident {
   statut: 'NOUVEAU' | 'EN_COURS' | 'RESOLU';
   description: string;
   assigne_a?: number | null;
+  assigneNom: string | null;
   signalePar: string; // "Anonyme" si non authentifié
   photoUrl: string | null; // URL de la première preuve, si dispo
+  commentaire: string;
+  confianceIA: number | null; // score IA en %
+  descriptionIA: string | null;
+}
+
+export interface MiseAJourIncident {
+  assigne_a?: number;
+  niveau_urgence?: Incident['urgence'];
+  statut?: Incident['statut'];
+  commentaire?: string;
 }
 
 interface IncidentApi {
@@ -45,8 +60,12 @@ interface IncidentApi {
   latitude: number;
   longitude: number;
   date_creation: string;
-  signale_par?: string | null;
+  signale_par?: number | null;
+  signale_par_details?: { nom_complet: string } | null;
   assigne_a?: number | null;
+  assigne_a_details?: { nom_complet: string } | null;
+  commentaire?: string | null;
+  analyse_ia?: { score_confiance: number; description_generee: string | null } | null;
   preuves?: {
     id: number;
     type: string;
@@ -56,7 +75,7 @@ interface IncidentApi {
 }[];
 }
 
-type ListeApi = IncidentApi[] | { results: IncidentApi[] };
+type ListeApi = IncidentApi[] | { results: IncidentApi[]; next: string | null };
 
 const LABELS_TYPE: Record<string, string> = {
   DECHETS: 'Dépôt sauvage de déchets',
@@ -74,10 +93,10 @@ export class IncidentService {
 
   // State pour le signalement en cours
   private draftPhotoUrl: string | null = null;
-  private draftAddress: string = 'Rue 10, Médina, Dakar';
-  private draftLat: number = 14.6937;
-  private draftLng: number = -17.4441;
-  private lastTicketReference: string = 'AS-2024-047';
+  private draftAddress: string = '';
+  private draftLat: number | null = null;
+  private draftLng: number | null = null;
+  private lastTicketReference: string = '';
 
   setLastTicketReference(ref: string) {
     this.lastTicketReference = ref;
@@ -97,7 +116,7 @@ export class IncidentService {
     return this.draftPhotoUrl;
   }
 
-  setDraftLocation(address: string, lat: number, lng: number) {
+  setDraftLocation(address: string, lat: number | null, lng: number | null) {
     this.draftAddress = address;
     this.draftLat = lat;
     this.draftLng = lng;
@@ -138,7 +157,7 @@ export class IncidentService {
   }
 
   // Détection GPS temps réel lors de la prise de photo
-  async fetchCurrentLocation(): Promise<{ address: string; lat: number; lng: number }> {
+  async fetchCurrentLocation(): Promise<{ address: string; lat: number | null; lng: number | null }> {
     return new Promise((resolve) => {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
@@ -151,16 +170,14 @@ export class IncidentService {
           },
           (err) => {
             console.warn('Accès GPS refusé ou indisponible:', err);
-            const fallbackAddress = 'Rue 10, Médina, Dakar Plateau';
-            this.setDraftLocation(fallbackAddress, 14.6937, -17.4441);
-            resolve({ address: fallbackAddress, lat: 14.6937, lng: -17.4441 });
+            this.setDraftLocation('', null, null);
+            resolve({ address: '', lat: null, lng: null });
           },
           { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
         );
       } else {
-        const fallbackAddress = 'Rue 10, Médina, Dakar Plateau';
-        this.setDraftLocation(fallbackAddress, 14.6937, -17.4441);
-        resolve({ address: fallbackAddress, lat: 14.6937, lng: -17.4441 });
+        this.setDraftLocation('', null, null);
+        resolve({ address: '', lat: null, lng: null });
       }
     });
   }
@@ -168,8 +185,16 @@ export class IncidentService {
 
 
   getIncidents(): Observable<Incident[]> {
+    // L'API est paginée (20 par page) : on enchaîne les pages tant qu'il y a un `next`
+    let page = 1;
     return this.api.get<ListeApi>('/incidents/').pipe(
+      expand((res) =>
+        !Array.isArray(res) && res.next
+          ? this.api.get<ListeApi>(`/incidents/?page=${++page}`)
+          : EMPTY,
+      ),
       map((res) => (Array.isArray(res) ? res : res.results)),
+      reduce((tous, liste) => tous.concat(liste), [] as IncidentApi[]),
       map((liste) => liste.map(this.mapToIncident)),
     );
   }
@@ -207,6 +232,7 @@ export class IncidentService {
       id: item.reference,
       numericId: item.id,
       type: libelle,
+      typeCode: item.type,
       titre: libelle,
       quartier: item.quartier ?? '—',
       adresse: item.adresse ?? '—',
@@ -217,17 +243,25 @@ export class IncidentService {
       urgence: item.niveau_urgence,
       statut: item.statut,
       description: item.description,
-      signalePar: item.signale_par ?? 'Anonyme', // ajuste selon ce que renvoie ton serializer
+      signalePar: item.signale_par_details?.nom_complet ?? 'Anonyme',
       photoUrl: item.preuves?.[0]?.url
   ? `${environment.mediaUrl}${item.preuves[0].url}`
   : null,// idem, à vérifier côté PreuveSerializer
       assigne_a: item.assigne_a ?? null,
+      assigneNom: item.assigne_a_details?.nom_complet ?? null,
+      commentaire: item.commentaire ?? '',
+      confianceIA: item.analyse_ia ? Math.round(item.analyse_ia.score_confiance * 100) : null,
+      descriptionIA: item.analyse_ia?.description_generee ?? null,
     };
   }
 
-  assignerAgent(incidentId: number, agentId: number) {
-    return this.api.patch(`/incidents/${incidentId}/`, {
-      assigne_a: agentId,
-    });
+  /**
+   * Mise à jour par l'admin. Renseigner `assigne_a` (id du compte utilisateur
+   * de l'agent) crée l'intervention côté backend et notifie l'agent.
+   */
+  mettreAJour(incidentId: number, payload: MiseAJourIncident): Observable<Incident> {
+    return this.api.patch<IncidentApi>(`/incidents/${incidentId}/`, payload).pipe(
+      map(item => this.mapToIncident(item)),
+    );
   }
 }

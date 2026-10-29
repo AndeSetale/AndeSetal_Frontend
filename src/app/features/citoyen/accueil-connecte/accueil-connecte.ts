@@ -9,6 +9,7 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { SignalementService } from '../../../core/services/signalement.service';
 import { ProfilService } from '../../../core/services/profil.service';
+import { EvenementService, EvenementSetSetal } from '../../../core/services/evenement.service';
 import { Signalement } from '../../../core/models/signalement';
 
 @Component({
@@ -22,6 +23,20 @@ export class AccueilConnecte implements OnInit {
   // ── Injection ────────────────────────────────────────────────────────────────
   private readonly signalementService = inject(SignalementService);
   private readonly profilService      = inject(ProfilService);
+  private readonly evenementService   = inject(EvenementService);
+
+  /** Prochain événement Set-Setal (null s'il n'y en a pas) */
+  readonly evenement = signal<EvenementSetSetal | null>(null);
+
+  readonly moisEvenement = computed(() => {
+    const e = this.evenement();
+    return e ? new Date(e.date).toLocaleDateString('fr-FR', { month: 'short' }).replace('.', '').toUpperCase() : '';
+  });
+
+  readonly jourEvenement = computed(() => {
+    const e = this.evenement();
+    return e ? new Date(e.date).getDate() : '';
+  });
 
   // ── Profil citoyen (nom pour la salutation, avatar) ──────────────────────────
   readonly profil = this.profilService.profil;
@@ -38,6 +53,7 @@ export class AccueilConnecte implements OnInit {
   ngOnInit(): void {
     // Charge le profil pour avoir le nom affiché dans la salutation
     this.profilService.charger().subscribe();
+    this.evenementService.prochain().subscribe(e => this.evenement.set(e));
     // Charge les signalements
     this.signalementService.charger().subscribe(data =>
       this._tousSignalements.set(data)

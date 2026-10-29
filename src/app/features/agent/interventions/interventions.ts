@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import { InterventionService } from '../../../core/services/intervention';
@@ -21,7 +21,7 @@ type FiltreIntervention =
   templateUrl: './interventions.html',
   styleUrl: './interventions.css',
 })
-export class Interventions {
+export class Interventions implements OnInit {
 
   /**
    * Service métier des interventions.
@@ -163,19 +163,30 @@ export class Interventions {
         return 'bg-neutral-200 text-neutral-700';
     }
   }
+  /** Identifiant de l'intervention en cours de démarrage (bouton désactivé) */
+  readonly enCours = signal<number | null>(null);
 
+  readonly chargement = signal(true);
 
-  /**
-   * Permet à l'agent de s'assigner une intervention.
-   *
-   * Le composant ne modifie pas directement la liste.
-   * Il demande au service de faire la modification.
-   */
-  assigner(intervention: Intervention): void {
+  readonly erreur = signal<string | null>(null);
 
-    this.interventionService.assignerIntervention(
-      intervention.id
-    );
+  ngOnInit(): void {
+    this.interventionService.charger().subscribe({
+      next: () => this.chargement.set(false),
+      error: () => {
+        this.erreur.set('Impossible de charger vos interventions.');
+        this.chargement.set(false);
+      },
+    });
+  }
+
+  /** Démarre l'intervention (statut EN_COURS côté backend) */
+  demarrer(intervention: Intervention): void {
+    this.enCours.set(intervention.id);
+    this.interventionService.demarrer(intervention.id).subscribe({
+      next: () => this.enCours.set(null),
+      error: () => this.enCours.set(null),
+    });
   }
 
 

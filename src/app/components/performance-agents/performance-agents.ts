@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 
 interface Agent {
   name: string;
@@ -15,26 +15,18 @@ interface Agent {
 })
 export class PerformanceAgents {
 
-  readonly agents = signal<Agent[]>([
-    {
-      name: 'Amadou Diallo',
-      resolved: 42,
-      percentage: 72,
-    },
-    {
-      name: 'Aissata Sow',
-      resolved: 38,
-      percentage: 66,
-    },
-    {
-      name: 'Abdoulaye Ndiaye',
-      resolved: 24,
-      percentage: 42,
-    },
-    {
-      name: 'Bassirou Dieye',
-      resolved: 56,
-      percentage: 100,
-    },
-  ]);
+  /** Classement fourni par /dashboard/stats/ (performance_agents) */
+  readonly performances = input<{ nom_complet: string; resolus: number }[]>([]);
+
+  /** Barre proportionnelle au meilleur agent */
+  readonly agents = computed<Agent[]>(() => {
+    const liste = this.performances();
+    const max = Math.max(1, ...liste.map(a => a.resolus));
+
+    return liste.map(a => ({
+      name: a.nom_complet,
+      resolved: a.resolus,
+      percentage: Math.round((a.resolus / max) * 100),
+    }));
+  });
 }
