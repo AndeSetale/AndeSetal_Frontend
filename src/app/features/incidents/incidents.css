@@ -1,0 +1,52 @@
+/* =========================
+   Scrollbar - panneau droit
+   ========================= */
+
+aside::-webkit-scrollbar {
+  width: 5px;
+}
+
+aside::-webkit-scrollbar-track {
+  background: #f8fafc;
+}
+
+aside::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 10px;
+}
+
+aside::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+aside {
+  scrollbar-width: thin;
+  scrollbar-color: #d1d5db #f8fafc;
+}
+
+
+/* =========================
+   Scrollbar - liste incidents
+   ========================= */
+
+.incident::-webkit-scrollbar {
+  width: 6px;
+}
+
+.incident::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.incident::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 999px;
+}
+
+.incident::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+.incident {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}

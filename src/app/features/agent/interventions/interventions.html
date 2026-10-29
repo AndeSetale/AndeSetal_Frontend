@@ -1,0 +1,348 @@
+<div class="relative flex min-h-screen w-full flex-col overflow-hidden rounded-[30px] bg-white">
+
+  <!-- ========================= -->
+  <!-- HEADER -->
+  <!-- ========================= -->
+
+  <header
+    class="relative flex h-20 shrink-0 items-center justify-center rounded-t-[30px]
+           border-b border-white/20 bg-white pt-3
+           shadow-[0_4px_4px_rgba(0,0,0,0.14)]"
+  >
+
+    <h1 class="text-base font-medium leading-6 tracking-tight text-teal-950">
+      Interventions
+    </h1>
+
+    <button
+      type="button"
+      routerLink="/agent"
+      class="absolute left-4 top-1/2 flex size-9 -translate-y-1/2
+             items-center justify-center rounded-full bg-teal-950/20
+             text-teal-950"
+      aria-label="Retour à l'accueil"
+    >
+      <svg
+        class="size-5"
+        viewBox="0 0 20 20"
+        fill="none"
+        aria-hidden="true"
+      >
+        <path
+          d="M10 4.17 4.17 10 10 15.83M4.17 10h11.66"
+          stroke="currentColor"
+          stroke-width="1.67"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    </button>
+
+  </header>
+
+
+  <!-- ========================= -->
+  <!-- CONTENU -->
+  <!-- ========================= -->
+
+  <main class="min-h-0 flex-1 overflow-y-auto">
+
+    <section class="flex flex-col gap-5 px-6 pb-8 pt-9">
+
+
+      <!-- ========================= -->
+      <!-- HERO -->
+      <!-- ========================= -->
+
+      <div
+        class="relative overflow-hidden rounded-xl bg-teal-950 p-6
+               shadow-lg"
+      >
+
+        <div class="relative z-10 flex flex-col gap-1">
+
+          <h2 class="text-2xl font-bold leading-8 text-white">
+            File d'Interventions
+          </h2>
+
+          <p class="text-base leading-6 text-white/90">
+            Gérez les priorités de Dakar Plateau en temps réel.
+          </p>
+
+        </div>
+
+        <!-- Décoration -->
+        <div
+          class="absolute -right-2 top-12 size-28 rounded-full
+                 bg-white/10 blur-2xl"
+        ></div>
+
+      </div>
+
+
+      <!-- ========================= -->
+      <!-- FILTRES -->
+      <!-- ========================= -->
+
+      <div
+        class="flex gap-2 overflow-x-auto pb-1 scrollbar-none"
+        aria-label="Filtres des interventions"
+      >
+
+        <!-- Tous -->
+        <button
+          type="button"
+          (click)="changerFiltre('tous')"
+          [attr.aria-pressed]="estFiltreActif('tous')"
+          class="flex shrink-0 items-center rounded-full px-4 py-2
+                 text-sm leading-5 transition-colors"
+          [class.bg-teal-950]="estFiltreActif('tous')"
+          [class.text-white]="estFiltreActif('tous')"
+          [class.bg-stone-200]="!estFiltreActif('tous')"
+          [class.text-neutral-700]="!estFiltreActif('tous')"
+        >
+          <span
+            class="mr-1.5"
+            aria-hidden="true"
+          >
+            ●
+          </span>
+
+          Tous les signalements
+        </button>
+
+
+        <!-- Urgences -->
+        <button
+          type="button"
+          (click)="changerFiltre('urgences')"
+          [attr.aria-pressed]="estFiltreActif('urgences')"
+          class="flex shrink-0 items-center rounded-full px-4 py-2
+                 text-sm leading-5 transition-colors"
+          [class.bg-teal-950]="estFiltreActif('urgences')"
+          [class.text-white]="estFiltreActif('urgences')"
+          [class.bg-stone-200]="!estFiltreActif('urgences')"
+          [class.text-neutral-700]="!estFiltreActif('urgences')"
+        >
+          <span
+            class="mr-1.5"
+            aria-hidden="true"
+          >
+            ●
+          </span>
+
+          Urgences
+        </button>
+
+
+        <!-- Proximité -->
+        <button
+          type="button"
+          (click)="changerFiltre('proximite')"
+          [attr.aria-pressed]="estFiltreActif('proximite')"
+          class="flex shrink-0 items-center rounded-full px-4 py-2
+                 text-sm leading-5 transition-colors"
+          [class.bg-teal-950]="estFiltreActif('proximite')"
+          [class.text-white]="estFiltreActif('proximite')"
+          [class.bg-stone-200]="!estFiltreActif('proximite')"
+          [class.text-neutral-700]="!estFiltreActif('proximite')"
+        >
+          <span
+            class="mr-1.5"
+            aria-hidden="true"
+          >
+            ●
+          </span>
+
+          Proximité
+        </button>
+
+      </div>
+
+
+      <!-- ========================= -->
+      <!-- LISTE DES INTERVENTIONS -->
+      <!-- ========================= -->
+
+      <div class="flex flex-col gap-4">
+
+        @for (intervention of interventionsFiltrees(); track intervention.id) {
+
+          <article
+            class="flex min-h-32 gap-4 rounded-xl bg-white p-4
+                   shadow-[0_2px_12px_rgba(0,0,0,0.08)]"
+          >
+
+            <!-- Image -->
+            <a [routerLink]="['/agent/interventions', intervention.id]" class="shrink-0">
+              @if (intervention.image) {
+                <img
+                  [src]="intervention.image"
+                  [alt]="intervention.titre"
+                  class="size-20 rounded-lg object-cover"
+                />
+              } @else {
+                <div class="flex size-20 items-center justify-center rounded-lg bg-stone-100 text-[10px] text-neutral-400">
+                  Pas de photo
+                </div>
+              }
+            </a>
+
+
+            <!-- Informations -->
+            <div class="flex min-w-0 flex-1 flex-col gap-1">
+
+              <div class="flex items-start justify-between gap-2">
+
+                <div class="min-w-0">
+
+                  <a [routerLink]="['/agent/interventions', intervention.id]">
+                    <h3
+                      class="truncate text-base font-bold leading-6 text-zinc-900"
+                    >
+                      {{ intervention.titre }}
+                    </h3>
+                  </a>
+
+                  <p class="text-[10px] font-medium uppercase tracking-wide text-teal-700">
+                    {{ intervention.categorie }}
+                  </p>
+
+                </div>
+
+
+                <!-- Priorité -->
+                <span
+                  class="shrink-0 rounded-full px-2 py-1
+                         text-[10px] font-bold uppercase leading-4 tracking-wide"
+                  [class]="classesPriorite(intervention.priorite)"
+                >
+                  {{ libellePriorite(intervention.priorite) }}
+                </span>
+
+              </div>
+
+
+              <!-- Localisation -->
+              <p class="pb-2 text-xs leading-5 text-neutral-500">
+
+                <span aria-hidden="true">📍</span>
+
+                {{ intervention.adresse }}
+
+                <span aria-hidden="true">•</span>
+
+                {{ intervention.distance }}
+
+              </p>
+
+
+              <!-- Action -->
+              @if (intervention.statut === 'assignee') {
+
+                <button
+                  type="button"
+                  (click)="demarrer(intervention)"
+                  [disabled]="enCours() === intervention.id"
+                  class="h-10 rounded-lg border border-emerald-900
+                         text-xs text-emerald-900
+                         transition hover:bg-emerald-50 disabled:opacity-50"
+                >
+                  Démarrer l'intervention
+                </button>
+
+              } @else if (intervention.statut === 'en_cours') {
+
+                <a
+                  [routerLink]="['/agent/interventions', intervention.id]"
+                  class="flex h-10 items-center justify-center rounded-lg
+                         bg-emerald-900 text-xs font-medium text-white"
+                >
+                  Envoyer le rapport
+                </a>
+
+              } @else {
+
+                <a
+                  [routerLink]="['/agent/historique', intervention.id]"
+                  class="flex h-10 items-center justify-center rounded-lg
+                         bg-neutral-100 text-xs text-neutral-600"
+                >
+                  Terminée — voir le rapport
+                </a>
+
+              }
+
+            </div>
+
+          </article>
+
+        } @empty {
+
+          <!-- ========================= -->
+          <!-- AUCUN RÉSULTAT -->
+          <!-- ========================= -->
+
+          <div
+            class="flex flex-col items-center justify-center
+                   rounded-xl bg-stone-50 px-6 py-10 text-center"
+          >
+
+            <div
+              class="mb-3 flex size-12 items-center justify-center
+                     rounded-full bg-teal-950/10 text-teal-950"
+            >
+              <svg
+                class="size-6"
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path
+                  d="M9 11h6M9 15h4"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                />
+
+                <path
+                  d="M7 3h7l4 4v14H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linejoin="round"
+                />
+
+                <path
+                  d="M14 3v5h5"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </div>
+
+            <h3 class="text-sm font-semibold text-teal-950">
+              Aucune intervention
+            </h3>
+
+            <p class="mt-1 text-xs leading-5 text-neutral-500">
+              @if (chargement()) {
+                Chargement…
+              } @else if (erreur()) {
+                {{ erreur() }}
+              } @else {
+                Aucune intervention ne correspond au filtre sélectionné.
+              }
+            </p>
+
+          </div>
+
+        }
+
+      </div>
+
+    </section>
+
+  </main>
+
+</div>

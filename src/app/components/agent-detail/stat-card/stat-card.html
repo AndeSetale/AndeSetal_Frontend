@@ -1,0 +1,60 @@
+<div
+  class="p-6 bg-white rounded-2xl border border-gray-200 flex flex-col gap-1"
+>
+  <!-- Icône + badge -->
+  <div class="flex items-center justify-between">
+    <div
+      class="size-12 rounded-[10px] flex items-center justify-center"
+      [ngClass]="iconBg()"
+    >
+      @if (icon() === 'check-circle') {
+        <svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" [ngClass]="iconColor()">
+          <circle cx="12" cy="12" r="9"/>
+          <path d="m9 12 2 2 4-4"/>
+        </svg>
+      }
+
+      @if (icon() === 'clock') {
+        <svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" [ngClass]="iconColor()">
+          <circle cx="12" cy="12" r="9"/>
+          <path d="M12 7v5l3 2"/>
+        </svg>
+      }
+
+      @if (icon() === 'target') {
+        <svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" [ngClass]="iconColor()">
+          <circle cx="12" cy="12" r="9"/>
+          <circle cx="12" cy="12" r="4"/>
+          <path d="M12 3v2M21 12h-2M12 19v2M5 12H3"/>
+        </svg>
+      }
+    </div>
+
+    @if (badge()) {
+      <span class="px-2 py-1 rounded-full text-xs font-bold" [ngClass]="badgeClass()">
+        {{ badge() }}
+      </span>
+    }
+  </div>
+
+  <!-- Titre -->
+  <div class="pt-2">
+    <span class="text-gray-600 text-sm font-semibold leading-5">
+      {{ title() }}
+    </span>
+  </div>
+
+  <!-- Valeur -->
+  <div>
+    <span class="text-3xl font-bold leading-9" [ngClass]="valueColor()">
+      {{ value() }}
+    </span>
+  </div>
+
+  <!-- Description -->
+  <div>
+    <span class="text-gray-500 text-xs leading-4">
+      {{ description() }}
+    </span>
+  </div>
+</div>

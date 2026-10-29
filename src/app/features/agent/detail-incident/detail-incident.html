@@ -1,0 +1,223 @@
+<div class="min-h-screen w-full bg-green-50 font-sans text-zinc-950">
+
+    <!-- ================================================== -->
+    <!-- HEADER -->
+    <!-- ================================================== -->
+
+    <app-header-agent titre="Incident" />
+
+
+    <!-- ================================================== -->
+    <!-- CONTENU MOBILE -->
+    <!-- ================================================== -->
+
+    <main class="mx-auto flex min-h-screen w-full flex-col bg-green-50">
+
+        @if (erreur()) {
+        <p class="px-4 pt-10 text-center text-sm text-red-700">{{ erreur() }}</p>
+        } @else if (!incident()) {
+        <p class="px-4 pt-10 text-center text-sm text-slate-500">Chargement de l'incident…</p>
+        } @else {
+
+
+        <!-- ================================================== -->
+        <!-- IMAGE DE L'INCIDENT -->
+        <!-- ================================================== -->
+
+        <section class="w-full px-4 pt-4">
+
+            <div class="relative h-52 w-full overflow-hidden rounded-[20px] bg-zinc-100 shadow-lg">
+
+                @if (imageIncident()) {
+
+                <img [src]="imageIncident()" [alt]="'Photo de l’incident : ' + incident()!.titre"
+                    class="h-full w-full object-cover" />
+
+                } @else {
+
+                <div class="flex h-full w-full items-center justify-center bg-zinc-100 text-sm text-zinc-400">
+                    Aucune image disponible
+                </div>
+
+                }
+
+
+                <!-- Badge IA -->
+                <div
+                    class="absolute right-3 top-3 flex items-center gap-1 rounded-full bg-white/90 px-3 py-1.5 text-xs font-bold text-slate-500 shadow-sm backdrop-blur-sm">
+
+                    <svg lucideSparkles class="size-4"></svg>
+
+
+                    <span>
+                        IA Analysé
+                    </span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================================================== -->
+        <!-- INFORMATIONS DE L'INCIDENT -->
+        <!-- ================================================== -->
+
+        <section class="mx-4 mt-6 rounded-[20px] border border-orange-200 bg-green-50 p-5">
+
+
+            <!-- ================================================== -->
+            <!-- TITRE -->
+            <!-- ================================================== -->
+
+            <div class="flex items-center gap-2">
+
+                <div class="flex size-9 shrink-0 items-center justify-center rounded-full bg-stone-100">
+
+                    <svg lucideTrash2 class="size-5 text-teal-950"></svg>
+
+
+                </div>
+
+
+                <h1 class="text-xl font-bold leading-6 text-teal-950">
+                    {{ incident()!.titre }}
+                </h1>
+
+            </div>
+
+
+            <!-- ================================================== -->
+            <!-- NIVEAU D'URGENCE -->
+            <!-- ================================================== -->
+
+            <div class="mt-4 flex items-center gap-2">
+
+                <span
+                    class="flex items-center gap-1 rounded-full bg-red-600 px-2.5 py-1 text-xs font-bold leading-4 text-green-50">
+
+                    <svg lucideFlame class="size-3"></svg>
+
+
+                    {{ prioriteLabel() }}
+
+                </span>
+
+
+                <span class="text-xs text-slate-500">
+                    Niveau d'urgence
+                </span>
+
+            </div>
+
+
+            <!-- ================================================== -->
+            <!-- SCORE IA -->
+            <!-- ================================================== -->
+
+            <div class="mt-4">
+
+                <div class="mb-1 flex items-center justify-between">
+
+                    <span class="text-xs font-medium text-teal-950">
+                        Score de confiance IA
+                    </span>
+
+
+                    <span class="text-xs font-bold text-slate-500">
+                        {{ confianceIA() }}%
+                    </span>
+
+                </div>
+
+
+                <!-- Barre de progression -->
+                <div class="h-2 w-full overflow-hidden rounded-full bg-stone-100">
+
+                    <div class="h-full rounded-full bg-gradient-to-r from-teal-950 to-slate-500"
+                        [style.width.%]="confianceIA()"></div>
+
+                </div>
+
+
+                <p class="mt-1 text-xs leading-6 text-slate-500">
+                    {{ confianceIA() }}% de confiance
+                </p>
+
+            </div>
+
+
+            <!-- ================================================== -->
+            <!-- GÉOLOCALISATION -->
+            <!-- ================================================== -->
+
+            <div class="mt-4 flex gap-2 border-b border-orange-200 pb-4">
+
+                <svg lucideMapPin class="mt-0.5 size-4 shrink-0 text-slate-500"></svg>
+
+
+
+                <div>
+
+                    <p class="text-xs leading-6 text-slate-500">
+                        Géolocalisation GPS
+                    </p>
+
+
+                    <p class="text-sm leading-5 text-teal-950">
+                        {{ incident()!.adresse }}
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================================================== -->
+            <!-- DESCRIPTION IA -->
+            <!-- ================================================== -->
+
+            <div class="mt-4 rounded-xl bg-white p-3">
+
+                <div class="flex items-center gap-1.5">
+
+                    <svg lucideSparkles class="size-4"></svg>
+
+                    <span class="text-xs font-bold leading-6 text-teal-950">
+                        Description IA
+                    </span>
+
+                </div>
+
+                <p class="mt-1 text-xs leading-5 text-neutral-700">
+                    {{ incident()!.description }}
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================================================== -->
+        <!-- BOUTON INTERVENIR -->
+        <!-- ================================================== -->
+
+
+        <section class="flex w-full justify-center px-4 py-6">
+
+            <button type="button" (click)="intervenir()"
+                class="flex h-12 w-64 items-center justify-center gap-2 rounded-xl bg-teal-950 text-base font-normal leading-6 text-white shadow-sm hover:bg-teal-900">
+
+                Intervenir
+
+            </button>
+
+        </section>
+
+
+        }
+
+    </main>
+
+</div>

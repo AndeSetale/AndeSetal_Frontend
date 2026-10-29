@@ -1,0 +1,58 @@
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 p-6">
+
+  <app-carte-kpi
+    title="Incidents critiques"
+    [value]="incidentsCritiques().toString()"
+    trend="Incidents urgents"
+    trendType="up"
+    icon="alert"
+  />
+
+  <app-carte-kpi
+    title="En cours"
+    [value]="incidentsEnCours().toString()"
+    trend="Interventions en cours"
+    trendType="neutral"
+    icon="clock"
+  />
+
+  <app-carte-kpi
+    title="Résolus"
+    [value]="incidentsResolus().toString()"
+    trend="Incidents traités"
+    trendType="up"
+    icon="check"
+  />
+
+  <app-carte-kpi
+    title="Total incidents"
+    [value]="totalIncidents().toString()"
+    trend="Tous les incidents"
+    trendType="neutral"
+    icon="timer"
+  />
+
+</div>
+<div class="grid grid-cols-1 xl:grid-cols-[65fr_35fr] gap-4 p-6">
+
+  <app-graphique-incidents [points]="stats()?.evolution_30_jours ?? []" />
+
+  <app-repartition-incidents
+  title="Répartition par type"
+  subtitle="Types d'incidents"
+  [totalIncidents]="totalIncidents()"
+  [incidentTypes]="incidentTypes()"
+/>
+
+</div>
+<div class="grid grid-cols-1 xl:grid-cols-[65fr_35fr] gap-4 p-6">
+
+  <div class="min-w-0">
+    <app-incidents-recents />
+  </div>
+
+  <div class="min-w-0">
+    <app-performance-agents [performances]="stats()?.performance_agents ?? []" />
+  </div>
+
+</div>

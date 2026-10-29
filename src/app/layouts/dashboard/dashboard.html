@@ -1,0 +1,19 @@
+<div class="min-h-screen flex bg-gray-50">
+
+  <!-- Sidebar -->
+  <app-sidebar class="fixed" />
+
+  <!-- Zone dashboard -->
+  <div class="flex-1 min-w-0 ml-52 ">
+
+    <!-- Header -->
+    <app-header-dashboard />
+
+    <!-- Contenu -->
+    <main  class="min-w-0">
+      <router-outlet />
+    </main>
+
+  </div>
+
+</div>

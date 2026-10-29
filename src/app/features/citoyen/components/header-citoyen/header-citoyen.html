@@ -1,0 +1,55 @@
+@if (currentRoute === '/mobile') {
+
+  <!-- Header Accueil -->
+  <header
+    class="w-full h-16 px-4
+           bg-white/20
+           backdrop-blur-[6px]
+           flex justify-between items-center"
+  >
+    <a routerLink="/">
+      <img
+        src="/logo/logo-and-setal.png"
+        alt="And Setal"
+        class="w-24 h-6 object-contain"
+      />
+    </a>
+
+    <a
+      routerLink="/connexion"
+      class="px-4 py-1.5 rounded-[20px]
+             border border-white/60
+             text-white text-xs font-medium"
+    >
+      Se connecter
+    </a>
+  </header>
+
+}
+
+@else if (currentRoute.startsWith('/carte')) {
+
+  <!-- Aucun Header -->
+
+}
+
+@else if (currentRoute.startsWith('/interventions/creation')) {
+
+  <!-- Header Caméra -->
+  <header
+    class="w-full h-20 pt-3 relative
+           bg-white/20
+           border-b border-white/20
+           backdrop-blur-[10px]
+           flex items-center"
+  >
+    <button
+      type="button"
+      class="size-9 ml-4 bg-white/20 rounded-2xl
+             flex items-center justify-center"
+    >
+      ←
+    </button>
+  </header>
+
+}

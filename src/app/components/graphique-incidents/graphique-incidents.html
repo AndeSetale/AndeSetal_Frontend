@@ -1,0 +1,58 @@
+<div
+  class="bg-white border border-gray-200 rounded-2xl p-4
+         shadow-sm hover:shadow-md transition-shadow duration-200"
+>
+
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+
+    <p class="text-sm font-normal text-teal-950">
+      Évolution des incidents — 30 derniers jours
+    </p>
+
+    <button
+      type="button"
+      class="w-8 h-8 flex items-center justify-center
+             rounded-lg text-gray-500 hover:bg-gray-100"
+    >
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 16 16"
+        fill="none"
+      >
+        <circle cx="8" cy="3" r="0.8" fill="currentColor" />
+        <circle cx="8" cy="8" r="0.8" fill="currentColor" />
+        <circle cx="8" cy="13" r="0.8" fill="currentColor" />
+      </svg>
+    </button>
+
+  </div>
+
+  <!-- Chart -->
+  <div class="h-52 mt-2">
+    <canvas #incidentsChart></canvas>
+  </div>
+
+  <!-- Légende -->
+  <div class="flex justify-center items-center gap-6 mt-2">
+
+    <div class="flex items-center gap-1.5">
+      <div class="w-5 h-0.5 bg-emerald-600"></div>
+
+      <span class="text-xs text-gray-600">
+        Nouveaux
+      </span>
+    </div>
+
+    <div class="flex items-center gap-1.5">
+      <div class="w-5 h-0.5 bg-blue-600"></div>
+
+      <span class="text-xs text-gray-600">
+        Résolus
+      </span>
+    </div>
+
+  </div>
+
+</div>

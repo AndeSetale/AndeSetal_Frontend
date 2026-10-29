@@ -1,0 +1,9 @@
+#incident-map {
+  height: 256px;
+  z-index: 10;
+}
+
+.custom-marker {
+  background: transparent;
+  border: none;
+}

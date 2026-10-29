@@ -1,0 +1,154 @@
+<div class="self-stretch mt-2 flex justify-between items-center">
+
+  <!-- Informations agent -->
+  <div class="flex justify-start items-center gap-4">
+
+    <!-- Avatar -->
+   <div class="relative flex flex-col items-start">
+
+  <!-- Avatar -->
+  <div
+    class="size-20 relative bg-gray-200 rounded-full
+           outline outline-4 outline-offset-[-4px] outline-white
+           flex justify-center items-center"
+  >
+    <div
+      class="size-20 absolute inset-0 bg-white/0 rounded-full
+             shadow-[0px_2px_4px_-2px_rgba(0,0,0,0.10)] shadow-md"
+    ></div>
+
+    <!-- Icône utilisateur -->
+    <div class="size-10 relative flex items-center justify-center">
+      <svg
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="text-gray-600"
+        aria-hidden="true"
+      >
+        <path d="M20 21a8 8 0 0 0-16 0" />
+        <circle cx="12" cy="7" r="4" />
+      </svg>
+    </div>
+  </div>
+
+  <!-- Statut en ligne -->
+  <div
+    class="size-6 absolute left-[60px] top-[60px]
+           bg-green-500 rounded-full border-4 border-white"
+  ></div>
+
+</div>
+
+    <!-- Informations -->
+    <div class="flex flex-col items-start gap-1">
+
+      <!-- Nom -->
+      <div class="text-gray-900 text-2xl font-bold leading-8">
+       {{ agent()?.nom_complet }}
+      </div>
+
+      <!-- ID -->
+      <div class="text-sm leading-5">
+        <span class="text-gray-600 font-medium">
+          Agent ID:
+        </span>
+
+        <span class="text-gray-600 font-semibold">
+          {{ agent()?.matricule }}
+        </span>
+      </div>
+
+      <!-- Quartier + statut -->
+      <div class="pt-1 flex justify-start items-center gap-3">
+
+        <!-- Quartier -->
+        <div class="flex items-center gap-1.5">
+
+         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M13.3337 6.66732C13.3337 9.99598 9.64099 13.4627 8.40099 14.5333C8.16368 14.7118 7.83697 14.7118 7.59966 14.5333C6.35966 13.4627 2.66699 9.99598 2.66699 6.66732C2.66699 3.72377 5.05678 1.33398 8.00033 1.33398C10.9439 1.33398 13.3337 3.72377 13.3337 6.66732" stroke="#6A7282" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M6 6.66602C6 7.76985 6.89617 8.66602 8 8.66602C9.10383 8.66602 10 7.76985 10 6.66602C10 5.56219 9.10383 4.66602 8 4.66602C6.89617 4.66602 6 5.56219 6 6.66602V6.66602" stroke="#6A7282" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+
+          <span class="text-gray-700 text-sm font-semibold leading-5">
+             {{ agent()?.quartier }}
+          </span>
+
+        </div>
+
+        <!-- Badge -->
+        <div
+  class="inline-flex items-center gap-1.5
+         px-3 py-1
+         bg-green-100
+         rounded-full
+         border border-green-200"
+>
+  <span
+    class="size-1.5 rounded-full bg-green-500"
+    aria-hidden="true"
+  ></span>
+
+  <span class="text-green-700 text-xs font-bold leading-4">
+    {{ agent()?.disponible ? 'Actif' : 'Inactif' }}
+  </span>
+</div>
+
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- Actions -->
+  <div class="flex justify-start items-center gap-3">
+
+    <!-- Modifier -->
+    <button
+      type="button"
+      class="px-4 py-2.5 bg-white rounded-[10px]
+             outline outline-2 outline-offset-[-2px]
+             outline-gray-300
+             flex items-center gap-2
+             hover:bg-gray-50 transition"
+    >
+      <span class="text-gray-700 text-base font-semibold leading-6">
+        Modifier le profil
+      </span>
+    </button>
+
+    <!-- Révoquer -->
+    <button
+      type="button"
+      class="px-4 py-2.5 bg-white rounded-[10px]
+             outline outline-2 outline-offset-[-2px]
+             outline-red-300
+             flex items-center gap-2
+             hover:bg-red-50 transition"
+    >
+      <span class="text-red-700 text-base font-semibold leading-6">
+        Révoquer l'accès
+      </span>
+    </button>
+
+    <!-- Contacter -->
+    <button
+      type="button"
+      class="px-4 py-2.5 bg-gray-800 rounded-[10px]
+             flex items-center gap-2
+             hover:bg-gray-700 transition"
+    >
+      <span class="text-white text-base font-semibold leading-6">
+        Contacter l'agent
+      </span>
+    </button>
+
+  </div>
+
+</div>

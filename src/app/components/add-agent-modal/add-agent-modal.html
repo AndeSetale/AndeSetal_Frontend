@@ -1,0 +1,176 @@
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4">
+  <div
+  class="w-full max-w-md max-h-[90vh] bg-white rounded-2xl shadow-2xl overflow-hidden"
+>
+    <!-- Header -->
+    <div class="p-6 border-b border-gray-200 flex items-start justify-between">
+      <div>
+        <h2 class="text-xl font-bold text-slate-900">
+          Ajouter un nouvel agent
+        </h2>
+
+        <p class="mt-1 text-sm text-slate-500">
+          Inviter un nouvel agent dans le système
+        </p>
+      </div>
+
+      <button
+  type="button"
+  (click)="onClose()"
+  class="p-2 rounded-lg hover:bg-gray-100"
+>
+  ✕
+</button>
+    </div>
+
+    <!-- Formulaire -->
+  <form class="p-6 space-y-5 max-h-[calc(90vh-100px)] overflow-y-auto custom-scrollbar"
+  (ngSubmit)="inscrire()" >
+
+      <!-- Nom -->
+      <div>
+        <label class="block mb-2 text-sm font-semibold text-gray-700">
+          Nom complet
+        </label>
+
+        <input
+  type="text"
+  name="nom_complet"
+  [(ngModel)]="form.nom_complet"
+  placeholder="Saisir le nom complet de l'agent"
+  class="w-full h-11 px-4 rounded-[10px] border border-gray-300
+         text-sm outline-none focus:border-teal-700"
+/>
+      </div>
+
+      <!-- Email -->
+      <div>
+        <label class="block mb-2 text-sm font-semibold text-gray-700">
+          Adresse e-mail
+        </label>
+
+        <input
+          type="email"
+          placeholder="agent@plateau.sn"
+            
+  name="email"
+  [(ngModel)]="form.email"
+          class="w-full h-11 px-4 rounded-[10px] border border-gray-300
+                 text-sm outline-none focus:border-teal-700"
+        />
+      </div>
+
+      <!-- Mot de passe -->
+      <div>
+        <label class="block mb-2 text-sm font-semibold text-gray-700">
+          Mot de passe
+        </label>
+
+        <input
+          type="password"
+          placeholder="8 caractères min., lettres et chiffres"
+          name="password"
+  [(ngModel)]="form.password"
+          class="w-full h-11 px-4 rounded-[10px] border border-gray-300
+                 text-sm outline-none focus:border-teal-700"
+        />
+      </div>
+
+      <!-- Téléphone -->
+      <div>
+        <label class="block mb-2 text-sm font-semibold text-gray-700">
+          Numéro de téléphone
+        </label>
+
+        <input
+          type="tel"
+            name="telephone"
+  [(ngModel)]="form.telephone"
+          placeholder="+221 77 123 45 67"
+          class="w-full h-11 px-4 rounded-[10px] border border-gray-300
+                 text-sm outline-none focus:border-teal-700"
+        />
+      </div>
+      <div>
+  <label class="block mb-2 text-sm font-semibold text-gray-700">
+    Matricule
+  </label>
+
+  <input
+    type="text"
+    name="matricule"
+    [(ngModel)]="form.matricule"
+    placeholder="Ex : AGT-001"
+    class="w-full h-11 px-4 rounded-[10px] border border-gray-300
+           text-sm outline-none focus:border-teal-700"
+  />
+</div>
+<select
+  name="specialisation"
+  [(ngModel)]="form.specialisation"
+  class="w-full h-11 px-4 rounded-[10px] border border-gray-300 bg-white"
+>
+  <option value="">Sélectionner la spécialisation</option>
+  <option value="DECHETS">Déchets</option>
+  <option value="CANAUX">Canaux</option>
+  <option value="VOIRIE">Voirie</option>
+  <option value="ECLAIRAGE_PUBLIC">Éclairage public</option>
+  <option value="ARBRE">Arbre</option>
+  <option value="FUITE_EAU">Fuite d'eau</option>
+</select>
+
+      <!-- Département -->
+      <div>
+        <label class="block mb-2 text-sm font-semibold text-gray-700">
+          Département
+        </label>
+
+        <select
+          name="departement"
+          [(ngModel)]="form.departement"
+          class="w-full h-11 px-4 rounded-[10px] border border-gray-300
+                 bg-white text-sm text-gray-500 outline-none
+                 focus:border-teal-700"
+        >
+          <option value="">Sélectionner le service</option>
+          <option value="voirie">Voirie</option>
+          <option value="eclairage">Éclairage public</option>
+          <option value="dechets">Déchets</option>
+          <option value="eau">Eau</option>
+        </select>
+      </div>
+
+      @if (error) {
+      <div class="rounded-[10px] bg-red-50 px-4 py-3 text-sm text-red-700">
+        @for (ligne of error.split('
+'); track $index) {
+        <p>{{ ligne }}</p>
+        }
+      </div>
+      }
+
+      <!-- Actions -->
+      <div class="flex gap-3 pt-2">
+       <button
+  type="button"
+  (click)="onClose()"
+  class="flex-1 h-11 rounded-[10px] border-2 border-gray-300
+         text-sm font-semibold text-gray-700 hover:bg-gray-50"
+>
+  Annuler
+</button>
+
+        <button
+          type="submit"
+          [disabled]="loading"
+          class="flex-1 h-11 rounded-[10px] bg-gray-800
+                 text-white text-sm font-semibold hover:bg-gray-700
+                 disabled:opacity-60 disabled:cursor-not-allowed"
+        >
+          {{ loading ? 'Création…' : 'Inscrire' }}
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>
